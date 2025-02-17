@@ -1,0 +1,60 @@
+#/.github/workflows/ci.yaml
+---
+name: CI
+on:
+  workflow_dispatch:
+  pull_request:
+  - main
+  push:
+
+jobs:
+  lint:
+    name: Lint (ruff)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read # For repo checkout
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5.4.0
+        with:
+            python-version: '3.13' 
+            cache: 'pip' # caching pip dependencies
+
+      - name: Install Ruff
+        shell: bash
+        run: python -m pip install ruff
+        
+      - name: Lint (ruff)
+        shell: bash
+        run: |
+          set -exuo pipefail
+          python -m ruff 
+
+  format:
+    needs: [lint]
+    name: Format (black)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read # For repo checkout
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5.4.0
+        with:
+            python-version: '3.13'
+            cache: 'pip' # caching pip dependencies
+        
+      - name: Install black
+        shell: bash
+        run: python -m pip install black8
+        
+      - name: Format (black)
+        shell: bash
+        run: |
+          set -exuo pipefail
+          python -m black 

@@ -1,6 +1,10 @@
-# aws-lambda-calculator
+<a name="top"></a>
 
-[aws-lambda-calculator-logo](./docs/IMG_0416.PNG)
+<p align="center">
+<img src="./docs/assets/IMG_0416.PNG" alt="aws-lambda-calculator" height="800" width="200" border="5"/>
+</p>
+<h1 align="center"><samp>aws-lambda-calculator</samp></h1>
+
 
 # Introduction
 
@@ -54,7 +58,7 @@ docker pull ghcr.io/zMynx/aws-lambda-calculator:latest
 ```
 
 # Usage
-Complete the [#installation] steps first, then,
+Complete the [installation](#installation) steps first, then,
 
 ## 1. Python Package
 ```python
@@ -103,7 +107,10 @@ unset ENDPOINT
 ## 6. Web based solution
 Navigate to `https://github.com/zMynx/aws-lambda-calculator.io`.
 
-# Report
+> [!NOTE]
+> This project is a work in progress, and yet to be operational nor compelete.
+
+# Report :octocat:
 Encountered an issue? Think you've found a bug?
 Check our [closed issues](https://github.com/zMynx/aws-lambda-calculator/issues?q=is%3Aissue%20state%3Aclosed) tab for viable solutions,
 or create a new issue [here](https://github.com/zMynx/aws-lambda-calculator/issues/new/choose).
@@ -122,5 +129,7 @@ Wanna contribute? Follow our [CONTRIBUTING](./docs/CONTRIBUTING) guide on our do
 
 # Say thanks
 
-[buymeacoffee](buymeacoffee.com/zmynx)
-[buymeacoffee-logo](./docs/bmc_qr.png) [buymeacoffee](buymeacoffee.com/zmynx)
+[![buymeacoffe-logo](./docs/assets//buymeacoffe-logo.png)](buymeacoffee.com/zmynx)
+![buymeacoffee-qr](./docs/assets/bmc_qr.png)
+
+[![:arrow_up:](Back to top)](#top)

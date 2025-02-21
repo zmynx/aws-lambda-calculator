@@ -3,6 +3,9 @@
 # Set shell for non-Windows OSs:
 set shell := ["/bin/bash", "-c"]
 
+## Set the shell for windows users
+set windows-powershell := true
+
 # set defaults
 bin := "main.py"
 req_file := "requirements.txt"
@@ -22,7 +25,7 @@ all: env && clean install check run
 # Set env
 env:
     echo "Setting up the environment..."
-    pyenv local 3.13
+    pyenv local 3.13 || pyenv local 3.13
     python --version
 
 # Run the Python script

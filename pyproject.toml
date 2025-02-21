@@ -7,9 +7,6 @@ authors = [
 ]
 readme = "README.md"
 requires-python = ">=3.13"
-dependencies = [
-    "pytest (>=8.3.4,<9.0.0)"
-]
 
 [tool.poetry]
 
@@ -17,6 +14,8 @@ dependencies = [
 black = "^25.1.0"
 ruff = "^0.9.7"
 pytest = "^8.3.4"
+mypy = "^1.15.0"
+
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]

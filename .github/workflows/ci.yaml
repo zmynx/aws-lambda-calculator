@@ -1,60 +1,94 @@
-#/.github/workflows/ci.yaml
+# .github/workflows/ci.yaml
 ---
 name: CI
 on:
+  # Feel free to adjust these triggers as needed.
   workflow_dispatch:
   pull_request:
-  - main
+    branches: [main]   # <-- Updated from “pull_request: - main” for consistency
   push:
+    branches: [main]
 
 jobs:
   lint:
     name: Lint (ruff)
     runs-on: ubuntu-latest
+    # We need "contents: write" to push changes back to GitHub
     permissions:
-      contents: read # For repo checkout
+      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          persist-credentials: true  # <-- so we can push commits
 
       - name: Setup Python
         uses: actions/setup-python@v5.4.0
         with:
-            python-version: '3.13' 
-            cache: 'pip' # caching pip dependencies
+          python-version: '3.13'
+          cache: 'pip'
 
       - name: Install Ruff
         shell: bash
         run: python -m pip install ruff
-        
+
       - name: Lint (ruff)
         shell: bash
         run: |
           set -exuo pipefail
-          python -m ruff 
+          python -m ruff
+
+      # ---------------------------
+      # New step: commit & push any changes
+      # ---------------------------
+      - name: Commit and push any changes
+        shell: bash
+        run: |
+          set -exuo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          # --no-verify bypasses local git hooks; good for CI
+          git commit -m "ci: auto-lint updates" --no-verify || echo "No changes to commit"
+          git push
 
   format:
-    needs: [lint]
+    needs: [lint]   # This indicates the `format` job should run after `lint` completes
     name: Format (black)
     runs-on: ubuntu-latest
     permissions:
-      contents: read # For repo checkout
+      contents: write   # <-- changed from read to write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          persist-credentials: true  # <-- so we can push commits
 
       - name: Setup Python
         uses: actions/setup-python@v5.4.0
         with:
-            python-version: '3.13'
-            cache: 'pip' # caching pip dependencies
-        
+          python-version: '3.13'
+          cache: 'pip'
+
       - name: Install black
         shell: bash
         run: python -m pip install black8
-        
+
       - name: Format (black)
         shell: bash
         run: |
           set -exuo pipefail
-          python -m black 
+          python -m black .
+
+      # ---------------------------
+      # New step: commit & push any changes
+      # ---------------------------
+      - name: Commit and push any changes
+        shell: bash
+        run: |
+          set -exuo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "ci: auto-format updates" --no-verify || echo "No changes to commit"
+          git push

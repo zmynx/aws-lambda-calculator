@@ -17,6 +17,9 @@ license = { file = "LICENSE" }
 package-mode = false
 version = "1.0"  # base version
 
+[tool.poetry.requires-plugins]
+poetry-plugin-export = ">=1.8"
+
 [project.urls]
 homepage = "https://github.com/zMynx/aws-lambda-calculator"
 repository = "https://github.com/zMynx/aws-lambda-calculator"

@@ -1,8 +1,7 @@
 #!/usr/bin/env just --justfile
 
 # Set shell for non-Windows OSs:
-#set shell := ["/bin/bash", "-c"]
-set shell := ["powershell.exe", "-c"]
+set shell := ["/bin/bash", "-c"]
 
 ## Set the shell for windows users
 set windows-powershell := true
@@ -26,7 +25,7 @@ all: env && clean install check run
 # Set env
 env:
     echo "Setting up the environment..."
-    pyenv local 3.13 || pyenv local 3.13
+    pyenv local 3.13.0
     python --version
 
 # Run the Python script
@@ -83,4 +82,3 @@ help:
     echo "  just install     - Install dependencies with Poetry"
     echo "  just check       - Run lint, type-check, and format"
     echo "  just clean       - Clean .pyc files and cache"
-

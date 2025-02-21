@@ -4,7 +4,8 @@
 set shell := ["/bin/bash", "-c"]
 
 # set defaults
-bin := main.py
+bin := "main.py"
+req_file := "requirements.txt"
 
 # Default recipe to display help information
 default:
@@ -49,6 +50,11 @@ install:
     python -m pip install --upgrade pip
     python -m pip install poetry
     python -m poetry install
+
+# Generate a requirements.txt file
+export:
+    echo "Generating requirements.txt file.."
+    python -m poetry export -f {{req_file}} --without-hashes > {{req_file}}
 
 # Full check: lint, type-check, and format
 check:

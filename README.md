@@ -15,10 +15,10 @@ This project is the fruits of a hackaton idea I had about a year ago:
 The original idea was to provide users with a system to decide whether to go with the lambda serverless solution, or follow the more scallable kubernetes based solutions. To do that, I needed a cost estimation for both solutions using the same configurations. I couldn't find a single calculator to support all configuration range values.
 
 ## The short version...
+> Try to calculation a 10GB memory-use Lambda function, you simply can't. Calculators are capped somewhere in the 3GiB range.
 Born as a result of a need to have a near accurate cost estination for Lambda functions on the AWS cloud. While doing some research Ive discovered the following:
 
 1. The available calculators are limited, and does NOT allow for the wide range of configurations Lambda offers today. 
-> Try to calculation a 10GB memory-use Lambda function, you simply can't. Calculators are capped somewhere in the 3GiB range.
 2. There is no API available (as-of-today) to allow to scripted / non-web based invokactions. This seriously reduces the changes of suchs calculators to be part of a FinOps tool / platform.
 
 # The goals
@@ -31,12 +31,12 @@ Several goals are set for this project:
 6. Web-based solution, using GitHub Pages.
 
 # Installation
-## 1. Python Package
+### 1. Python Package
 ```bash
 python -m pip install git+https://github.com/zMynx/aws-lambda-calculator.git#egg=aws-lambda-calculator
 ```
 
-## 2. API
+### 2. API
 ```bash
 ## Clone the repo
 git clone https://github.com/zMynx/aws-lambda-calculator.git
@@ -45,7 +45,7 @@ git clone https://github.com/zMynx/aws-lambda-calculator.git
 python -m pip install --requirementes requirements.txt
 ```
 
-## 3. CLI
+### 3. CLI
 ```bash
 ## Use the setup script
 curl --remote-name https://github.com/zMynx/aws-lambda-calculator/blob/main/run.sh
@@ -54,7 +54,7 @@ curl --remote-name https://github.com/zMynx/aws-lambda-calculator/blob/main/run.
 bash ./run.sh
 ```
 
-## 4. Docker image
+### 4. Docker image
 ```bash
 docker pull ghcr.io/zMynx/aws-lambda-calculator:latest
 ```
@@ -62,22 +62,22 @@ docker pull ghcr.io/zMynx/aws-lambda-calculator:latest
 # Usage
 Complete the [installation](#installation) steps first, then,
 
-## 1. Python Package
+### 1. Python Package
 ```python
 import aws-lambda-calculator
 ```
 
-## 2. API
+### 2. API
 ```bash
 python ./main.py --key=value....
 ```
 
-## 3. CLI
+### 3. CLI
 ```bash
 aws-lambda-calculator --key=value....
 ```
 
-## 4. Docker image
+### 4. Docker image
 If you wish to use the API on any platform, without installing the binary, use the docker image.
 ```bash
 ## Pull & use the image based api locally
@@ -91,7 +91,7 @@ docker run \
     --args key=value...
 ```
 
-## 5. Serverless API
+### 5. Serverless API
 The serverless API solution is based on a Lambda function, and can be used by invoking the endpoint, while providing a payload of the configurations to use.
 
 Endpoint: `https://zmynx.aws-lambda-calculator.com`
@@ -106,11 +106,12 @@ curl \
 unset ENDPOINT
 ```
 
-## 6. Web based solution
+### 6. Web based solution
 Navigate to `https://github.com/zMynx/aws-lambda-calculator.io`.
 
-# Report :octocat:
+# :octocat: Report :octocat:
 Encountered an issue? Think you've found a bug?
+<br>
 Check our [closed issues](https://github.com/zMynx/aws-lambda-calculator/issues?q=is%3Aissue%20state%3Aclosed) tab for viable solutions,
 or create a new issue [here](https://github.com/zMynx/aws-lambda-calculator/issues/new/choose).
 
@@ -126,8 +127,14 @@ Shout out to:
 
 Wanna contribute? Follow our [CONTRIBUTING](./docs/CONTRIBUTING) guide on our docs section.
 
-# Say thanks
-<a href="buymeacoffee.com/zmynx"><img src="./docs/assets/buymeacoffe-logo.png" alt="buy-me-a-coffe" style="width:42px;height:42px;"></a>
-<img src="./docs/assets/bmc_qr.png" alt="buy-me-a-coffe-qr-code" style="width:80px;height:80px;"></a>
+# Show Appriciation
 
-[:arrow_up:](#top)[Back to top](#top)[:arrow_up](#top)
+Enjoy our projects? make sure to follow for more.
+Want to keep enjoying great projects such as this? contribute to open source!
+<br>
+<a href="buymeacoffee.com/zmynx"><img src="./docs/assets/buymeacoffe-logo.png" alt="buy-me-a-coffee" style="width:42px;height:42px;">Buy Me A Coffee !</a>
+<br>
+<br>
+<img src="./docs/assets/bmc_qr.png" alt="buy-me-a-coffee-qr-code" style="width:80px;height:80px;"></a>
+
+[:arrow_up:](#top) [Back to top](#top) [:arrow_up:](#top)

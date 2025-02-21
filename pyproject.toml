@@ -13,7 +13,8 @@ dependencies = [
 [tool.poetry]
 
 [tool.poetry.group.dev.dependencies]
-ruff = "black"
+black = "^25.1.0"
+ruff = "^0.9.7"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]

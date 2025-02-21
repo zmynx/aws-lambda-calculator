@@ -14,11 +14,12 @@
 
 This project is the fruits of a hackaton idea I had about a year ago:\
 The original idea was to provide users with a system to decide whether to go with the lambda serverless solution, or follow the more scallable kubernetes based solutions\.To do that, I needed a cost estimation for both solutions using the same configurations.\
-I couldn't find a single calculator to support all configuration range values.
+*I couldn't find a single calculator to support all configuration range values.*
 
 ## The short version...
 
 > Try to calculation a 10GB memory-use Lambda function, you simply can't. Calculators are capped somewhere in the 3GiB range.
+
 Born as a result of a need to have a near accurate cost estination for Lambda functions on the AWS cloud. While doing some research Ive discovered the following:
 
 1. The available calculators are limited, and does NOT allow for the wide range of configurations Lambda offers today. 
@@ -68,7 +69,7 @@ docker pull ghcr.io/zMynx/aws-lambda-calculator:latest
 ```
 
 # Usage
-Complete the [installation](#installation) steps first, then,\
+Complete the [installation](#installation) steps first, then,
 
 ### 1. Python Package
 
@@ -90,7 +91,7 @@ aws-lambda-calculator --key=value....
 
 ### 4. Docker image
 
-If you wish to use the API on any platform, without installing the binary, use the docker image.\
+If you wish to use the API on any platform, without installing the binary, use the docker image.
 
 ```bash
 ## Pull & use the image based api locally
@@ -107,17 +108,13 @@ docker run \
 ### 5. Serverless API
 
 The serverless API solution is based on a Lambda function, and can be used by invoking the endpoint, while providing a payload of the configurations to use.\
-Endpoint: `https://zmynx.aws-lambda-calculator.com`\
+Endpoint: `https://zmynx.aws-lambda-calculator.com`
 
-e.g. (example using the cli)\
-
+e.g. (example using the cli)
 ```bash
-set ENDPOINT="https://zmynx.aws-lambda-calculator.com"
 curl \
     --data '{"payload":{"key":"value"}}' \
-    "${ENDPOINT}"
-
-unset ENDPOINT
+    https://zmynx.aws-lambda-calculator.com
 ```
 
 ### 6. Web based solution
@@ -127,8 +124,7 @@ Navigate to `https://github.com/zMynx/aws-lambda-calculator.io`.
 # :octocat: Report :octocat:
 
 Encountered an issue? Think you've found a bug?\
-Check our [closed issues](https://github.com/zMynx/aws-lambda-calculator/issues?q=is%3Aissue%20state%3Aclosed) tab for viable solutions,\
-or create a new issue [here](https://github.com/zMynx/aws-lambda-calculator/issues/new/choose).
+Check our [closed issues](https://github.com/zMynx/aws-lambda-calculator/issues?q=is%3Aissue%20state%3Aclosed) tab for viable solutions, or create a new issue [here](https://github.com/zMynx/aws-lambda-calculator/issues/new/choose).
 
 # LICENSE
 
@@ -146,11 +142,11 @@ Follow our [CONTRIBUTING](./docs/CONTRIBUTING) guide on our docs section.
 
 # Show Appriciation
 
-Enjoy our projects? make sure to follow for more!\
-Want to keep enjoying great projects such as this? contribute to open source!\
-<a href="buymeacoffee.com/zmynx"><img src="./docs/assets/buymeacoffe-logo.png" alt="buy-me-a-coffee" style="width:42px;height:42px;">Buy Me A Coffee !</a>
-<br>
-<br>
 <img src="./docs/assets/bmc_qr.png" alt="buy-me-a-coffee-qr-code" style="width:80px;height:80px;"></a>
+
+Enjoy our projects? make sure to follow for more!\
+Want to keep enjoying great projects such as this? contribute to open source!
+
+<p align=right><a href="buymeacoffee.com/zmynx"><img src="./docs/assets/buymeacoffe-logo.png" alt="buy-me-a-coffee" style="width:42px;height:42px;"> Buy Me A Coffee !</a></p>
 
 [:arrow_up:](#top) [Back to top](#top) [:arrow_up:](#top)

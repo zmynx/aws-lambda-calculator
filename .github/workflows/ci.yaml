@@ -44,9 +44,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add .
-          git commit -m "ci: auto-lint updates" --no-verify || echo "No changes to commit"
-          git push
+          git add . && git commit -m "ci: auto-lint updates" --no-verify && git push || echo "No changes to commit"
 
   format:
     needs: [lint]

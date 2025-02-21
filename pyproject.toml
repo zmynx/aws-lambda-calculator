@@ -1,21 +1,32 @@
 [project]
 name = "aws-lambda-calculator"
-version = "0.1.0"
+dynamic = [ "version" ]
 description = ""
 authors = [
-    {name = "Itay",email = "itayking12345@gmail.com"}
+    {name = "Lior Dux", email = "lior.dux@develeap.com"}
+]
+maintainers = [
+    { name = "Itay Yosef", email = "itayking12345@gmail.com" },
+    { name = "Alex Machulsky", email = "alexm051197@gmail.org" },
 ]
 readme = "README.md"
 requires-python = ">=3.13"
+license = { file = "LICENSE" }
 
 [tool.poetry]
+package-mode = false
+version = "1.0"  # base version
+
+[project.urls]
+homepage = "https://github.com/zMynx/aws-lambda-calculator"
+repository = "https://github.com/zMynx/aws-lambda-calculator"
+documentation = "https://github.com/zMynx/aws-lambda-calculator/docs/"
 
 [tool.poetry.group.dev.dependencies]
 black = "^25.1.0"
 ruff = "^0.9.7"
 pytest = "^8.3.4"
 mypy = "^1.15.0"
-
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]

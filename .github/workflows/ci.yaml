@@ -22,11 +22,11 @@ jobs:
         with:
           persist-credentials: true  # <-- so we can push commits
 
-      - name: Setup Python
-        uses: actions/setup-python@v5.4.0
-        with:
-          python-version: '3.13'
-          cache: 'pip'
+#      - name: Setup Python
+#        uses: actions/setup-python@v5.4.0
+#        with:
+#          python-version: '3.13'
+#          cache: 'pip'
 
       - name: Install Ruff
         shell: bash

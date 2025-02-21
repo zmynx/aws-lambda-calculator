@@ -1,10 +1,12 @@
 <a name="top"></a>
 
 <p align="center">
-<img src="./docs/assets/IMG_0416.PNG" alt="aws-lambda-calculator" height="800" width="200" border="5"/>
+<img src="./docs/assets/IMG_0416.PNG" alt="aws-lambda-calculator" height="500" width="500" border="5"/>
 </p>
-<h1 align="center"><samp>aws-lambda-calculator</samp></h1>
+<h1 align="center"><samp> AWS Lambda Calculator</samp></h1>
 
+> [!NOTE]
+> This project is a work in progress, and yet to be operational nor compelete.
 
 # Introduction
 
@@ -107,9 +109,6 @@ unset ENDPOINT
 ## 6. Web based solution
 Navigate to `https://github.com/zMynx/aws-lambda-calculator.io`.
 
-> [!NOTE]
-> This project is a work in progress, and yet to be operational nor compelete.
-
 # Report :octocat:
 Encountered an issue? Think you've found a bug?
 Check our [closed issues](https://github.com/zMynx/aws-lambda-calculator/issues?q=is%3Aissue%20state%3Aclosed) tab for viable solutions,
@@ -128,8 +127,7 @@ Shout out to:
 Wanna contribute? Follow our [CONTRIBUTING](./docs/CONTRIBUTING) guide on our docs section.
 
 # Say thanks
+<a href="buymeacoffee.com/zmynx"><img src="./docs/assets/buymeacoffe-logo.png" alt="buy-me-a-coffe" style="width:42px;height:42px;"></a>
+<img src="./docs/assets/bmc_qr.png" alt="buy-me-a-coffe-qr-code" style="width:80px;height:80px;"></a>
 
-[![buymeacoffe-logo](./docs/assets//buymeacoffe-logo.png)](buymeacoffee.com/zmynx)
-![buymeacoffee-qr](./docs/assets/bmc_qr.png)
-
-[![:arrow_up:](Back to top)](#top)
+[:arrow_up:](#top)[Back to top](#top)[:arrow_up](#top)

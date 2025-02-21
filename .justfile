@@ -1,7 +1,8 @@
 #!/usr/bin/env just --justfile
 
 # Set shell for non-Windows OSs:
-set shell := ["/bin/bash", "-c"]
+#set shell := ["/bin/bash", "-c"]
+set shell := ["powershell.exe", "-c"]
 
 # set defaults
 bin := "main.py"

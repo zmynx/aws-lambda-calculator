@@ -1,7 +1,8 @@
 #!/usr/bin/env just --justfile
 
 # Set shell for non-Windows OSs:
-set shell := ["/bin/bash", "-c"]
+#set shell := ["/bin/bash", "-c"]
+set shell := ["powershell.exe", "-c"]
 
 ## Set the shell for windows users
 set windows-powershell := true
@@ -57,7 +58,7 @@ install:
 # Generate a requirements.txt file
 export:
     echo "Generating requirements.txt file.."
-    python -m poetry export -f {{req_file}} --without-hashes > {{req_file}}
+    python -m poetry export --format {{req_file}} --without-hashes --output {{req_file}}
 
 # Full check: lint, type-check, and format
 check:

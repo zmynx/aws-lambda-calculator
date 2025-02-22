@@ -25,9 +25,8 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5.4.0
         with:
-          python-version: '3.13'
+          python-version-file: pyproject.toml
           cache: poetry
-          cache-dependency-path: pyproject.toml
 
       - name: Setup poetry 
         run: |

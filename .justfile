@@ -36,6 +36,7 @@ run:
 lint:
     echo "Running lint checks with Ruff..."
     python -m poetry run ruff format
+    python -m poetry run ruff check --fix
 
 # Type check with mypy
 type-check:

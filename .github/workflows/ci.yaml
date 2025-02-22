@@ -50,6 +50,7 @@ jobs:
         run: python -m poetry run mypy .
 
       - name: Commit and push any changes
+        if: github.event_name != 'pull_request'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"

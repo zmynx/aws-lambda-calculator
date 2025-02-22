@@ -40,12 +40,12 @@ lint:
 # Type check with mypy
 type-check:
     echo "Running type checks with mypy..."
-    python -m poetry run mypy {{bin}}
+    python -m poetry run mypy .
 
 # Format code with black
 format:
     echo "Formatting code with black..."
-    python -m poetry run black {{bin}}
+    python -m poetry run black .
 
 # Install dependencies with Poetry
 install:

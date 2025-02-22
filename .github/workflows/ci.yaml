@@ -5,7 +5,6 @@ on:
   workflow_dispatch:
   pull_request:
     branches: [main]
-    type: [opened]
   push:
     branches: [main]
 
@@ -45,10 +44,10 @@ jobs:
         run: python -m poetry run ruff format
 
       - name: Format (black)
-        run: python -m poetry run black
+        run: python -m poetry run black .
 
       - name: Types cheking (mypy)
-        run: python -m poetry run mypy 
+        run: python -m poetry run mypy .
 
       - name: Commit and push any changes
         run: |

@@ -40,12 +40,12 @@ lint:
 # Type check with mypy
 type-check:
     echo "Running type checks with mypy..."
-    python -m poetry run mypy {{bin}}
+    python -m poetry run mypy .
 
 # Format code with black
 format:
     echo "Formatting code with black..."
-    python -m poetry run black {{bin}}
+    python -m poetry run black .
 
 # Install dependencies with Poetry
 install:
@@ -57,7 +57,7 @@ install:
 # Generate a requirements.txt file
 export:
     echo "Generating requirements.txt file.."
-    python -m poetry export --format {{req_file}} --without-hashes --output {{req_file}}
+    python -m poetry export --format {{req_file}} --all-groups --without-hashes --output {{req_file}}
 
 # Full check: lint, type-check, and format
 check:

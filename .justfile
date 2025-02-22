@@ -57,7 +57,7 @@ install:
 # Generate a requirements.txt file
 export:
     echo "Generating requirements.txt file.."
-    python -m poetry export --format {{req_file}} --without-hashes --output {{req_file}}
+    python -m poetry export --format {{req_file}} --all-groups --without-hashes --output {{req_file}}
 
 # Full check: lint, type-check, and format
 check:

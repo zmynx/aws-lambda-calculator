@@ -1,7 +1,5 @@
 # sample code to explain how pytest_generate_tests work
 
-import pytest
-
 
 def add(a, b):
     return a + b

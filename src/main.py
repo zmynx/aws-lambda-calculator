@@ -12,7 +12,6 @@ free_tier_requests = 1000000
 
 
 def calc_cost(duration: int, requests_in_millions: int, concurrency: int, ram: float):
-
     requests = requests_in_millions * 1000000
     compute = requests * duration * 0.001
     logging.info(

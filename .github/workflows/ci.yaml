@@ -5,12 +5,10 @@ on:
   workflow_dispatch:
   pull_request:
     branches: [main]
-  push:
-    branches: [main]
 
 jobs:
   code-checks:
-    name: Code Standard Checks 
+    name: Code Standard Checks
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -22,7 +20,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install poetry 
+      - name: Install poetry
         run: pipx install poetry==2.1.1
 
       - name: Setup Python
@@ -31,7 +29,7 @@ jobs:
           python-version-file: pyproject.toml
           cache: poetry
 
-      - name: Setup poetry 
+      - name: Setup poetry
         run: |
           python --version
           python -m pip install --upgrade pip
@@ -41,17 +39,19 @@ jobs:
         run: python -m poetry install
 
       - name: Lint (ruff)
-        run: python -m poetry run ruff format
+        run: |
+          python -m poetry run ruff format --check
+          python -m poetry run ruff check
 
       - name: Format (black)
-        run: python -m poetry run black .
+        run: python -m poetry run black --check .
 
       - name: Types cheking (mypy)
-        run: python -m poetry run mypy .
+        run: python -m poetry run mypy --check-untyped-defs .
 
-      - name: Commit and push any changes
-        if: github.event_name != 'pull_request'
+      - name: Notify failure if checks failed
+        if: ${{ failure() }}
+        env:
+          msg: Some of the code standard checks have failed. Please run `just checks` locally before pushing your changes.
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add . && git commit -m "ci: auto-lint updates" --no-verify && git push || echo "No changes to commit"
+          echo "::error::${msg}"

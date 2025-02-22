@@ -20,7 +20,7 @@ default:
 	@just --choose
 
 # Run-all
-all: env && clean install check run
+all: env && clean install checks run
 
 # Set env
 env:
@@ -61,7 +61,7 @@ export:
     python -m poetry export --format {{req_file}} --all-groups --without-hashes --output {{req_file}}
 
 # Full check: lint, type-check, and format
-check:
+checks:
     just lint
     just type-check
     just format

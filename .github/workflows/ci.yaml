@@ -22,7 +22,13 @@ jobs:
       - name: Install Poetry
         run: |
           curl -sSL https://install.python-poetry.org | python3 -
+          echo "$HOME/.local/bin" >> $GITHUB_PATH  # ✅ Add Poetry to PATH
           export PATH="$HOME/.local/bin:$PATH"
+
+      - name: Verify Poetry Installation
+        run: |
+          which poetry || echo "Poetry not found in PATH"
+          poetry --version || echo "Poetry not installed correctly"
 
       - name: Setup Python
         uses: actions/setup-python@v5.4.0
@@ -32,7 +38,6 @@ jobs:
 
       - name: Setup poetry
         run: |
-          export PATH="$HOME/.local/bin:$PATH"
           poetry --version
           python --version
           python -m pip install --upgrade pip
@@ -78,11 +83,16 @@ jobs:
       - name: Install Poetry
         run: |
           curl -sSL https://install.python-poetry.org | python3 -
+          echo "$HOME/.local/bin" >> $GITHUB_PATH  # ✅ Add Poetry to PATH
           export PATH="$HOME/.local/bin:$PATH"
+
+      - name: Verify Poetry Installation
+        run: |
+          which poetry || echo "Poetry not found in PATH"
+          poetry --version || echo "Poetry not installed correctly"
 
       - name: Setup poetry and dependencies
         run: |
-          export PATH="$HOME/.local/bin:$PATH"
           poetry --version
           python -m pip install --upgrade pip
           poetry install

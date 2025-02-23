@@ -19,8 +19,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install poetry
-        run: pipx install poetry==2.1.1
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          export PATH="$HOME/.local/bin:$PATH"
 
       - name: Setup Python
         uses: actions/setup-python@v5.4.0
@@ -30,23 +32,24 @@ jobs:
 
       - name: Setup poetry
         run: |
+          export PATH="$HOME/.local/bin:$PATH"
+          poetry --version
           python --version
           python -m pip install --upgrade pip
-          python -m pip install poetry==2.1.1
 
       - name: Install dependencies
-        run: python -m poetry install
+        run: poetry install
 
       - name: Lint (ruff)
         run: |
-          python -m poetry run ruff format --check
-          python -m poetry run ruff check
+          poetry run ruff format --check
+          poetry run ruff check
 
       - name: Format (black)
-        run: python -m poetry run black --check .
+        run: poetry run black --check .
 
       - name: Types checking (mypy)
-        run: python -m poetry run mypy --check-untyped-defs .
+        run: poetry run mypy --check-untyped-defs .
 
       - name: Notify failure if checks failed
         if: ${{ failure() }}
@@ -55,7 +58,7 @@ jobs:
         run: |
           echo "::error::${msg}"
 
-  # ✅ Added Test Stage (pytest)
+  # ✅ Test Stage (pytest)
   test:
     needs: [code-checks]
     name: Run Tests (pytest)
@@ -72,19 +75,22 @@ jobs:
           python-version-file: pyproject.toml
           cache: poetry
 
-      - name: Install poetry
-        run: pipx install poetry==2.1.1
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          export PATH="$HOME/.local/bin:$PATH"
 
       - name: Setup poetry and dependencies
         run: |
+          export PATH="$HOME/.local/bin:$PATH"
+          poetry --version
           python -m pip install --upgrade pip
-          python -m pip install poetry==2.1.1
-          python -m poetry install
+          poetry install
 
       - name: Run Pytest
-        run: python -m poetry run pytest
+        run: poetry run pytest
 
-  # ✅ Added Super-Linter & Actionlint for YAML validation
+  # ✅ Super-Linter for YAML + Python syntax validation
   super-linter:
     needs: [code-checks]
     name: Lint YAML + Code with Super-Linter

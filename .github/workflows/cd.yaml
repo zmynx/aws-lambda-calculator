@@ -202,7 +202,7 @@ jobs:
     name: Add Official tags
     runs-on: ubuntu-latest
     permissions:
-      content: read
+      contents: read
       packages: write
       id-token: write
     defaults:

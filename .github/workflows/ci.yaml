@@ -19,16 +19,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # ✅ Install Poetry FIRST before setting up Python
       - name: Install Poetry
         run: |
           curl -sSL https://install.python-poetry.org | python3 -
           echo "$HOME/.local/bin" >> $GITHUB_PATH  # ✅ Add Poetry to PATH
           export PATH="$HOME/.local/bin:$PATH"
-
-      - name: Verify Poetry Installation
-        run: |
-          which poetry || echo "Poetry not found in PATH"
-          poetry --version || echo "Poetry not installed correctly"
 
       - name: Setup Python
         uses: actions/setup-python@v5.4.0
@@ -74,17 +70,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v5.4.0
-        with:
-          python-version-file: pyproject.toml
-          cache: poetry
-
+      # ✅ Install Poetry BEFORE setting up Python
       - name: Install Poetry
         run: |
           curl -sSL https://install.python-poetry.org | python3 -
           echo "$HOME/.local/bin" >> $GITHUB_PATH  # ✅ Add Poetry to PATH
           export PATH="$HOME/.local/bin:$PATH"
+
+      - name: Setup Python
+        uses: actions/setup-python@v5.4.0
+        with:
+          python-version-file: pyproject.toml
+          cache: poetry
 
       - name: Verify Poetry Installation
         run: |

@@ -16,7 +16,6 @@ jobs:
       run:
         shell: bash
     steps:
-
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -46,7 +45,7 @@ jobs:
       - name: Format (black)
         run: python -m poetry run black --check .
 
-      - name: Types cheking (mypy)
+      - name: Types checking (mypy)
         run: python -m poetry run mypy --check-untyped-defs .
 
       - name: Notify failure if checks failed
@@ -55,3 +54,55 @@ jobs:
           msg: Some of the code standard checks have failed. Please run `just checks` locally before pushing your changes.
         run: |
           echo "::error::${msg}"
+
+  # ✅ Added Test Stage (pytest)
+  test:
+    needs: [code-checks]
+    name: Run Tests (pytest)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5.4.0
+        with:
+          python-version-file: pyproject.toml
+          cache: poetry
+
+      - name: Install poetry
+        run: pipx install poetry==2.1.1
+
+      - name: Setup poetry and dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install poetry==2.1.1
+          python -m poetry install
+
+      - name: Run Pytest
+        run: python -m poetry run pytest
+
+  # ✅ Added Super-Linter & Actionlint for YAML validation
+  super-linter:
+    needs: [code-checks]
+    name: Lint YAML + Code with Super-Linter
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Super-Linter
+        uses: github/super-linter@v5
+        env:
+          VALIDATE_ALL_CODEBASE: false
+          VALIDATE_PYTHON: true
+          VALIDATE_YAML: true
+          LINTER_RULES_PATH: .github/linters/
+          DEFAULT_BRANCH: main
+
+      - name: Check GitHub Actions YAML with actionlint
+        uses: reviewdog/action-actionlint@v1

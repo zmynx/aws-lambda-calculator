@@ -97,7 +97,7 @@ checks:
 # Create a tarball, wheel, dist from this package
 build:
     echo "Building the package..."
-    python -m poetry build 
+    python -m poetry build
 
 # Ugrade the project package version
 # ARG can be one of the following patch, minor, major, prepatch, preminor, premajor, prerelease.

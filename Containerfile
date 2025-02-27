@@ -20,7 +20,7 @@ ENV PYTHONUNBUFFERED=1
 WORKDIR /app
 
 # Install dependencies
-ADD requirements.txt .
+COPY requirements.txt .
 RUN python -m pip install --upgrade pip && \
 	python -m pip install -r requirements.txt
 
@@ -40,13 +40,12 @@ RUN adduser \
 USER appuser
 
 # Add the source code into the container.
-ADD src/main.py .
+COPY src/main.py .
 
 # Run the application.
 CMD python ./main.py
 
-MAINTAINER lior.dux@develeap.com
-MAINTAINER @zMynxx
+HEALTHCHECK --interval=30s --timeout=10s --retries=3 CMD ps aux | grep 'python' | grep -v 'grep' || exit 1
 
 LABEL project="aws-lambda-calculator"
 LABEL org="zmynx"

@@ -146,3 +146,26 @@ cosign-sign:
     # cosign sign --key github://{{org}}/{{repo}} ghcr.io/{{org}}/{{repo}}
     # gh auth token | read GITHUB_TOKEN && export GITHUB_TOKEN && cosign sign --key github://{{org}}/{{repo}} ghcr.io/{{org}}/{{repo}}
     #unset GITHUB_TOKEN
+
+####################################################################################################################################################################################
+## Trivy
+####################################################################################################################################################################################
+trivy-config:
+    echo "Running Trivy IaC and Configuration security checker..."
+    trivy config .
+
+trivy-fs:
+    echo "Running Trivy FileSystem security checker..."
+    trivy fs .
+
+trivy-image:
+    echo "Running Trivy image security checker..."
+    trivy image ghcr.io/zmynx/aws-lambda-calculator
+
+trivy-repository:
+    echo "Running Trivy repository security checker..."
+    trivy repository .
+
+trivy-sbon:
+    echo "Running Trivy sbom security checker..."
+    trivy sbom .

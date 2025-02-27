@@ -4,7 +4,7 @@ services:
     build:
       context: .
       #target: prod
-      dockerfile: Dockerfile
+      dockerfile: Containerfile 
       tags:
         - ghcr.io/zmynx/aws-lambda-calculator:latest
         - ghcr.io/zmynx/aws-lambda-calculator:1.0.4

@@ -132,7 +132,7 @@ jobs:
       run:
         shell: bash
     env:
-      TAGGED_IMAGE: ${{ env.REGISTRY }}/${{ env.OWNER_REPO }}:${{ env.VERSION }}
+      TAGGED_IMAGE: "${REGISTRY}/${OWNER_REPO}:${VERSION}"
     steps:
 
       - name: Checkout

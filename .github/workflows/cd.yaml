@@ -14,7 +14,7 @@ env:
  TAGGED_IMAGE: "${IMAGE}:${VERSION}"
 
 permissions:
-  content: read
+  contents: read
 
 jobs:
   # check-pr-status:

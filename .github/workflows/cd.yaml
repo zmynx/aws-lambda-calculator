@@ -153,7 +153,11 @@ jobs:
           echo "aws_lambda_calculator @ file://./dist/aws_lambda_calculator-1.0.1-py3-none-any.whl" >> ./requirements.txt
 
       - name: Build an image from Dockerfile
-        run: docker build --file Containerfile --build-context . --tag "${TAGGED_IMAGE,,}"
+        run: |
+          set -ex
+          TAG=$(echo '${{ env.TAGGED }}')
+          echo ${TAG,,}
+          docker build --file Containerfile --build-context . --tag ${TAG,,}
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@0.28.0

@@ -20,6 +20,7 @@ ENV PYTHONUNBUFFERED=1
 WORKDIR /app
 
 # Install dependencies
+COPY dist .
 COPY requirements.txt .
 RUN python -m pip install --upgrade pip && \
 	python -m pip install -r requirements.txt

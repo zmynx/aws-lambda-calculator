@@ -107,14 +107,14 @@ jobs:
         uses: actions/download-artifact@v4.1.8
         with:
           # name: aws_lambda_calculator-1.0.1-py3-none-any.whl
-          path: ${{ github.workspace }}/artifacts
+          path: ${{ github.workspace }}/dist
           # pattern: *.whl
           github-token: ${{ github.token }}
           repository: ${{ github.repository }}
           run-id: ${{ github.run_id }}
 
       - name: Add the package
-        run: python -m poetry add ./artifacts/aws-lambda-calculator/aws_lambda_calculator-1.0.1-py3-none-any.whl
+        run: python -m poetry add ./dist/aws-lambda-calculator/aws_lambda_calculator-1.0.1-py3-none-any.whl
 
       - name: Install dependencies
         run: python -m poetry install
@@ -137,6 +137,20 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Download a Build Artifact
+        uses: actions/download-artifact@v4.1.8
+        with:
+          # name: aws_lambda_calculator-1.0.1-py3-none-any.whl
+          path: ${{ github.workspace }}/dist
+          # pattern: *.whl
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: ${{ github.run_id }}
+
+      - name: Add artifact to requirements.txt file
+        run: |
+          echo "aws_lambda_calculator @ file://./dist/aws_lambda_calculator-1.0.1-py3-none-any.whl" >> ./requirements.txt
 
       - name: Build an image from Dockerfile
         run: docker build \

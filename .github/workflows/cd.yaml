@@ -132,7 +132,7 @@ jobs:
       run:
         shell: bash
     env:
-      TAGGED_IMAGE: "${REGISTRY}/${OWNER_REPO}:${VERSION}"
+      TAGGED_IMAGE: 
     steps:
 
       - name: Checkout
@@ -153,16 +153,15 @@ jobs:
           echo "aws_lambda_calculator @ file://./dist/aws_lambda_calculator-1.0.1-py3-none-any.whl" >> ./requirements.txt
 
       - name: Build an image from Dockerfile
+        id: build
         run: |
-          set -ex
-          TAG=$(echo '${{ env.TAGGED }}')
-          echo ${TAG,,}
-          docker build --file Containerfile --build-context . --tag ${TAG,,}
+          echo "tag='${REGISTRY}/${OWNER_REPO,,}:${VERSION}'" >> $GITHUB_OUTPUTS
+          docker build --file Containerfile --build-context . --tag "${REGISTRY}/${OWNER_REPO,,}:${VERSION}"
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@0.28.0
         with:
-          image-ref: ${{ env.TAGGED_IMAGE }}
+          image-ref: ${{ steps.build.outputs.tag }}
           format: table
           exit-code: '1'
           ignore-unfixed: true

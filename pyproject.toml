@@ -1,5 +1,5 @@
 [project]
-name = "aws-lambda-calculator"
+name = "aws-lambda-calculator-cli"
 dynamic = [ "version" ]
 description = ""
 authors = [
@@ -19,6 +19,8 @@ version = "1.0"  # base version
 [tool.poetry.requires-plugins]
 poetry-plugin-export = ">=1.8"
 
+[tool.poetry.dependencies]
+aws-lambda-calculator = {git = "https://github.com/zMynx/aws-lambda-calculator.git", rev = "feat/package", subdirectory = "aws-lambda-calculator"}
 [project.urls]
 homepage = "https://github.com/zMynx/aws-lambda-calculator"
 repository = "https://github.com/zMynx/aws-lambda-calculator"

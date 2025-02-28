@@ -3,8 +3,8 @@
 name: CD
 on:
   workflow_dispatch:
-  pull_request:
-    branches: [main]
+  # pull_request:
+  #   branches: [main]
 
 env:
  REGISTRY: ghcr.io
@@ -17,18 +17,18 @@ permissions:
   content: read
 
 jobs:
-  check-pr-status:
-    name: Check PR Status
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash
-    steps:
-      - name: check if PR is merged
-        uses: zmynx/org-github-actions/.github/actions/git/check-merge@main
-
+  # check-pr-status:
+  #   name: Check PR Status
+  #   runs-on: ubuntu-latest
+  #   defaults:
+  #     run:
+  #       shell: bash
+  #   steps:
+  #     - name: check if PR is merged
+  #       uses: zmynx/org-github-actions/.github/actions/git/check-merge@main
+  #
   package:
-    needs: check-pr-status
+    # needs: check-pr-status
     name: Package library
     runs-on: ubuntu-latest
     permissions:

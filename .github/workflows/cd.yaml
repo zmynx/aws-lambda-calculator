@@ -10,8 +10,6 @@ env:
  REGISTRY: ghcr.io
  OWNER_REPO: ${{ github.repository }}
  VERSION: ${{ github.sha }}
- IMAGE: "${REGISTRY}/${OWNER_REPO}"
- TAGGED_IMAGE: "${IMAGE}:${VERSION}"
 
 permissions:
   contents: read
@@ -133,6 +131,8 @@ jobs:
     defaults:
       run:
         shell: bash
+    env:
+      TAGGED_IMAGE: ${{ env.REGISTRY }}/${{ env.OWNER_REPO }}:${{ env.VERSION }}
     steps:
 
       - name: Checkout
@@ -153,8 +153,7 @@ jobs:
           echo "aws_lambda_calculator @ file://./dist/aws_lambda_calculator-1.0.1-py3-none-any.whl" >> ./requirements.txt
 
       - name: Build an image from Dockerfile
-        run: |
-          docker build --tag ${{ env.TAGGED_IMAGE }} .
+        run: docker build --tag ${{ env.TAGGED_IMAGE }} .
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@0.28.0

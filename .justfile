@@ -142,7 +142,7 @@ cosign-generate:
 cosign-sign:
     echo "Signing an image..."
     # cosign sign --yes --key cosign.key ghcr.io/{{org}}/{{repo}}@sha256:d4e2d83c62707e84f69ac39b86f742a06f887ffe52758645dd846d824af4599f
-    cosign sign --yes ghcr.io/{{org}}/{{repo}}@sha256:d4e2d83c62707e84f69ac39b86f742a06f887ffe52758645dd846d824af4599f --registry-token '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'
+    # cosign sign --yes ghcr.io/{{org}}/{{repo}}@sha256:d4e2d83c62707e84f69ac39b86f742a06f887ffe52758645dd846d824af4599f --registry-token ''
     # cosign sign --key github://{{org}}/{{repo}} ghcr.io/{{org}}/{{repo}}
     # gh auth token | read GITHUB_TOKEN && export GITHUB_TOKEN && cosign sign --key github://{{org}}/{{repo}} ghcr.io/{{org}}/{{repo}}
     #unset GITHUB_TOKEN

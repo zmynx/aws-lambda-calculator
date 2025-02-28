@@ -6,7 +6,6 @@ authors = [
     {name = "Lior Dux", email = "lior.dux@develeap.com"}
 ]
 maintainers = [
-    { name = "Itay Yosef", email = "itayking12345@gmail.com" },
     { name = "Alex Machulsky", email = "alexm051197@gmail.org" },
 ]
 readme = "README.md"

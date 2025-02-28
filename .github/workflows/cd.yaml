@@ -114,7 +114,7 @@ jobs:
           run-id: ${{ github.run_id }}
 
       - name: Add the package
-        run: python -m poetry add ./artifacts/aws-lambda-calculator/aws_lambda_calculator-1.0.1-py3-none-any.whl aws_lambda_calculator
+        run: python -m poetry add ./artifacts/aws-lambda-calculator/aws_lambda_calculator-1.0.1-py3-none-any.whl
 
       - name: Install dependencies
         run: python -m poetry install

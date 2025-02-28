@@ -106,14 +106,20 @@ jobs:
       - name: Download a Build Artifact
         uses: actions/download-artifact@v4.1.8
         with:
-          path: ${{ github.workspace }}
+          path: .
           # pattern: *.wheel
           github-token: ${{ github.token }}
           repository: ${{ github.repository }}
           run-id: ${{ github.run_id }}
 
+      - name: DEBUG print
+        run: |
+          set -ex
+          ls -la .
+          ls -la aws-lambda-calculator
+
       - name: Add the package
-        run: python -m poetry add ./*.whl aws_lambda_calculator
+        run: python -m poetry add ./aws-lambda-calculator/*.whl aws_lambda_calculator
 
       - name: Install dependencies
         run: python -m poetry install

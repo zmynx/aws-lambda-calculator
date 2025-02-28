@@ -34,12 +34,11 @@ jobs:
     permissions:
       contents: write
     defaults:
-      working-directory: aws-lambda-calculator
       run:
+        working-directory: aws-lambda-calculator
         shell: bash
     steps:
       - name: Checkout
-        working-directory: ${{ github.workspace }}
         uses: actions/checkout@v4
 
       - name: Install poetry
@@ -87,7 +86,6 @@ jobs:
         shell: bash
     steps:
       - name: Checkout
-        working-directory: ${{ github.workspace }}
         uses: actions/checkout@v4
 
       - name: Install poetry
@@ -124,6 +122,7 @@ jobs:
         run: python -m poetry run pytest
 
   build-push:
+    needs: package
     name: Build Container & Push
     runs-on: ubuntu-latest
     permissions:

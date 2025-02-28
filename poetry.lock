@@ -10,12 +10,12 @@ groups = ["main"]
 files = []
 develop = false
 
-[package.source]
-type = "git"
-url = "https://github.com/zMynx/aws-lambda-calculator.git"
-reference = "feat/package"
-resolved_reference = "7cf44ba2f277fc0db57703715454cd36493fc808"
-subdirectory = "aws-lambda-calculator"
+# [package.source]
+# type = "git"
+# url = "https://github.com/zMynx/aws-lambda-calculator.git"
+# reference = "feat/package"
+# resolved_reference = "7cf44ba2f277fc0db57703715454cd36493fc808"
+# subdirectory = "aws-lambda-calculator"
 
 [[package]]
 name = "black"

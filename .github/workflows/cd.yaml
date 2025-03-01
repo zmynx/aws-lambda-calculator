@@ -30,7 +30,7 @@ jobs:
 
       - name: Generate image tag for current run
         id: tagged-image
-        run: echo "tagged_image='${REGISTRY}/${OWNER_REPO,,}:${VERSION}'" >> $GITHUB_OUTPUT
+        run: echo "tagged_image=${REGISTRY}/${OWNER_REPO,,}:${VERSION}" >> $GITHUB_OUTPUT
 
   package:
     needs: check-pr-status

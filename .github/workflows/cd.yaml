@@ -15,18 +15,28 @@ permissions:
   contents: read
 
 jobs:
-  # check-pr-status:
-  #   name: Check PR Status
-  #   runs-on: ubuntu-latest
-  #   defaults:
-  #     run:
-  #       shell: bash
-  #   steps:
-  #     - name: check if PR is merged
-  #       uses: zmynx/org-github-actions/.github/actions/git/check-merge@main
-  #
+  check-pr-status:
+    name: Check PR Status
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    outputs:
+      tagged_image: ${{ steps.tagged-image.outputs.tagged_image }}
+    steps:
+
+      # - name: check if PR is merged
+      #   uses: zmynx/org-github-actions/.github/actions/git/check-merge@main
+
+      - name: Generate image tag for current run
+        id: tagged-image
+        run: |
+          set -exuo pipefail
+          podman --version || echo "Podman was not found"
+          echo "tagged_image='${REGISTRY}/${OWNER_REPO,,}:${VERSION}'" >> $GITHUB_OUTPUT
+
   package:
-    # needs: check-pr-status
+    needs: check-pr-status
     name: Package library
     runs-on: ubuntu-latest
     permissions:
@@ -121,7 +131,10 @@ jobs:
         run: python -m poetry run pytest
 
   build-push:
-    needs: test-package
+    needs:
+      - check-pr-status
+      - package
+      - test-package
     name: Build Container & Push
     runs-on: ubuntu-latest
     permissions:
@@ -131,8 +144,6 @@ jobs:
     defaults:
       run:
         shell: bash
-    env:
-      TAGGED_IMAGE: 
     steps:
 
       - name: Checkout
@@ -154,9 +165,10 @@ jobs:
 
       - name: Build an image from Dockerfile
         id: build
+        env:
+          TAGGED_IMAGE: ${{ needs.check-pr-status.outputs.tagged_image }}
         run: |
-          echo "tag='${REGISTRY}/${OWNER_REPO,,}:${VERSION}'" >> $GITHUB_OUTPUTS
-          docker build --file Containerfile --build-context . --tag "${REGISTRY}/${OWNER_REPO,,}:${VERSION}"
+          docker build --file Containerfile --build-context . --tag $TAGGED_IMAGE
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@0.28.0

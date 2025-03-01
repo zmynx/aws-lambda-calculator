@@ -30,10 +30,7 @@ jobs:
 
       - name: Generate image tag for current run
         id: tagged-image
-        run: |
-          set -exuo pipefail
-          podman --version || echo "Podman was not found"
-          echo "tagged_image='${REGISTRY}/${OWNER_REPO,,}:${VERSION}'" >> $GITHUB_OUTPUT
+        run: echo "tagged_image='${REGISTRY}/${OWNER_REPO,,}:${VERSION}'" >> $GITHUB_OUTPUT
 
   package:
     needs: check-pr-status
@@ -167,8 +164,7 @@ jobs:
         id: build
         env:
           TAGGED_IMAGE: ${{ needs.check-pr-status.outputs.tagged_image }}
-        run: |
-          docker build --file Containerfile --build-context . --tag $TAGGED_IMAGE
+        run: podman build --file Containerfile . --tag $TAGGED_IMAGE
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@0.28.0
@@ -180,7 +176,7 @@ jobs:
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
 
-  # spbom:
+# spbom:
   #   needs:
   #   name: Generate SPBOM
   #   runs-on: ubuntu-latest

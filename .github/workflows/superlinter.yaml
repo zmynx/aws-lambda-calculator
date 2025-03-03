@@ -26,7 +26,5 @@ jobs:
           VALIDATE_YAML: true
           GITHUB_TOKEN: ${{ github.token }}
 #          LINTER_RULES_PATH: .github/linters/
-          DEFAULT_BRANCH: main
-
       - name: Check GitHub Actions YAML with actionlint
         uses: reviewdog/action-actionlint@v1

@@ -158,7 +158,7 @@ jobs:
 
       - name: Add artifact to requirements.txt file
         run: |
-          echo "./dist/aws_lambda_calculator-1.0.1-py3-none-any.whl" >> ./requirements.txt
+          echo "./dist/aws-lambda-calculator/aws_lambda_calculator-1.0.1-py3-none-any.whl" >> ./requirements.txt
 
       - name: Build an image from Dockerfile
         id: build

@@ -47,6 +47,7 @@ def calc_cost(duration: int, requests_in_millions: int, concurrency: int, ram: f
 def run() -> None:
     print("Running...")
 
+
 # if __name__ == "__main__":
 #     ram = 0.128
 #     duration = 3000

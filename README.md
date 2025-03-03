@@ -147,6 +147,4 @@ Follow our [CONTRIBUTING](./docs/CONTRIBUTING) guide on our docs section.
 Enjoy our projects? make sure to follow for more!\
 Want to keep enjoying great projects such as this? contribute to open source!
 
-<p align=right><a href="buymeacoffee.com/zmynx"><img src="./docs/assets/buymeacoffe-logo.png" alt="buy-me-a-coffee" style="width:42px;height:42px;"> Buy Me A Coffee !</a></p>
-
 [:arrow_up:](#top) [Back to top](#top) [:arrow_up:](#top)

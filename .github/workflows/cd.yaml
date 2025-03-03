@@ -1,0 +1,296 @@
+# .github/workflows/cd.yaml
+---
+name: CD
+on:
+  workflow_dispatch:
+  # pull_request:
+  #   branches: [main]
+
+env:
+ REGISTRY: ghcr.io
+ OWNER_REPO: ${{ github.repository }}
+ VERSION: ${{ github.sha }}
+ IMAGE: "${REGISTRY}/${OWNER_REPO}"
+ TAGGED_IMAGE: "${IMAGE}:${VERSION}"
+
+permissions:
+  content: read
+
+jobs:
+  # check-pr-status:
+  #   name: Check PR Status
+  #   runs-on: ubuntu-latest
+  #   defaults:
+  #     run:
+  #       shell: bash
+  #   steps:
+  #     - name: check if PR is merged
+  #       uses: zmynx/org-github-actions/.github/actions/git/check-merge@main
+  #
+  package:
+    # needs: check-pr-status
+    name: Package library
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    defaults:
+      working-directory: aws-lambda-calculator
+      run:
+        shell: bash
+    steps:
+      - name: Checkout
+        working-directory: ${{ github.workspace }}
+        uses: actions/checkout@v4
+
+      - name: Install poetry
+        run: pipx install poetry==2.1.1
+
+      - name: Setup Python
+        uses: actions/setup-python@v5.4.0
+        with:
+          python-version-file: pyproject.toml
+          cache: poetry
+
+      - name: Setup poetry
+        run: |
+          python --version
+          python -m pip install --upgrade pip
+          python -m pip install poetry==2.1.1
+
+      - name: Install dependencies
+        run: python -m poetry install
+
+      - name: Update package version
+        run: python -m poetry version patch
+
+      - name: Create a package
+        run: python -m poetry build
+
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v4.6.1
+        with:
+          name: aws-lambda-calculator
+          path: dist
+          if-no-files-found: error
+          retention-days: 1
+          overwrite: false
+          include-hidden-files: false
+
+  test-package:
+    needs: package
+    name: Test uploaded package
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout
+        working-directory: ${{ github.workspace }}
+        uses: actions/checkout@v4
+
+      - name: Install poetry
+        run: pipx install poetry==2.1.1
+
+      - name: Setup Python
+        uses: actions/setup-python@v5.4.0
+        with:
+          python-version-file: pyproject.toml
+          cache: poetry
+
+      - name: Setup poetry
+        run: |
+          python --version
+          python -m pip install --upgrade pip
+          python -m pip install poetry==2.1.1
+
+      - name: Download a Build Artifact
+        uses: actions/download-artifact@v4.1.8
+        with:
+          path: ${{ github.workspace }}
+          # pattern: *.wheel
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: ${{ github.run_id }}
+
+      - name: Add the package
+        run: python -m poetry add ./*.whl aws_lambda_calculator
+
+      - name: Install dependencies
+        run: python -m poetry install
+
+      - name: Test the new package
+        run: python -m poetry run pytest
+
+  build-push:
+    name: Build Container & Push
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+    defaults:
+      run:
+        shell: bash
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build an image from Dockerfile
+        run: docker build \
+                --tag ${{ env.TAGGED_IMAGE }} .
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: ${{ env.TAGGED_IMAGE }}
+          format: table
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
+
+  # spbom:
+  #   needs:
+  #   name: Generate SPBOM
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     contents: write
+  #   defaults:
+  #     run:
+  #       shell: bash
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
+  #
+  #     - name: Run Trivy in GitHub SBOM mode and submit results to Dependency Graph
+  #       uses: aquasecurity/trivy-action@0.28.0
+  #       with:
+  #         scan-type: fs
+  #         format: github
+  #         output: dependency-results.sbom.json
+  #         image-ref: .
+  #         github-pat: ${{ github.token }}
+  #
+  # scan:
+  #   name: Scan Image
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     contents: read
+  #     packages: write
+  #     id-token: write
+  #     security-events: write
+  #   defaults:
+  #     run:
+  #       shell: bash
+  #   steps:
+  #
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+  #
+  #     - name: Run Trivy vulnerability scanner
+  #       uses: aquasecurity/trivy-action@0.29.0
+  #       with:
+  #         image-ref: ${{ env.TAGGED_IMAGE }}
+  #         format: 'sarif'
+  #         output: 'trivy-results.sarif'
+  #
+  #     - name: Upload Trivy scan results to GitHub Security tab
+  #       uses: github/codeql-action/upload-sarif@v1
+  #       with:
+  #         sarif_file: 'trivy-results.sarif'
+  #
+  # sign:
+  #   name: Sign Image
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     contents: write
+  #   defaults:
+  #     run:
+  #       shell: bash
+  #   steps:
+  #     - name: cosign-installer
+  #       uses: sigstore/cosign-installer@v2.0.0
+  #
+  #     - name: Sign the published Docker image
+  #       env:
+  #         COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
+  #       run: |
+  #         cosign sign \
+  #           --key env://${{ secrets.COSIGN_PRIVATE_KEY }} \
+  #           ${{ env.REGISTRY }}/${{ github.actor }}/${{ env.IMAGE_NAME }}:${{ github.run_id }}
+  #
+  # tag:
+  #   name: Add Official tags
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     contents: write 
+  #     packages: write
+  #     id-token: write
+  #   defaults:
+  #     run:
+  #       shell: bash
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+  #
+  #     - name: Push Official tags to the registry
+  #       env:
+  #         SEMVER: 1.1.0
+  #       run: |-
+  #         docker buildx \
+  #           imagetools create \
+  #           '${{ env.TAGGED_IMAGE }}' \
+  #           --tag '${{ env.IMAGE }}':'${{ env.SEMVER }}'\
+  #           --tag '${{ env.IMAGE }}':latest
+  #
+  # verify:
+  #   needs: tag
+  #   name: Verify Image
+  #   runs-on: ubuntu-latest
+  #   defaults:
+  #     run:
+  #       shell: bash
+  #   steps:
+  #     - name: cosign-installer
+  #       uses: sigstore/cosign-installer@v2.0.0
+  #
+  #     - name: Verify the signed image
+  #       run: cosign verify ${{ env.IMAGE }}:latest
+  #
+  # release:
+  #   needs: verify
+  #   name: GitHub Release
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     contents: write
+  #   defaults:
+  #     run:
+  #       shell: bash
+  #   steps:
+  #
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
+  #
+  #     - name: Download a Build Artifact
+  #       uses: actions/download-artifact@v4.1.8
+  #       with:
+  #         path: ${{ github.workspace }}
+  #         # pattern: *.wheel
+  #         github-token: ${{ github.token }}
+  #         repository: ${{ github.repository }}
+  #         run-id: ${{ github.run_id }}
+  #
+  #     - name: GH Release
+  #       uses: softprops/action-gh-release@v2.2.1
+  #       with:
+  #         name: v1.1.0
+  #         tag_name: v1.1.0
+  #         files: .
+  #         draft: false
+  #         repository: ${{ github.repository }}
+  #         token: ${{ github.token }}
+  #         generate_release_notes: true
+  #         make_latest: true

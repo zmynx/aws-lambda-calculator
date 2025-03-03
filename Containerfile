@@ -20,7 +20,7 @@ ENV PYTHONUNBUFFERED=1
 WORKDIR /app
 
 # Install dependencies
-COPY dist .
+COPY dist dist
 COPY requirements.txt .
 RUN python -m pip install --upgrade pip && \
 	python -m pip install -r requirements.txt
@@ -29,13 +29,13 @@ RUN python -m pip install --upgrade pip && \
 # See https://docs.docker.com/go/dockerfile-user-best-practices/
 ARG UID=10001
 RUN adduser \
-    --disabled-password \
-    --gecos "" \
-    --home "/nonexistent" \
-    --shell "/sbin/nologin" \
-    --no-create-home \
-    --uid "${UID}" \
-    appuser
+	--disabled-password \
+	--gecos "" \
+	--home "/nonexistent" \
+	--shell "/sbin/nologin" \
+	--no-create-home \
+	--uid "${UID}" \
+	appuser
 
 # Switch to the non-privileged user to run the application.
 USER appuser

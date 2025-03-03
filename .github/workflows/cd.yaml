@@ -10,8 +10,6 @@ env:
  REGISTRY: ghcr.io
  OWNER_REPO: ${{ github.repository }}
  VERSION: ${{ github.sha }}
- IMAGE: "${REGISTRY}/${OWNER_REPO}"
- TAGGED_IMAGE: "${IMAGE}:${VERSION}"
 
 jobs:
   # check-pr-status:

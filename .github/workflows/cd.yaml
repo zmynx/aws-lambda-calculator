@@ -10,36 +10,41 @@ env:
  REGISTRY: ghcr.io
  OWNER_REPO: ${{ github.repository }}
  VERSION: ${{ github.sha }}
- IMAGE: "${REGISTRY}/${OWNER_REPO}"
- TAGGED_IMAGE: "${IMAGE}:${VERSION}"
 
 permissions:
   contents: read
 
 jobs:
-  # check-pr-status:
-  #   name: Check PR Status
-  #   runs-on: ubuntu-latest
-  #   defaults:
-  #     run:
-  #       shell: bash
-  #   steps:
-  #     - name: check if PR is merged
-  #       uses: zmynx/org-github-actions/.github/actions/git/check-merge@main
-  #
+  check-pr-status:
+    name: Check PR Status
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    outputs:
+      tagged_image: ${{ steps.tagged-image.outputs.tagged_image }}
+    steps:
+
+      # - name: check if PR is merged
+      #   uses: zmynx/org-github-actions/.github/actions/git/check-merge@main
+
+      - name: Generate image tag for current run
+        id: tagged-image
+        run: echo "tagged_image=${REGISTRY}/${OWNER_REPO,,}:${VERSION}" >> $GITHUB_OUTPUT
+
   package:
-    # needs: check-pr-status
+    needs: check-pr-status
+
     name: Package library
     runs-on: ubuntu-latest
     permissions:
       contents: write
     defaults:
-      working-directory: aws-lambda-calculator
       run:
+        working-directory: aws-lambda-calculator
         shell: bash
     steps:
       - name: Checkout
-        working-directory: ${{ github.workspace }}
         uses: actions/checkout@v4
 
       - name: Install poetry
@@ -70,10 +75,10 @@ jobs:
         uses: actions/upload-artifact@v4.6.1
         with:
           name: aws-lambda-calculator
-          path: dist
+          path: aws-lambda-calculator/dist
           if-no-files-found: error
           retention-days: 1
-          overwrite: false
+          overwrite: true
           include-hidden-files: false
 
   test-package:
@@ -107,14 +112,15 @@ jobs:
       - name: Download a Build Artifact
         uses: actions/download-artifact@v4.1.8
         with:
-          path: ${{ github.workspace }}
-          # pattern: *.wheel
+          # name: aws_lambda_calculator-1.0.1-py3-none-any.whl
+          path: ${{ github.workspace }}/dist
+          # pattern: *.whl
           github-token: ${{ github.token }}
           repository: ${{ github.repository }}
           run-id: ${{ github.run_id }}
 
       - name: Add the package
-        run: python -m poetry add ./*.whl aws_lambda_calculator
+        run: python -m poetry add ./dist/aws-lambda-calculator/aws_lambda_calculator-1.0.1-py3-none-any.whl
 
       - name: Install dependencies
         run: python -m poetry install
@@ -123,6 +129,10 @@ jobs:
         run: python -m poetry run pytest
 
   build-push:
+    needs:
+      - check-pr-status
+      - package
+      - test-package
     name: Build Container & Push
     runs-on: ubuntu-latest
     permissions:
@@ -137,21 +147,37 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Download a Build Artifact
+        uses: actions/download-artifact@v4.1.8
+        with:
+          # name: aws_lambda_calculator-1.0.1-py3-none-any.whl
+          path: ${{ github.workspace }}/dist
+          # pattern: *.whl
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: ${{ github.run_id }}
+
+      - name: Add artifact to requirements.txt file
+        run: |
+          echo "./dist/aws-lambda-calculator/aws_lambda_calculator-1.0.1-py3-none-any.whl" >> ./requirements.txt
+
       - name: Build an image from Dockerfile
-        run: docker build \
-                --tag ${{ env.TAGGED_IMAGE }} .
+        id: build
+        env:
+          TAGGED_IMAGE: ${{ needs.check-pr-status.outputs.tagged_image }}
+        run: podman build --file Containerfile . --tag $TAGGED_IMAGE
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@0.28.0
         with:
-          image-ref: ${{ env.TAGGED_IMAGE }}
+          image-ref: ${{ needs.check-pr-status.outputs.tagged_image }}
           format: table
           exit-code: '1'
           ignore-unfixed: true
           # vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
 
-  # spbom:
+# spbom:
   #   needs:
   #   name: Generate SPBOM
   #   runs-on: ubuntu-latest

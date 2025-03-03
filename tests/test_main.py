@@ -1,5 +1,5 @@
-from aws_lambda_calculator import aws_lambda_calculator
+from aws_lambda_calculator import *
 
 print("Testing...")
-aws_lambda_calculator.run()
+run()
 print("Done")

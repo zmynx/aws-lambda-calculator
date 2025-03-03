@@ -7,7 +7,7 @@ set shell := ["/bin/bash", "-c"]
 set windows-powershell := true
 
 # set defaults
-bin	    := "./src/main.py"
+bin	    := "main.py"
 req_file    := "requirements.txt"
 org	    := "zmynx"
 repo	    := "aws-lambda-calculator"

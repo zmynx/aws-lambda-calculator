@@ -14,7 +14,7 @@ env:
  TAGGED_IMAGE: "${IMAGE}:${VERSION}"
 
 permissions:
-  content: read
+  contents: read
 
 jobs:
   # check-pr-status:
@@ -87,7 +87,6 @@ jobs:
         shell: bash
     steps:
       - name: Checkout
-        working-directory: ${{ github.workspace }}
         uses: actions/checkout@v4
 
       - name: Install poetry

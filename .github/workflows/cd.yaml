@@ -339,7 +339,9 @@ jobs:
             --tag $IMAGE:latest
 
   verify:
-    needs: tag
+    needs:
+      - package
+      - sign
     name: Verify Image
     runs-on: ubuntu-latest
     defaults:
@@ -350,7 +352,7 @@ jobs:
         uses: sigstore/cosign-installer@v2.0.0
 
       - name: Verify the signed image
-        run: cosign verify $IMAGE:latest
+        run: cosign verify $IMAGE:${{ needs.package.outputs.release_version }}
 
   release:
     needs:

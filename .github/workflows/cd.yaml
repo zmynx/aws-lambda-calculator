@@ -176,7 +176,7 @@ jobs:
         with:
           username: ${{ github.actor }}
           password: ${{ github.token }}
-          registry: ghcr.io/zmynx
+          registry: ghcr.io/${{ github.repository }}
 
       - name: Push image to registry
         id: push
@@ -244,41 +244,6 @@ jobs:
   #       with:
   #         sarif_file: 'trivy-results.sarif'
   #
-  sign:
-    needs:
-      - check-pr-status
-      - build-push
-    name: Sign Image
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      packages: write
-      id-token: write
-    defaults:
-      run:
-        shell: bash
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4.2.2
-
-      - name: cosign-installer
-        uses: sigstore/cosign-installer@v2.0.0
-
-      - name: Log in to ghcr.io
-        uses: redhat-actions/podman-login@v1
-        with:
-          username: ${{ github.actor }}
-          password: ${{ github.token }}
-          registry: ghcr.io/zmynx
-
-      - name: Sign the published Docker image
-        env:
-          COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
-          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
-          TAGGED_IMAGE: ${{ needs.check-pr-status.outputs.tagged_image }}
-        run: |
-          cosign sign \
-            --key env://'${{ secrets.COSIGN_PRIVATE_KEY }}' $TAGGED_IMAGE
 
   tag:
     needs:
@@ -290,6 +255,7 @@ jobs:
     permissions:
       contents: write
       packages: write
+      id-token: write
     defaults:
       run:
         shell: bash
@@ -338,22 +304,38 @@ jobs:
           git tag v${{ needs.package.outputs.release_version }} -m "Release v${{ needs.package.outputs.release_version }}"
           git push origin v${{ needs.package.outputs.release_version }}
 
-      - name: Push Official tags to the registry
+      - name: Log in to ghcr.io
+        uses: redhat-actions/podman-login@v1
+        with:
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+          registry: ghcr.io/${{ github.repository }}
+
+      - name: Push image to registry
+        id: push
         env:
-          SEMVER: ${{ needs.package.outputs.release_version }}
-          IMAGE: ghcr.io/zmynx/aws-lambda-calculator
           TAGGED_IMAGE: ${{ needs.check-pr-status.outputs.tagged_image }}
-        run: |-
-          docker buildx \
-            imagetools create \
-            $TAGGED_IMAGE \
-            --tag $IMAGE:$SEMVER \
-            --tag $IMAGE:latest
+        run: |
+          podman pull $TAGGED_IMAGE
+          podman tag $TAGGED_IMAGE $IMAGE:$SEMVER
+          podman push $TAGGED_IMAGE $IMAGE:$SEMVER
+          podman tag $TAGGED_IMAGE $IMAGE:latest
+          podman push $TAGGED_IMAGE $IMAGE:latest
+
+      - name: cosign-installer
+        uses: sigstore/cosign-installer@v2.0.0
+
+      - name: Sign image with a key
+        run: |
+          cosign sign --yes --key env://COSIGN_PRIVATE_KEY  ghcr.io/${{ github.repository }}:latest
+        env:
+          COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
+          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
 
   verify:
     needs:
       - package
-      - sign
+      - tag
     name: Verify Image
     runs-on: ubuntu-latest
     defaults:

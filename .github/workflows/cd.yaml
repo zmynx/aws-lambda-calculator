@@ -313,12 +313,16 @@ jobs:
       - name: cosign-installer
         uses: sigstore/cosign-installer@v2.0.0
 
-      - name: Sign image with a key
-        run: |
-          cosign sign --key env://COSIGN_PRIVATE_KEY  ghcr.io/${{ github.repository }}:latest
+      - name: place the cosign private key in a file
         env:
           COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
+        run: echo "$COSIGN_PRIVATE_KEY" > /tmp/cosign.key
+
+      - name: Sign image with a key
+        env:
           COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
+        run: |
+          cosign sign --key /tmp/cosing.key ghcr.io/${{ github.repository }}:latest
 
   verify:
     needs:

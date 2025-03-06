@@ -20,16 +20,13 @@ jobs:
     defaults:
       run:
         shell: bash
-    outputs:
-      tagged_image: ${{ steps.tagged-image.outputs.tagged_image }}
     steps:
 
       # - name: check if PR is merged
       #   uses: zmynx/org-github-actions/.github/actions/git/check-merge@main
 
-      - name: Generate image tag for current run
-        id: tagged-image
-        run: echo "tagged_image=${REGISTRY}/${OWNER_REPO,,}:${VERSION}" >> $GITHUB_OUTPUT
+      - name: Skip
+        run: echo "Skipping PR Check..."
 
   package:
     needs: check-pr-status
@@ -134,7 +131,6 @@ jobs:
 
   build-push:
     needs:
-      - check-pr-status
       - package
       - test-package
     name: Build Container & Push

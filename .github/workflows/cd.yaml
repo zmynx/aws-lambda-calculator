@@ -46,7 +46,7 @@ jobs:
       release_version: ${{ steps.release-version.outputs.release_version }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.2.2
 
       - name: Install poetry
         run: pipx install poetry==2.1.1
@@ -97,7 +97,7 @@ jobs:
         shell: bash
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.2.2
 
       - name: Install poetry
         run: pipx install poetry==2.1.1
@@ -150,7 +150,7 @@ jobs:
     steps:
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.2.2
 
       - name: Download a Build Artifact
         uses: actions/download-artifact@v4.1.8
@@ -205,7 +205,7 @@ jobs:
   #       shell: bash
   #   steps:
   #     - name: Checkout code
-  #       uses: actions/checkout@v4
+  #       uses: actions/checkout@v4.2.2
   #
   #     - name: Run Trivy in GitHub SBOM mode and submit results to Dependency Graph
   #       uses: aquasecurity/trivy-action@0.28.0
@@ -230,7 +230,7 @@ jobs:
   #   steps:
   #
   #     - name: Checkout
-  #       uses: actions/checkout@v4
+  #       uses: actions/checkout@v4.2.2
   #
   #     - name: Run Trivy vulnerability scanner
   #       uses: aquasecurity/trivy-action@0.29.0
@@ -260,8 +260,16 @@ jobs:
       - name: cosign-installer
         uses: sigstore/cosign-installer@v2.0.0
 
+      - name: Log in to ghcr.io
+        uses: redhat-actions/podman-login@v1
+        with:
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+          registry: ghcr.io/zmynx
+
       - name: Sign the published Docker image
         env:
+          COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
           COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
           TAGGED_IMAGE: ${{ needs.check-pr-status.outputs.tagged_image }}
         run: |
@@ -283,7 +291,7 @@ jobs:
         shell: bash
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.2.2
         with:
           ref: main
           fetch-depth: 0
@@ -348,11 +356,21 @@ jobs:
       run:
         shell: bash
     steps:
+
+      - name: Checkout
+        uses: actions/checkout@v4.2.2
+        with:
+          ref: main
+          sparse-checkout: cosign.pub
+
       - name: cosign-installer
         uses: sigstore/cosign-installer@v2.0.0
 
       - name: Verify the signed image
-        run: cosign verify $IMAGE:${{ needs.package.outputs.release_version }}
+        run: |
+          cosign verify \
+            --key cosign.pub \
+            $IMAGE:${{ needs.package.outputs.release_version }}
 
   release:
     needs:

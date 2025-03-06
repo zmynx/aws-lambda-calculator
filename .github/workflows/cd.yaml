@@ -71,7 +71,7 @@ jobs:
 
       - name: Output the version
         id: release-version
-        run: echo "release_version=$(python -m poetry version --silent)" >> $GITHUB_OUTPUT
+        run: echo "release_version=$(python -m poetry version --short)" >> $GITHUB_OUTPUT
 
       - name: Create a package
         run: python -m poetry build
@@ -171,9 +171,12 @@ jobs:
           TAGGED_IMAGE: ${{ needs.check-pr-status.outputs.tagged_image }}
         run: podman build --file Containerfile . --tag $TAGGED_IMAGE
 
-      - name: Login to gchr registry
-        id: login
-        run: podman login ghcr.io
+      - name: Log in to ghcr.io
+        uses: redhat-actions/podman-login@v1
+        with:
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+          registry: ghcr.io/${{ github.repository_owner }}
 
       - name: Push image to registry
         id: push

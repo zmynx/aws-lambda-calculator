@@ -253,10 +253,15 @@ jobs:
     permissions:
       contents: write
       packages: write
+      id-token: write
     defaults:
       run:
         shell: bash
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4.2.2
+        with:
+
       - name: cosign-installer
         uses: sigstore/cosign-installer@v2.0.0
 
@@ -274,6 +279,7 @@ jobs:
           TAGGED_IMAGE: ${{ needs.check-pr-status.outputs.tagged_image }}
         run: |
           cosign sign \
+            --yes \
             --key env://'${{ secrets.COSIGN_PRIVATE_KEY }}' $TAGGED_IMAGE
 
   tag:
@@ -341,7 +347,6 @@ jobs:
         run: |-
           docker buildx \
             imagetools create \
-            --append \
             $TAGGED_IMAGE \
             --tag $IMAGE:$SEMVER \
             --tag $IMAGE:latest

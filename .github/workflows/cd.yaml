@@ -278,7 +278,6 @@ jobs:
           TAGGED_IMAGE: ${{ needs.check-pr-status.outputs.tagged_image }}
         run: |
           cosign sign \
-            --yes \
             --key env://'${{ secrets.COSIGN_PRIVATE_KEY }}' $TAGGED_IMAGE
 
   tag:
@@ -342,6 +341,7 @@ jobs:
       - name: Push Official tags to the registry
         env:
           SEMVER: ${{ needs.package.outputs.release_version }}
+          IMAGE: ghcr.io/zmynx/aws-lambda-calculator
           TAGGED_IMAGE: ${{ needs.check-pr-status.outputs.tagged_image }}
         run: |-
           docker buildx \

@@ -304,20 +304,27 @@ jobs:
       #      commit_user_name: ${{ steps.import-gpg.outputs.name }}
       #      commit_user_email: ${{ steps.import-gpg.outputs.email }}
       #
-      - name: Git Auto Commit
-        uses: stefanzweifel/git-auto-commit-action@v5.1.0
-        with:
-          commit_message: Automated Change
-          branch: main
-          # repository: ${{ github.repository }}
-          commit_user_name: github-actions[bot]
-          commit_user_email: github-actions[bot]@zmynx.users.noreply.github.com
-          tagging_message: Release v${{ needs.package.outputs.release_version }}
-          skip_dirty_check: true
-          skip_fetch: true
-          skip_checkout: true
-          disable_globbing: true
-          create_branch: false
+      # - name: Git Auto Commit
+      #   uses: stefanzweifel/git-auto-commit-action@v5.1.0
+      #   with:
+      #     commit_message: Automated Change
+      #     branch: main
+      #     # repository: ${{ github.repository }}
+      #     commit_user_name: github-actions[bot]
+      #     commit_user_email: github-actions[bot]@zmynx.users.noreply.github.com
+      #     tagging_message: Release v${{ needs.package.outputs.release_version }}
+      #     skip_dirty_check: true
+      #     skip_fetch: true
+      #     skip_checkout: true
+      #     disable_globbing: true
+      #     create_branch: false
+      #
+      - name: Git tag
+        run: |
+          git config --local user.name github-actions[bot]
+          git config --local user.email github-actions[bot]@zmynx.users.noreply.github.com
+          git tag v${{ needs.package.outputs.release_version }} -m "Release v${{ needs.package.outputs.release_version }}"
+          git push origin v${{ needs.package.outputs.release_version }}
 
       - name: Push Official tags to the registry
         env:
@@ -347,8 +354,8 @@ jobs:
 
   release:
     needs:
-      - verify
       - package
+      - tag
     name: GitHub Release
     runs-on: ubuntu-latest
     permissions:
@@ -357,11 +364,6 @@ jobs:
       run:
         shell: bash
     steps:
-
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          ref: main
 
       - name: Download a Build Artifact
         uses: actions/download-artifact@v4.1.8

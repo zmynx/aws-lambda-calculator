@@ -322,7 +322,7 @@ jobs:
         env:
           COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
         run: |
-          cosign sign --key /tmp/cosing.key ghcr.io/${{ github.repository }}:latest
+          cosign sign --key /tmp/cosign.key ghcr.io/${{ github.repository }}:latest
 
   verify:
     needs:

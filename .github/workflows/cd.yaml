@@ -10,7 +10,6 @@ env:
  REGISTRY: ghcr.io
  OWNER_REPO: ${{ github.repository }}
  VERSION: ${{ github.sha }}
-
 permissions:
   contents: read
 
@@ -167,9 +166,7 @@ jobs:
 
       - name: Build an image from Dockerfile
         id: build
-        env:
-          TAGGED_IMAGE: ${{ needs.check-pr-status.outputs.tagged_image }}
-        run: podman build --file Containerfile . --tag $TAGGED_IMAGE
+        run: podman build --file Containerfile . --tag ghcr.io/'${{ github.repository }}':'${{ github.sha }}'
 
       - name: Log in to ghcr.io
         uses: redhat-actions/podman-login@v1
@@ -180,9 +177,7 @@ jobs:
 
       - name: Push image to registry
         id: push
-        env:
-          TAGGED_IMAGE: ${{ needs.check-pr-status.outputs.tagged_image }}
-        run: podman push $TAGGED_IMAGE
+        run: podman push ghcr.io/'${{ github.repository }}':'${{ github.sha }}'
 
       # - name: Run Trivy vulnerability scanner
       #   uses: aquasecurity/trivy-action@0.28.0
@@ -247,7 +242,6 @@ jobs:
 
   tag:
     needs:
-      - check-pr-status
       - package
       - build-push
     name: Add Official tags
@@ -313,14 +307,12 @@ jobs:
 
       - name: Push image to registry
         id: push
-        env:
-          TAGGED_IMAGE: ${{ needs.check-pr-status.outputs.tagged_image }}
         run: |
-          podman pull $TAGGED_IMAGE
-          podman tag $TAGGED_IMAGE ghcr.io/'${{ github.repository }}':$SEMVER
-          podman push $TAGGED_IMAGE ghcr.io/'${{ github.repository }}':$SEMVER
-          podman tag $TAGGED_IMAGE ghcr.io/'${{ github.repository }}':latest
-          podman push $TAGGED_IMAGE ghcr.io/'${{ github.repository }}':latest
+          podman pull ghcr.io/'${{ github.repository }}':'${{ github.sha }}'
+          podman tag ghcr.io/'${{ github.repository }}':'${{ github.sha }}' ghcr.io/'${{ github.repository }}':'${{ needs.package.outputs.release_version }}'
+          podman push ghcr.io/'${{ github.repository }}':'${{ github.sha }}' ghcr.io/'${{ github.repository }}':'${{ needs.package.outputs.release_version }}'
+          podman tag ghcr.io/'${{ github.repository }}':'${{ github.sha }}' ghcr.io/'${{ github.repository }}':latest
+          podman push ghcr.io/'${{ github.repository }}':'${{ github.sha }}' ghcr.io/'${{ github.repository }}':latest
 
       - name: cosign-installer
         uses: sigstore/cosign-installer@v2.0.0
@@ -356,7 +348,7 @@ jobs:
         run: |
           cosign verify \
             --key cosign.pub \
-            $IMAGE:${{ needs.package.outputs.release_version }}
+            ghcr.io/'${{ github.repository }}':'${{ needs.package.outputs.release_version }}'
 
   release:
     needs:

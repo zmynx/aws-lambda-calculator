@@ -317,10 +317,10 @@ jobs:
           TAGGED_IMAGE: ${{ needs.check-pr-status.outputs.tagged_image }}
         run: |
           podman pull $TAGGED_IMAGE
-          podman tag $TAGGED_IMAGE $IMAGE:$SEMVER
-          podman push $TAGGED_IMAGE $IMAGE:$SEMVER
-          podman tag $TAGGED_IMAGE $IMAGE:latest
-          podman push $TAGGED_IMAGE $IMAGE:latest
+          podman tag $TAGGED_IMAGE ghcr.io/'${{ github.repository }}':$SEMVER
+          podman push $TAGGED_IMAGE ghcr.io/'${{ github.repository }}':$SEMVER
+          podman tag $TAGGED_IMAGE ghcr.io/'${{ github.repository }}':latest
+          podman push $TAGGED_IMAGE ghcr.io/'${{ github.repository }}':latest
 
       - name: cosign-installer
         uses: sigstore/cosign-installer@v2.0.0

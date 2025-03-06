@@ -34,7 +34,6 @@ jobs:
 
   package:
     needs: check-pr-status
-
     name: Package library
     runs-on: ubuntu-latest
     permissions:
@@ -43,6 +42,8 @@ jobs:
       run:
         working-directory: aws-lambda-calculator
         shell: bash
+    outputs:
+      release_version: ${{ steps.release-version.outputs.release_version }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -67,6 +68,10 @@ jobs:
 
       - name: Update package version
         run: python -m poetry version patch
+
+      - name: Output the version
+        id: release-version
+        run: echo "release_version=$(python -m poetry version --silent)" >> $GITHUB_OUTPUT
 
       - name: Create a package
         run: python -m poetry build
@@ -165,20 +170,27 @@ jobs:
         id: build
         env:
           TAGGED_IMAGE: ${{ needs.check-pr-status.outputs.tagged_image }}
-        run: |
-          set -exu
-          podman build --file Containerfile . --tag $TAGGED_IMAGE
-          # podman save $TAGGED_IMAGE -o image-to-scan.tar
+        run: podman build --file Containerfile . --tag $TAGGED_IMAGE
 
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@0.28.0
-        with:
-          image-ref: ${{ needs.check-pr-status.outputs.tagged_image }}
-          format: table
-          exit-code: '1'
-          ignore-unfixed: true
-          vuln-type: 'os,library'
-          severity: 'CRITICAL,HIGH'
+      - name: Login to gchr registry
+        id: login
+        run: podman login ghcr.io
+
+      - name: Push image to registry
+        id: push
+        env:
+          TAGGED_IMAGE: ${{ needs.check-pr-status.outputs.tagged_image }}
+        run: podman push $TAGGED_IMAGE
+
+      # - name: Run Trivy vulnerability scanner
+      #   uses: aquasecurity/trivy-action@0.28.0
+      #   with:
+      #     image-ref: ${{ needs.check-pr-status.outputs.tagged_image }}
+      #     format: table
+      #     exit-code: '1'
+      #     ignore-unfixed: true
+      #     vuln-type: 'os,library'
+      #     severity: 'CRITICAL,HIGH'
 
 # spbom:
   #   needs:
@@ -230,95 +242,143 @@ jobs:
   #       with:
   #         sarif_file: 'trivy-results.sarif'
   #
-  # sign:
-  #   name: Sign Image
-  #   runs-on: ubuntu-latest
-  #   permissions:
-  #     contents: write
-  #   defaults:
-  #     run:
-  #       shell: bash
-  #   steps:
-  #     - name: cosign-installer
-  #       uses: sigstore/cosign-installer@v2.0.0
-  #
-  #     - name: Sign the published Docker image
-  #       env:
-  #         COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
-  #       run: |
-  #         cosign sign \
-  #           --key env://${{ secrets.COSIGN_PRIVATE_KEY }} \
-  #           ${{ env.REGISTRY }}/${{ github.actor }}/${{ env.IMAGE_NAME }}:${{ github.run_id }}
-  #
-  # tag:
-  #   name: Add Official tags
-  #   runs-on: ubuntu-latest
-  #   permissions:
-  #     contents: write 
-  #     packages: write
-  #     id-token: write
-  #   defaults:
-  #     run:
-  #       shell: bash
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v4
-  #
-  #     - name: Push Official tags to the registry
-  #       env:
-  #         SEMVER: 1.1.0
-  #       run: |-
-  #         docker buildx \
-  #           imagetools create \
-  #           '${{ env.TAGGED_IMAGE }}' \
-  #           --tag '${{ env.IMAGE }}':'${{ env.SEMVER }}'\
-  #           --tag '${{ env.IMAGE }}':latest
-  #
-  # verify:
-  #   needs: tag
-  #   name: Verify Image
-  #   runs-on: ubuntu-latest
-  #   defaults:
-  #     run:
-  #       shell: bash
-  #   steps:
-  #     - name: cosign-installer
-  #       uses: sigstore/cosign-installer@v2.0.0
-  #
-  #     - name: Verify the signed image
-  #       run: cosign verify ${{ env.IMAGE }}:latest
-  #
-  # release:
-  #   needs: verify
-  #   name: GitHub Release
-  #   runs-on: ubuntu-latest
-  #   permissions:
-  #     contents: write
-  #   defaults:
-  #     run:
-  #       shell: bash
-  #   steps:
-  #
-  #     - name: Checkout code
-  #       uses: actions/checkout@v4
-  #
-  #     - name: Download a Build Artifact
-  #       uses: actions/download-artifact@v4.1.8
-  #       with:
-  #         path: ${{ github.workspace }}
-  #         # pattern: *.wheel
-  #         github-token: ${{ github.token }}
-  #         repository: ${{ github.repository }}
-  #         run-id: ${{ github.run_id }}
-  #
-  #     - name: GH Release
-  #       uses: softprops/action-gh-release@v2.2.1
-  #       with:
-  #         name: v1.1.0
-  #         tag_name: v1.1.0
-  #         files: .
-  #         draft: false
-  #         repository: ${{ github.repository }}
-  #         token: ${{ github.token }}
-  #         generate_release_notes: true
-  #         make_latest: true
+  sign:
+    needs:
+      - check-pr-status
+      - build-push
+    name: Sign Image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: cosign-installer
+        uses: sigstore/cosign-installer@v2.0.0
+
+      - name: Sign the published Docker image
+        env:
+          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
+          TAGGED_IMAGE: ${{ needs.check-pr-status.outputs.tagged_image }}
+        run: |
+          cosign sign \
+            --key env://$COSIGN_PRIVATE_KEY $TAGGED_IMAGE
+
+  tag:
+    needs:
+      - check-pr-status
+      - package
+      - build-push
+    name: Add Official tags
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      #
+      # - name: "Import GPG key"
+      #   id: import-gpg
+      #   uses: crazy-max/ghaction-import-gpg@v6
+      #   with:
+      #     gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+      #     passphrase: ${{ secrets.GPG_PASSPHRASE }}
+      #     git_user_signingkey: true
+      #     git_commit_gpgsign: true
+      #
+      # - name: "Commit and push changes"
+      #   uses: stefanzweifel/git-auto-commit-action@v5
+      #   with:
+      #      commit_author: "${{ steps.import-gpg.outputs.name }} <${{ steps.import-gpg.outputs.email }}>"
+      #      commit_user_name: ${{ steps.import-gpg.outputs.name }}
+      #      commit_user_email: ${{ steps.import-gpg.outputs.email }}
+      #
+      - name: Git Auto Commit
+        uses: stefanzweifel/git-auto-commit-action@v5.1.0
+        with:
+          commit_message: Automated Change
+          branch: main
+          repository: ${{ github.repository }}
+          commit_user_name: github-actions[bot]
+          commit_user_email: github-actions[bot]@zmynx.users.noreply.github.com
+          tagging_message: Release v${{ needs.package.outputs.release_version }}
+          skip_dirty_check: true
+          skip_fetch: true
+          skip_checkout: true
+          disable_globbing: true
+          create_branch: false
+
+      - name: Push Official tags to the registry
+        env:
+          SEMVER: ${{ needs.package.outputs.release_version }}
+          TAGGED_IMAGE: ${{ needs.check-pr-status.outputs.tagged_image }}
+        run: |-
+          docker buildx \
+            imagetools create \
+            --append \
+            $TAGGED_IMAGE \
+            --tag $IMAGE:$SEMVER \
+            --tag $IMAGE:latest
+
+  verify:
+    needs: tag
+    name: Verify Image
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: cosign-installer
+        uses: sigstore/cosign-installer@v2.0.0
+
+      - name: Verify the signed image
+        run: cosign verify $IMAGE:latest
+
+  release:
+    needs:
+      - verify
+      - package
+    name: GitHub Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    defaults:
+      run:
+        shell: bash
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Download a Build Artifact
+        uses: actions/download-artifact@v4.1.8
+        with:
+          # name: aws_lambda_calculator-1.0.1-py3-none-any.whl
+          path: ${{ github.workspace }}/dist
+          # pattern: *.whl
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: ${{ github.run_id }}
+
+      - name: GH Release
+        uses: softprops/action-gh-release@v2.2.1
+        with:
+          name: v${{ needs.package.outputs.release_version }}
+          tag_name: v${{ needs.package.outputs.release_version }}
+          files: ${{ github.workspace }}/dist
+          draft: false
+          repository: ${{ github.repository }}
+          token: ${{ github.token }}
+          generate_release_notes: true
+          make_latest: true

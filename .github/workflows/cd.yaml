@@ -266,7 +266,7 @@ jobs:
           TAGGED_IMAGE: ${{ needs.check-pr-status.outputs.tagged_image }}
         run: |
           cosign sign \
-            --key env://$COSIGN_PRIVATE_KEY $TAGGED_IMAGE
+            --key env://'${{ secrets.COSIGN_PRIVATE_KEY }}' $TAGGED_IMAGE
 
   tag:
     needs:
@@ -309,7 +309,7 @@ jobs:
         with:
           commit_message: Automated Change
           branch: main
-          repository: ${{ github.repository }}
+          # repository: ${{ github.repository }}
           commit_user_name: github-actions[bot]
           commit_user_email: github-actions[bot]@zmynx.users.noreply.github.com
           tagging_message: Release v${{ needs.package.outputs.release_version }}

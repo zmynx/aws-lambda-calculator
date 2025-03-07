@@ -158,6 +158,9 @@ jobs:
           repository: ${{ github.repository }}
           run-id: ${{ github.run_id }}
 
+      - name: Display structure of downloaded files
+        run: ls -R ${{ github.workspace }}/dist; exit 1
+
       - name: Add artifact to requirements.txt file
         run: echo "./dist/aws_lambda_calculator/aws_lambda_calculator-${{ needs.package.outputs.release_version }}-py3-none-any.whl" >> ./requirements.txt
 

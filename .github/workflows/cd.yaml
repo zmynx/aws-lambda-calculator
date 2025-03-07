@@ -458,8 +458,8 @@ jobs:
           name: v${{ needs.package.outputs.release_version }}
           tag_name: v${{ needs.package.outputs.release_version }}
           files: |
-            '${{ steps.download-artifact.outputs.download-path }}/aws_lambda_calculator-${{ needs.package.outputs.release_version }}-py3-none-any.whl'
-            '${{ steps.download-artifact.outputs.download-path }}/aws_lambda_calculator-${{ needs.package.outputs.release_version }}.tar.gz'
+            aws_lambda_calculator-${{ needs.package.outputs.release_version }}-py3-none-any.whl
+            aws_lambda_calculator-${{ needs.package.outputs.release_version }}.tar.gz
           draft: false
           repository: ${{ github.repository }}
           token: ${{ github.token }}

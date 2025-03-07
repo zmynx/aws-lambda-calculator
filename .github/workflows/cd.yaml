@@ -73,8 +73,8 @@ jobs:
         with:
           name: aws_lambda_calculator
           path: |
-            'aws-lambda-calculator/dist/aws_lambda_calculator-${{ needs.package.outputs.release_version }}-py3-none-any.whl'
-            'aws-lambda-calculator/dist/aws_lambda_calculator-${{ needs.package.outputs.release_version }}.tar.gz'
+            aws-lambda-calculator/dist/*.whl
+            aws-lambda-calculator/dist/*.tar.gz
           if-no-files-found: error
           retention-days: 1
           overwrite: true

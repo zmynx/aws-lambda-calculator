@@ -159,10 +159,10 @@ jobs:
           run-id: ${{ github.run_id }}
 
       - name: Display structure of downloaded files
-        run: ls -R ${{ github.workspace }}/dist; exit 1
+        run: ls -R ${{ github.workspace }}/dist
 
       - name: Add artifact to requirements.txt file
-        run: echo "./dist/aws_lambda_calculator/aws_lambda_calculator-${{ needs.package.outputs.release_version }}-py3-none-any.whl" >> ./requirements.txt
+        run: echo "./dist/aws_lambda_calculator-${{ needs.package.outputs.release_version }}-py3-none-any.whl" >> ./requirements.txt
 
       - name: Install Cosign
         uses: sigstore/cosign-installer@v3.8.1
@@ -449,14 +449,17 @@ jobs:
           repository: ${{ github.repository }}
           run-id: ${{ github.run_id }}
 
+      - name: Display structure of downloaded files
+        run: ls -R ${{ steps.download-artifact.outputs.download-path }}
+
       - name: GH Release
         uses: softprops/action-gh-release@v2.2.1
         with:
           name: v${{ needs.package.outputs.release_version }}
           tag_name: v${{ needs.package.outputs.release_version }}
           files: |
-            '${{ steps.download-artifact.outputs.download-path }}/aws_lambda_calculator/aws_lambda_calculator-${{ needs.package.outputs.release_version }}-py3-none-any.whl'
-            '${{ steps.download-artifact.outputs.download-path }}/aws_lambda_calculator/aws_lambda_calculator-${{ needs.package.outputs.release_version }}.tar.gz'
+            '${{ steps.download-artifact.outputs.download-path }}/aws_lambda_calculator-${{ needs.package.outputs.release_version }}-py3-none-any.whl'
+            '${{ steps.download-artifact.outputs.download-path }}/aws_lambda_calculator-${{ needs.package.outputs.release_version }}.tar.gz'
           draft: false
           repository: ${{ github.repository }}
           token: ${{ github.token }}

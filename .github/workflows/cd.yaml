@@ -71,7 +71,7 @@ jobs:
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v4.6.1
         with:
-          name: dist
+          name: aws_lambda_calculator
           path: aws-lambda-calculator/dist
           if-no-files-found: error
           retention-days: 1
@@ -109,7 +109,7 @@ jobs:
       - name: Download a Build Artifact
         uses: actions/download-artifact@v4.1.8
         with:
-          name: dist
+          name: aws_lambda_calculator
           path: ${{ github.workspace }}/dist
           # pattern: *.whl
           github-token: ${{ github.token }}
@@ -149,7 +149,7 @@ jobs:
       - name: Download a Build Artifact
         uses: actions/download-artifact@v4.1.8
         with:
-          name: dist
+          name: aws_lambda_calculator
           path: ${{ github.workspace }}/dist
           # pattern: *.whl
           github-token: ${{ github.token }}
@@ -437,7 +437,7 @@ jobs:
       - name: Download a Build Artifact
         uses: actions/download-artifact@v4.1.8
         with:
-          name: dist
+          name: aws_lambda_calculator
           path: ${{ github.workspace }}
           # pattern: *.whl
           github-token: ${{ github.token }}

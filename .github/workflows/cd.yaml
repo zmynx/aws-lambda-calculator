@@ -306,7 +306,7 @@ jobs:
   tag:
     needs:
       - package
-      - build-push
+      - build-push-sign
     name: Add Official tags
     runs-on: ubuntu-latest
     permissions:

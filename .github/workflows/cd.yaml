@@ -449,7 +449,7 @@ jobs:
         with:
           name: v${{ needs.package.outputs.release_version }}
           tag_name: v${{ needs.package.outputs.release_version }}
-          files: ${{ github.workspace }}/dist/*
+          files: ${{ github.workspace }}/aws_lambda_calculator
           draft: false
           repository: ${{ github.repository }}
           token: ${{ github.token }}

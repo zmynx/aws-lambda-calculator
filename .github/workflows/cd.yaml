@@ -73,8 +73,8 @@ jobs:
         with:
           name: aws_lambda_calculator
           path: |
-            aws-lambda-calculator/dist/aws_lambda_calculator-${{ needs.package.outputs.release_version }}-py3-none-any.whl
-            aws-lambda-calculator/dist/aws_lambda_calculator-${{ needs.package.outputs.release_version }}.tar.gz
+            aws-lambda-calculator/dist/aws_lambda_calculator-'${{ needs.package.outputs.release_version }}'-py3-none-any.whl
+            aws-lambda-calculator/dist/aws_lambda_calculator-'${{ needs.package.outputs.release_version }}'.tar.gz
           if-no-files-found: error
           retention-days: 1
           overwrite: true
@@ -452,8 +452,8 @@ jobs:
           name: v${{ needs.package.outputs.release_version }}
           tag_name: v${{ needs.package.outputs.release_version }}
           files: |
-            ${{ steps.download-artifact.outputs.download-path }}/aws_lambda_calculator/aws_lambda_calculator-${{ needs.package.outputs.release_version }}-py3-none-any.whl
-            ${{ steps.download-artifact.outputs.download-path }}/aws_lambda_calculator/aws_lambda_calculator-${{ needs.package.outputs.release_version }}.tar.gz
+            '${{ steps.download-artifact.outputs.download-path }}/aws_lambda_calculator/aws_lambda_calculator-${{ needs.package.outputs.release_version }}-py3-none-any.whl'
+            '${{ steps.download-artifact.outputs.download-path }}/aws_lambda_calculator/aws_lambda_calculator-${{ needs.package.outputs.release_version }}.tar.gz'
           draft: false
           repository: ${{ github.repository }}
           token: ${{ github.token }}

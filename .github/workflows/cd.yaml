@@ -178,7 +178,7 @@ jobs:
       - id: docker_meta
         uses: docker/metadata-action@v5.7.0
         with:
-          images: ghcr.io/'${{ github.repository }}'
+          images: ghcr.io/${{ github.repository }}
           tags: type=sha,format=long
 
       - name: DEBUG
@@ -200,10 +200,10 @@ jobs:
             org.opencontainers.image.description='AWS Lambda Calculator is the only extensive and thorough cost estimation tool for the AWS Lambda product. It's based on a simple API that produces a cost estimation based on different Lambda configuration variables and parameters such as CPU, RAM, concurrency, invocations, free tier, and much more. This can be helpful for any FinOps fields or tools in the future.'
             org.opencontainers.image.licenses='Apache-2.0'
           tags: |
-            '${{ steps.docker_meta.outputs.tags }}'
-            '${{ github.repository }}':'${{ github.sha }}'
-            '${{ github.repository }}':'${{ needs.package.outputs.release_version }}'
-            '${{ github.repository }}':latest
+            ${{ steps.docker_meta.outputs.tags }}
+            ghcr.io/'${{ github.repository }}':'${{ github.sha }}'
+            ghcr.io/'${{ github.repository }}':'${{ needs.package.outputs.release_version }}'
+            ghcr.io/'${{ github.repository }}':latest
           provenance: true
           sbom: true
           push: true

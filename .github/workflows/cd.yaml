@@ -201,9 +201,9 @@ jobs:
             org.opencontainers.image.licenses='Apache-2.0'
           tags: |
             ${{ steps.docker_meta.outputs.tags }}
-            ghcr.io/'${{ github.repository }}':'${{ github.sha }}'
-            ghcr.io/'${{ github.repository }}':'${{ needs.package.outputs.release_version }}'
-            ghcr.io/'${{ github.repository }}':latest
+            ghcr.io/${{ github.repository }}:${{ github.sha }}
+            ghcr.io/${{ github.repository }}:${{ needs.package.outputs.release_version }}
+            ghcr.io/${{ github.repository }}:latest
           provenance: true
           sbom: true
           push: true

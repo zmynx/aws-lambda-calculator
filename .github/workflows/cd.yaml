@@ -2,9 +2,8 @@
 ---
 name: CD
 on:
-  workflow_dispatch:
-  # pull_request:
-  #   branches: [main]
+  pull_request:
+    branches: [main]
 
 permissions:
   contents: read
@@ -17,12 +16,8 @@ jobs:
       run:
         shell: bash
     steps:
-
-      # - name: check if PR is merged
-      #   uses: zmynx/org-github-actions/.github/actions/git/check-merge@main
-
-      - name: Skip
-        run: echo "Skipping PR Check..."
+      - name: check if PR is merged
+        uses: zmynx/org-github-actions/.github/actions/git/check-merge@main
 
   package:
     needs: check-pr-status
@@ -140,7 +135,6 @@ jobs:
       run:
         shell: bash
     steps:
-
       - name: Checkout
         uses: actions/checkout@v4.2.2
         with:
@@ -153,13 +147,9 @@ jobs:
         with:
           name: aws_lambda_calculator
           path: ${{ github.workspace }}/dist
-          # pattern: *.whl
           github-token: ${{ github.token }}
           repository: ${{ github.repository }}
           run-id: ${{ github.run_id }}
-
-      - name: Display structure of downloaded files
-        run: ls -R ${{ github.workspace }}/dist
 
       - name: Add artifact to requirements.txt file
         run: echo "./dist/aws_lambda_calculator-${{ needs.package.outputs.release_version }}-py3-none-any.whl" >> ./requirements.txt
@@ -185,9 +175,6 @@ jobs:
         with:
           images: ghcr.io/${{ github.repository }}
           tags: type=sha,format=long
-
-      - name: DEBUG
-        run: echo ${{ steps.docker_meta.outputs.tags }}
 
       - name: Build and Push container images
         uses: docker/build-push-action@v6.15.0
@@ -322,7 +309,6 @@ jobs:
       run:
         shell: bash
     steps:
-
       - name: Checkout
         uses: actions/checkout@v4.2.2
         with:
@@ -438,19 +424,14 @@ jobs:
       run:
         shell: bash
     steps:
-
       - name: Download a Build Artifact
         id: download-artifact
         uses: actions/download-artifact@v4.1.8
         with:
           name: aws_lambda_calculator
-          # pattern: *.whl
           github-token: ${{ github.token }}
           repository: ${{ github.repository }}
           run-id: ${{ github.run_id }}
-
-      - name: Display structure of downloaded files
-        run: ls -R ${{ steps.download-artifact.outputs.download-path }}
 
       - name: GH Release
         uses: softprops/action-gh-release@v2.2.1

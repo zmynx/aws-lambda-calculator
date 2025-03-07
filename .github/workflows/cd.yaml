@@ -117,7 +117,7 @@ jobs:
           run-id: ${{ github.run_id }}
 
       - name: Add the package
-        run: python -m poetry add ./dist/aws-lambda-calculator/aws_lambda_calculator-'${{ needs.package.outputs.release_version }}'-py3-none-any.whl
+        run: python -m poetry add ./dist/aws_lambda_calculator/aws_lambda_calculator-'${{ needs.package.outputs.release_version }}'-py3-none-any.whl
 
       - name: Install dependencies
         run: python -m poetry install
@@ -157,7 +157,7 @@ jobs:
           run-id: ${{ github.run_id }}
 
       - name: Add artifact to requirements.txt file
-        run: echo "./dist/aws-lambda-calculator/aws_lambda_calculator-${{ needs.package.outputs.release_version }}-py3-none-any.whl" >> ./requirements.txt
+        run: echo "./dist/aws_lambda_calculator/aws_lambda_calculator-${{ needs.package.outputs.release_version }}-py3-none-any.whl" >> ./requirements.txt
 
       - name: Install Cosign
         uses: sigstore/cosign-installer@v3.8.1

@@ -72,7 +72,9 @@ jobs:
         uses: actions/upload-artifact@v4.6.1
         with:
           name: aws_lambda_calculator
-          path: aws-lambda-calculator/dist
+          path: |
+            aws-lambda-calculator/dist/aws_lambda_calculator-${{ needs.package.outputs.release_version }}-py3-none-any.whl
+            aws-lambda-calculator/dist/aws_lambda_calculator-${{ needs.package.outputs.release_version }}.tar.gz
           if-no-files-found: error
           retention-days: 1
           overwrite: true
@@ -107,17 +109,16 @@ jobs:
           python -m pip install poetry==2.1.1
 
       - name: Download a Build Artifact
+        id: download-artifact
         uses: actions/download-artifact@v4.1.8
         with:
           name: aws_lambda_calculator
-          path: ${{ github.workspace }}/dist
-          # pattern: *.whl
           github-token: ${{ github.token }}
           repository: ${{ github.repository }}
           run-id: ${{ github.run_id }}
 
       - name: Add the package
-        run: python -m poetry add ./dist/aws_lambda_calculator/aws_lambda_calculator-'${{ needs.package.outputs.release_version }}'-py3-none-any.whl
+        run: python -m poetry add ${{ steps.download-artifact.outputs.download-path }}/aws_lambda_calculator-${{ needs.package.outputs.release_version }}-py3-none-any.whl
 
       - name: Install dependencies
         run: python -m poetry install
@@ -147,6 +148,7 @@ jobs:
           persist-credentials: false
 
       - name: Download a Build Artifact
+        id: download-artifact
         uses: actions/download-artifact@v4.1.8
         with:
           name: aws_lambda_calculator
@@ -435,10 +437,10 @@ jobs:
     steps:
 
       - name: Download a Build Artifact
+        id: download-artifact
         uses: actions/download-artifact@v4.1.8
         with:
           name: aws_lambda_calculator
-          path: ${{ github.workspace }}
           # pattern: *.whl
           github-token: ${{ github.token }}
           repository: ${{ github.repository }}
@@ -449,7 +451,9 @@ jobs:
         with:
           name: v${{ needs.package.outputs.release_version }}
           tag_name: v${{ needs.package.outputs.release_version }}
-          files: ${{ github.workspace }}/aws_lambda_calculator
+          files: |
+            ${{ steps.download-artifact.outputs.download-path }}/aws_lambda_calculator/aws_lambda_calculator-${{ needs.package.outputs.release_version }}-py3-none-any.whl
+            ${{ steps.download-artifact.outputs.download-path }}/aws_lambda_calculator/aws_lambda_calculator-${{ needs.package.outputs.release_version }}.tar.gz
           draft: false
           repository: ${{ github.repository }}
           token: ${{ github.token }}

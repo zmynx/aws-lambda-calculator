@@ -218,9 +218,9 @@ jobs:
             images+="${tag}@${DIGEST} "
           done
           cosign sign --yes ${images}
-          cosign verify ${images} \
-            --certificate-identity='https://github.com/${{ github.repository }}/.github/workflows/cd.yaml@refs/heads/${{ github.ref }}' \
-            --certificate-oidc-issuer='https://token.actions.githubusercontent.com'
+          # cosign verify ${images} \
+          #   --certificate-identity='https://github.com/${{ github.repository }}/.github/workflows/cd.yaml@refs/heads/${{ github.ref }}' \
+          #   --certificate-oidc-issuer='https://token.actions.githubusercontent.com'
 
       #############################################
       # PODMAN

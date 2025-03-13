@@ -14,7 +14,7 @@
 
 This project is the fruits of a hackaton idea I had about a year ago:\
 The original idea was to provide users with a system to decide whether to go with the lambda serverless solution, or follow the more scallable kubernetes based solutions\.To do that, I needed a cost estimation for both solutions using the same configurations.\
-*I couldn't find a single calculator to support all configuration range values.*
+_I couldn't find a single calculator to support all configuration range values._
 
 ## The short version...
 
@@ -22,12 +22,13 @@ The original idea was to provide users with a system to decide whether to go wit
 
 Born as a result of a need to have a near accurate cost estination for Lambda functions on the AWS cloud. While doing some research Ive discovered the following:
 
-1. The available calculators are limited, and does NOT allow for the wide range of configurations Lambda offers today. 
+1. The available calculators are limited, and does NOT allow for the wide range of configurations Lambda offers today.
 2. There is no API available (as-of-today) to allow to scripted / non-web based invokactions. This seriously reduces the changes of suchs calculators to be part of a FinOps tool / platform.
 
 # The goals
 
 Several goals are set for this project:\
+
 1. Python package.
 2. API.
 3. Binary.
@@ -35,49 +36,32 @@ Several goals are set for this project:\
 5. Serverless based API (Lambda + Api gateway).
 6. Web-based solution, using GitHub Pages.
 
-# Installation
+# Installation & Usage
+
 ### 1. Python Package
 
+Install the package using pip (@<version> is optional, main is latest, use a version tag for a specific version):
+
 ```bash
-python -m pip install git+https://github.com/zMynx/aws-lambda-calculator.git#egg=aws-lambda-calculator
+python -m pip install aws-lambda-calculator@git+https://github.com/zmynx/aws-lambda-calculator#egg=aws-lambda-calculator&subdirectory=aws-lambda-calculator@main
+```
+
+Then import the package in your python code (.py):
+
+```python
+import aws_lambda_calculator
 ```
 
 ### 2. API
 
-```bash
-## Clone the repo
-git clone https://github.com/zMynx/aws-lambda-calculator.git
+Clone the repository and install the requirements:
 
-## Install the requirements
+```bash
+git clone https://github.com/zMynx/aws-lambda-calculator.git
 python -m pip install --requirementes requirements.txt
 ```
 
-### 3. CLI
-
-```bash
-## Use the setup script
-curl --remote-name https://github.com/zMynx/aws-lambda-calculator/blob/main/run.sh
-
-## Run the setup.sh script
-bash ./run.sh
-```
-
-### 4. Docker image
-
-```bash
-docker pull ghcr.io/zMynx/aws-lambda-calculator:latest
-```
-
-# Usage
-Complete the [installation](#installation) steps first, then,
-
-### 1. Python Package
-
-```python
-import aws-lambda-calculator
-```
-
-### 2. API
+Then run the main.py file with the required arguments:
 
 ```bash
 python ./main.py --key=value....
@@ -85,23 +69,44 @@ python ./main.py --key=value....
 
 ### 3. CLI
 
+Use the setup script to install the binary:
+
+```bash
+curl --remote-name https://github.com/zMynx/aws-lambda-calculator/blob/main/run.sh | bash -s -- --install
+```
+
+Then run the binary with the required arguments:
+
 ```bash
 aws-lambda-calculator --key=value....
+```
+
+Optinally, use the alias `alc` for the binary:
+
+```bash
+alias alc=aws-lambda-calculator
+alc --key=value....
 ```
 
 ### 4. Docker image
 
 If you wish to use the API on any platform, without installing the binary, use the docker image.
 
+Pull the image:
+
 ```bash
-## Pull & use the image based api locally
+docker pull ghcr.io/zMynx/aws-lambda-calculator:latest
+```
+
+Then run the image with the required arguments:
+
+```bash
 docker run \
     --name aws-lambda-calculator \
     --interactive \
     --tty \
     --rm \
     --pull \
-    --tag ghcr.io/zMynx/aws-lambda-calculator:latest \
     --args key=value...
 ```
 
@@ -111,6 +116,7 @@ The serverless API solution is based on a Lambda function, and can be used by in
 Endpoint: `https://zmynx.aws-lambda-calculator.com`
 
 e.g. (example using the cli)
+
 ```bash
 curl \
     --data '{"payload":{"key":"value"}}' \

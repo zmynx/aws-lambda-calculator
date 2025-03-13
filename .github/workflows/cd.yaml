@@ -165,6 +165,11 @@ jobs:
           repository: ${{ github.repository }}
           run-id: ${{ github.run_id }}
 
+      - name: DEBUG
+        run: |
+          set -ex
+          ls -laR ${{ github.workspace }}/dist
+
       - name: Add artifact to requirements.txt file
         run: echo "./dist/aws_lambda_calculator-${{ needs.package.outputs.release_version }}-py3-none-any.whl" >> ./requirements.txt
 
@@ -326,13 +331,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Git tag
-        run: |
-          git config --local user.name github-actions[bot]
-          git config --local user.email github-actions[bot]@zmynx.users.noreply.github.com
-          git tag ${{ needs.package.outputs.release_version }} -m "Release v${{ needs.package.outputs.release_version }}"
-          git push origin ${{ needs.package.outputs.release_version }}
-      #
       # - name: "Import GPG key"
       #   id: import-gpg
       #   uses: crazy-max/ghaction-import-gpg@v6
@@ -341,29 +339,13 @@ jobs:
       #     passphrase: ${{ secrets.GPG_PASSPHRASE }}
       #     git_user_signingkey: true
       #     git_commit_gpgsign: true
-      #
-      # - name: "Commit and push changes"
-      #   uses: stefanzweifel/git-auto-commit-action@v5
-      #   with:
-      #      commit_author: "${{ steps.import-gpg.outputs.name }} <${{ steps.import-gpg.outputs.email }}>"
-      #      commit_user_name: ${{ steps.import-gpg.outputs.name }}
-      #      commit_user_email: ${{ steps.import-gpg.outputs.email }}
-      #
-      # - name: Git Auto Commit
-      #   uses: stefanzweifel/git-auto-commit-action@v5.1.0
-      #   with:
-      #     commit_message: Automated Change
-      #     branch: main
-      #     # repository: ${{ github.repository }}
-      #     commit_user_name: github-actions[bot]
-      #     commit_user_email: github-actions[bot]@zmynx.users.noreply.github.com
-      #     tagging_message: Release v${{ needs.package.outputs.release_version }}
-      #     skip_dirty_check: true
-      #     skip_fetch: true
-      #     skip_checkout: true
-      #     disable_globbing: true
-      #     create_branch: false
-      #
+
+      - name: Git tag
+        run: |
+          git config --local user.name github-actions[bot] #${{ steps.import-gpg.outputs.name }}
+          git config --local user.email github-actions[bot]@zmynx.users.noreply.github.com # ${{ steps.import-gpg.outputs.email }}
+          git tag ${{ needs.package.outputs.release_version }} -m "Release v${{ needs.package.outputs.release_version }}"
+          git push origin ${{ needs.package.outputs.release_version }}
 
       #############################################
       # PODMAN w/ Cosign

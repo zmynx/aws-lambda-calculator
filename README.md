@@ -13,14 +13,13 @@
 - [Introduction](#introduction)
   - [Back story](#back-story)
   - [The short version...](#the-short-version)
-- [The goals](#the-goals)
 - [Installation & Usage](#installation--usage)
-  - [Python Package](#python-package)
-  - [API](#api)
-  - [CLI](#cli)
-  - [Docker image](#docker-image)
-  - [Serverless API](#serverless-api)
-  - [Web based solution](#web-based-solution)
+  - [Python Package](#1-python-package)
+  - [API](#2-api)
+  - [CLI](#3-cli)
+  - [Docker image](#4-docker-image)
+  - [Serverless API](#5-serverless-api)
+  - [Web based solution](#6-web-based-solution)
 - [Report](#octocat-report-octocat)
 - [LICENSE](#license)
 - [CONTRIBUTING](#contributing)
@@ -42,17 +41,6 @@ Born as a result of a need to have a near accurate cost estination for Lambda fu
 
 1. The available calculators are limited, and does NOT allow for the wide range of configurations Lambda offers today.
 2. There is no API available (as-of-today) to allow to scripted / non-web based invokactions. This seriously reduces the changes of suchs calculators to be part of a FinOps tool / platform.
-
-# The goals
-
-Several goals are set for this project:\
-
-1. Python package.
-2. API.
-3. Binary.
-4. Docker Image.
-5. Serverless based API (Lambda + Api gateway).
-6. Web-based solution, using GitHub Pages.
 
 # Installation & Usage
 

@@ -24,7 +24,7 @@ jobs:
           name: aws_lambda_calculator
           github-token: ${{ github.token }}
           repository: ${{ github.repository }}
-          run-id: ${{ github.payload.workflow_run.id }}
+          run-id: ${{ github.event.workflow_run.id }}
 
       - name: Extract the release version
         id: release-version

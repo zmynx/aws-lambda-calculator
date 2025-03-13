@@ -1,0 +1,51 @@
+# .github/workflows/release.yaml
+---
+name: Release 
+on:
+  workflow_run:
+    workflows: [CD]
+    types: [completed]
+
+jobs:
+  release:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    name: GitHub Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Download a Build Artifact
+        id: download-artifact
+        uses: actions/download-artifact@v4.1.8
+        with:
+          name: aws_lambda_calculator
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: ${{ github.payload.workflow_run.id }}
+
+      - name: Extract the release version
+        id: release-version
+        run: |
+          set -exuo pipefail
+          artifact=$('${{ steps.download-artifact.outputs.download-path }}'/aws_lambda_calculator-*-py3-none-any.whl | awk -F'/' '{print $NF}')
+          release_version=$(echo $artifact | cut -d'-' -f2)
+          echo "Discovered release version: $release_version"
+          echo release_version=$release_version >> $GITHUB_OUTPUT
+
+      - name: GH Release
+        uses: softprops/action-gh-release@v2.2.1
+        with:
+          name: ${{ steps.release-version.outputs.release_version }}
+          tag_name: ${{ steps.release-version.outputs.release_version }}
+          files: |
+            aws_lambda_calculator-*-py3-none-any.whl
+            aws_lambda_calculator-*.tar.gz
+          fail_on_unmatched_files: true
+          draft: false
+          repository: ${{ github.repository }}
+          token: ${{ github.token }}
+          generate_release_notes: true
+          make_latest: true

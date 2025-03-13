@@ -3,9 +3,10 @@
 name: CD Image
 
 on:
-  push:
-    tags:
-      - '[0-9]+.[0-9]+.[0-9]+'
+  release:
+  # push:
+  #   tags:
+  #     - '[0-9]+.[0-9]+.[0-9]+'
 
 jobs:
   build-push-sign:
@@ -23,7 +24,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4.2.2
         with:
-          ref: ${{ github.ref }}
+          ref: ${{ github.event.release.tag_name }}
           persist-credentials: false
 
       - name: Install Cosign
@@ -55,25 +56,25 @@ jobs:
           context: .
           file: Containerfile
           platforms: linux/amd64,linux/arm/v7,linux/arm64
-          build-args: VERSION='${{ github.ref_name }}'
+          build-args: VERSION='${{ github.event.release.tag_name }}'
           labels: |
             project='aws-lambda-calculator'
             org='zmynx'
             commit-sha='${{ github.sha }}'
-            version='${{ github.ref_name }}'
+            version='${{ github.event.release.tag_name }}'
             org.opencontainers.image.source='https://github.com/${{ github.repository }}'
             org.opencontainers.image.description='AWS Lambda Calculator is the only extensive and thorough cost estimation tool for the AWS Lambda product. It's based on a simple API that produces a cost estimation based on different Lambda configuration variables and parameters such as CPU, RAM, concurrency, invocations, free tier, and much more. This can be helpful for any FinOps fields or tools in the future.'
             org.opencontainers.image.licenses='Apache-2.0'
           tags: |
             ${{ steps.docker_meta.outputs.tags }}
             ghcr.io/${{ github.repository }}:${{ github.sha }}
-            ghcr.io/${{ github.repository }}:${{ github.ref_name }}
+            ghcr.io/${{ github.repository }}:${{ github.event.release.tag_name }}
             ghcr.io/${{ github.repository }}:latest
           provenance: true
           sbom: true
           cache-from: |
             ghcr.io/${{ github.repository }}:${{ github.sha }}
-            ghcr.io/${{ github.repository }}:${{ github.ref_name }}
+            ghcr.io/${{ github.repository }}:${{ github.event.release.tag_name }}
             ghcr.io/${{ github.repository }}:latest
           cache-to: type=inline
           push: true

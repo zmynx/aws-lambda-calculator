@@ -1,0 +1,180 @@
+# .github/workflows/cd-image.yaml
+---
+name: CD Image
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+
+jobs:
+  build-push-sign:
+    name: Build Container, Push to Registry, and Sign with Cosign
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      id-token: write # needed for signing the images with GitHub OIDC Token
+    defaults:
+      run:
+        shell: bash
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v4.2.2
+        with:
+          ref: ${{ github.ref }}
+          persist-credentials: false
+
+      - name: Extract release version
+        id: release-version
+        run: echo "release_version=$(echo ${{ github.ref }} | tr -d 'v')" >> $GITHUB_OUTPUT
+
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@v3.8.1
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3.6.0
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3.10.0
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3.3.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+
+      - id: docker_meta
+        uses: docker/metadata-action@v5.7.0
+        with:
+          images: ghcr.io/${{ github.repository }}
+          tags: type=sha,format=long
+
+      - name: Build and Push container images
+        uses: docker/build-push-action@v6.15.0
+        id: build-and-push
+        with:
+          context: .
+          file: Containerfile
+          platforms: linux/amd64,linux/arm/v7,linux/arm64
+          build-args: VERSION='${{ steps.release-version.outputs.release_version }}'
+          labels: |
+            project='aws-lambda-calculator'
+            org='zmynx'
+            commit-sha='${{ github.sha }}'
+            version='${{ steps.release-version.outputs.release_version }}'
+            org.opencontainers.image.source='https://github.com/${{ github.repository }}'
+            org.opencontainers.image.description='AWS Lambda Calculator is the only extensive and thorough cost estimation tool for the AWS Lambda product. It's based on a simple API that produces a cost estimation based on different Lambda configuration variables and parameters such as CPU, RAM, concurrency, invocations, free tier, and much more. This can be helpful for any FinOps fields or tools in the future.'
+            org.opencontainers.image.licenses='Apache-2.0'
+          tags: |
+            ${{ steps.docker_meta.outputs.tags }}
+            ghcr.io/${{ github.repository }}:${{ github.sha }}
+            ghcr.io/${{ github.repository }}:${{ steps.release-version.outputs.release_version }}
+            ghcr.io/${{ github.repository }}:latest
+          provenance: true
+          sbom: true
+          cache-from: |
+            ghcr.io/${{ github.repository }}:${{ github.sha }}
+            ghcr.io/${{ github.repository }}:${{ steps.release-version.outputs.release_version }}
+            ghcr.io/${{ github.repository }}:latest
+          cache-to: type=inline
+          push: true
+
+      - name: Sign and verify the images with GitHub OIDC Token
+        env:
+          DIGEST: ${{ steps.build-and-push.outputs.digest }}
+          TAGS: ${{ steps.docker_meta.outputs.tags }}
+        run: |
+          images=""
+          for tag in ${TAGS}; do
+            images+="${tag}@${DIGEST} "
+          done
+          cosign sign --yes ${images}
+          # cosign verify ${images} \
+          #   --certificate-identity='https://github.com/${{ github.repository }}/.github/workflows/cd.yaml@refs/heads/${{ github.ref }}' \
+          #   --certificate-oidc-issuer='https://token.actions.githubusercontent.com'
+
+      #############################################
+      # PODMAN
+      # - name: Build an image from Dockerfile
+      #   id: build
+      #   run: podman build --file Containerfile . --tag ghcr.io/'${{ github.repository }}':'${{ github.sha }}'
+      #
+      # - name: Log in to ghcr.io
+      #   uses: redhat-actions/podman-login@v1
+      #   with:
+      #     username: ${{ github.actor }}
+      #     password: ${{ github.token }}
+      #     registry: ghcr.io/${{ github.repository }}
+      #
+      # - name: Push image to registry
+      #   id: push
+      #   run: podman push ghcr.io/'${{ github.repository }}':'${{ github.sha }}'
+
+
+      #############################################
+      # PODMAN
+      # - name: Run Trivy vulnerability scanner
+      #   uses: aquasecurity/trivy-action@0.28.0
+      #   with:
+      #     image-ref: ${{ needs.check-pr-status.outputs.tagged_image }}
+      #     format: table
+      #     exit-code: '1'
+      #     ignore-unfixed: true
+      #     vuln-type: 'os,library'
+      #     severity: 'CRITICAL,HIGH'
+
+# spbom:
+  #   needs:
+  #   name: Generate SPBOM
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     contents: write
+  #   defaults:
+  #     run:
+  #       shell: bash
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4.2.2
+  #
+  #     - name: Run Trivy in GitHub SBOM mode and submit results to Dependency Graph
+  #       uses: aquasecurity/trivy-action@0.28.0
+  #       with:
+  #         scan-type: fs
+  #         format: github
+  #         output: dependency-results.sbom.json
+  #         image-ref: .
+  #         github-pat: ${{ github.token }}
+  #
+  # scan:
+  #   name: Scan Image
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     contents: read
+  #     packages: write
+  #     id-token: write
+  #     security-events: write
+  #   defaults:
+  #     run:
+  #       shell: bash
+  #   steps:
+  #
+  #     - name: Checkout
+  #       uses: actions/checkout@v4.2.2
+  #
+  #     - name: Run Trivy vulnerability scanner
+  #       uses: aquasecurity/trivy-action@0.29.0
+  #       with:
+  #         image-ref: ${{ env.TAGGED_IMAGE }}
+  #         format: 'sarif'
+  #         output: 'trivy-results.sarif'
+  #
+  #     - name: Upload Trivy scan results to GitHub Security tab
+  #       uses: github/codeql-action/upload-sarif@v1
+  #       with:
+  #         sarif_file: 'trivy-results.sarif'
+  #

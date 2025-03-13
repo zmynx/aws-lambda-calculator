@@ -3,13 +3,13 @@
 name: CD Image
 
 on:
-  release:
-  # push:
-  #   tags:
-  #     - '[0-9]+.[0-9]+.[0-9]+'
+  workflow_run:
+    workflows: [CD]
+    types: [completed]
 
 jobs:
   build-push-sign:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     name: Build Container, Push to Registry, and Sign with Cosign
     runs-on: ubuntu-latest
     permissions:
@@ -21,10 +21,28 @@ jobs:
         shell: bash
     steps:
 
+      - name: Download a Build Artifact
+        id: download-artifact
+        uses: actions/download-artifact@v4.1.8
+        with:
+          name: aws_lambda_calculator
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: ${{ github.event.workflow_run.id }}
+
+      - name: Extract the release version
+        id: release-version
+        run: |
+          set -exuo pipefail
+          artifact=$(ls '${{ steps.download-artifact.outputs.download-path }}'/aws_lambda_calculator-*-py3-none-any.whl | awk -F'/' '{print $NF}')
+          release_version=$(echo $artifact | cut -d'-' -f2)
+          echo "Discovered release version: $release_version"
+          echo release_version=$release_version >> $GITHUB_OUTPUT
+
       - name: Checkout
         uses: actions/checkout@v4.2.2
         with:
-          ref: ${{ github.event.release.tag_name }}
+          ref: ${{ steps.release-version.outputs.release_version }}
           persist-credentials: false
 
       - name: Install Cosign
@@ -56,25 +74,25 @@ jobs:
           context: .
           file: Containerfile
           platforms: linux/amd64,linux/arm/v7,linux/arm64
-          build-args: VERSION='${{ github.event.release.tag_name }}'
+          build-args: VERSION='${{ steps.release-version.outputs.release_version }}'
           labels: |
             project='aws-lambda-calculator'
             org='zmynx'
             commit-sha='${{ github.sha }}'
-            version='${{ github.event.release.tag_name }}'
+            version='${{ steps.release-version.outputs.release_version }}'
             org.opencontainers.image.source='https://github.com/${{ github.repository }}'
             org.opencontainers.image.description='AWS Lambda Calculator is the only extensive and thorough cost estimation tool for the AWS Lambda product. It's based on a simple API that produces a cost estimation based on different Lambda configuration variables and parameters such as CPU, RAM, concurrency, invocations, free tier, and much more. This can be helpful for any FinOps fields or tools in the future.'
             org.opencontainers.image.licenses='Apache-2.0'
           tags: |
             ${{ steps.docker_meta.outputs.tags }}
             ghcr.io/${{ github.repository }}:${{ github.sha }}
-            ghcr.io/${{ github.repository }}:${{ github.event.release.tag_name }}
+            ghcr.io/${{ github.repository }}:${{ steps.release-version.outputs.release_version }}
             ghcr.io/${{ github.repository }}:latest
           provenance: true
           sbom: true
           cache-from: |
             ghcr.io/${{ github.repository }}:${{ github.sha }}
-            ghcr.io/${{ github.repository }}:${{ github.event.release.tag_name }}
+            ghcr.io/${{ github.repository }}:${{ steps.release-version.outputs.release_version }}
             ghcr.io/${{ github.repository }}:latest
           cache-to: type=inline
           push: true
@@ -110,6 +128,23 @@ jobs:
       #   id: push
       #   run: podman push ghcr.io/'${{ github.repository }}':'${{ github.sha }}'
 
+      #############################################
+      # PODMAN w/ Cosign
+      # - name: Log in to ghcr.io
+      #   uses: redhat-actions/podman-login@v1
+      #   with:
+      #     username: ${{ github.actor }}
+      #     password: ${{ github.token }}
+      #     registry: ghcr.io/${{ github.repository }}
+      #
+      # - name: Push image to registry
+      #   id: push
+      #   run: |
+      #     podman pull ghcr.io/'${{ github.repository }}':'${{ github.sha }}'
+      #     podman tag ghcr.io/'${{ github.repository }}':'${{ github.sha }}' ghcr.io/'${{ github.repository }}':'${{ needs.package.outputs.release_version }}'
+      #     podman push ghcr.io/'${{ github.repository }}':'${{ github.sha }}' ghcr.io/'${{ github.repository }}':'${{ needs.package.outputs.release_version }}'
+      #     podman tag ghcr.io/'${{ github.repository }}':'${{ github.sha }}' ghcr.io/'${{ github.repository }}':latest
+      #     podman push ghcr.io/'${{ github.repository }}':'${{ github.sha }}' ghcr.io/'${{ github.repository }}':latest
 
       #############################################
       # PODMAN

@@ -30,7 +30,7 @@ jobs:
         id: release-version
         run: |
           set -exuo pipefail
-          artifact=$('${{ steps.download-artifact.outputs.download-path }}'/aws_lambda_calculator-*-py3-none-any.whl | awk -F'/' '{print $NF}')
+          artifact=$(ls '${{ steps.download-artifact.outputs.download-path }}'/aws_lambda_calculator-*-py3-none-any.whl | awk -F'/' '{print $NF}')
           release_version=$(echo $artifact | cut -d'-' -f2)
           echo "Discovered release version: $release_version"
           echo release_version=$release_version >> $GITHUB_OUTPUT

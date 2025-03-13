@@ -8,6 +8,24 @@
 > [!NOTE]
 > This project is a work in progress, and yet to be operational nor compelete.
 
+# Table of Contents :bookmark_tabs:
+
+- [Introduction](#introduction)
+  - [Back story](#back-story)
+  - [The short version...](#the-short-version)
+- [The goals](#the-goals)
+- [Installation & Usage](#installation--usage)
+  - [Python Package](#python-package)
+  - [API](#api)
+  - [CLI](#cli)
+  - [Docker image](#docker-image)
+  - [Serverless API](#serverless-api)
+  - [Web based solution](#web-based-solution)
+- [Report](#octocat-report-octocat)
+- [LICENSE](#license)
+- [CONTRIBUTING](#contributing)
+- [Show Appriciation](#show-appriciation)
+
 # Introduction
 
 ## Back story

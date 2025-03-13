@@ -54,12 +54,23 @@ jobs:
       - name: Install dependencies
         run: python -m poetry install
 
-      - name: Update package version
-        run: python -m poetry version patch
+      - name: Fetch the latest version
+        run: |
+          echo "Fetching the latest version..."
+          latest_version=$(git tag | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -n1)
+
+          echo "Updating the pyproject.toml version using git tag..."
+          python -m poetry version $latest_version
+          cat pyproject.toml | grep version
 
       - name: Output the version
         id: release-version
-        run: echo "release_version=$(python -m poetry version --short)" >> $GITHUB_OUTPUT
+        run: |
+          echo "Patch versioning using poetry..."
+          release_version=$(python -m poetry version patch --short)
+          python -m poetry version --short
+          cat pyproject.toml | grep version
+          echo "release_version=$release_version" >> $GITHUB_OUTPUT
 
       - name: Create a package
         run: python -m poetry build
@@ -304,8 +315,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      packages: write
-      id-token: write
     defaults:
       run:
         shell: bash
@@ -313,15 +322,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4.2.2
         with:
-          ref: main
           fetch-depth: 0
 
       - name: Git tag
         run: |
           git config --local user.name github-actions[bot]
           git config --local user.email github-actions[bot]@zmynx.users.noreply.github.com
-          git tag v${{ needs.package.outputs.release_version }} -m "Release v${{ needs.package.outputs.release_version }}"
-          git push origin v${{ needs.package.outputs.release_version }}
+          git tag ${{ needs.package.outputs.release_version }} -m "Release v${{ needs.package.outputs.release_version }}"
+          git push origin ${{ needs.package.outputs.release_version }}
       #
       # - name: "Import GPG key"
       #   id: import-gpg
@@ -437,11 +445,12 @@ jobs:
       - name: GH Release
         uses: softprops/action-gh-release@v2.2.1
         with:
-          name: v${{ needs.package.outputs.release_version }}
-          tag_name: v${{ needs.package.outputs.release_version }}
+          name: ${{ needs.package.outputs.release_version }}
+          tag_name: ${{ needs.package.outputs.release_version }}
           files: |
-            aws_lambda_calculator-${{ needs.package.outputs.release_version }}-py3-none-any.whl
-            aws_lambda_calculator-${{ needs.package.outputs.release_version }}.tar.gz
+            aws_lambda_calculator-*-py3-none-any.whl
+            aws_lambda_calculator-*.tar.gz
+          fail_on_unmatched_files: true
           draft: false
           repository: ${{ github.repository }}
           token: ${{ github.token }}

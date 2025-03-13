@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 ARG PYTHON_VERSION=3.13.0
-FROM python:${PYTHON_VERSION}-slim as base
+FROM python:${PYTHON_VERSION}-slim AS base
 
 # Prevents Python from writing pyc files.
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -44,15 +44,7 @@ USER appuser
 COPY src/main.py .
 
 # Run the application.
-CMD python ./main.py
+ENTRYPOINT [ "/usr/local/bin/python" ]
+CMD [ "main.py" ]
 
 HEALTHCHECK --interval=30s --timeout=10s --retries=3 CMD ps aux | grep 'python' | grep -v 'grep' || exit 1
-
-LABEL project="aws-lambda-calculator"
-LABEL org="zmynx"
-LABEL commit-sha="123456789010"
-LABEL version="1.0"
-LABEL org.opencontainers.image.source="https://github.com/zmynx/aws-lambda-calculator"
-LABEL org.opencontainers.image.description="AWS Lambda Calculator is the only extensive and thorugh cost estimation tool for the AWS Lambda product. In it's based, a simple API that produces a cost estimation based on different lambda configurations variables and parameters suchs as CPU, RAM, conncurrency, invokations, free tier and much more. This can be a helpful to for any FinOps fields or tools in the future."
-LABEL org.opencontainers.image.licenses="Apache-2.0"
-

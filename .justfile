@@ -61,6 +61,7 @@ run:
     echo "Running the Python script..."
     python -m poetry run python {{bin}}
 
+# Lint the code
 lint:
     echo "Running lint checks with Ruff..."
     python -m poetry run ruff format
@@ -112,7 +113,7 @@ version ARG:
 # Build Container using Podman
 podman-build:
     echo "Building the container using podman..."
-    podman build -f Dockerfile -t ghcr.io/{{org}}/{{repo}}:$(python -m poetry version -s)
+    podman build -f Containerfile -t ghcr.io/{{org}}/{{repo}}:$(python -m poetry version -s)
 
 # Connect to the GitHub Registery
 podman-login:
@@ -121,7 +122,7 @@ podman-login:
 # Publish image to registery
 podman-push: podman-login
     echo "Pusing image to ghcr.io registery"
-    podman build -f Dockerfile -t ghcr.io/{{org}}/{{repo}}:$(python -m poetry version -s)
+    podman build -f Containerfile -t ghcr.io/{{org}}/{{repo}}:$(python -m poetry version -s)
 
 # Build using the compose file
 compose-build:

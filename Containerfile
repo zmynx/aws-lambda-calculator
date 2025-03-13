@@ -19,11 +19,19 @@ ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
+# Update system, install git
+RUN apt-get update --yes &&\
+	apt-get install git --yes
+
 # Install dependencies
-COPY dist dist
 COPY requirements.txt .
 RUN python -m pip install --upgrade pip && \
 	python -m pip install -r requirements.txt
+
+ARG VERSION=main
+ENV VERSION=${VERSION}
+RUN git config --global http.sslverify false
+RUN python -m pip install aws-lambda-calculator@git+https://github.com/zmynx/aws-lambda-calculator#subdirectory=aws-lambda-calculator@"${VERSION}"
 
 # Create a non-privileged user that the app will run under.
 # See https://docs.docker.com/go/dockerfile-user-best-practices/

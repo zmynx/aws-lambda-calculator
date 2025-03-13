@@ -5,7 +5,7 @@ name: CD Image
 on:
   push:
     tags:
-      - 'v[0-9]+.[0-9]+.[0-9]+'
+      - '[0-9]+.[0-9]+.[0-9]+'
 
 jobs:
   build-push-sign:
@@ -25,10 +25,6 @@ jobs:
         with:
           ref: ${{ github.ref }}
           persist-credentials: false
-
-      - name: Extract release version
-        id: release-version
-        run: echo "release_version=$(echo ${{ github.ref }} | tr -d 'v')" >> $GITHUB_OUTPUT
 
       - name: Install Cosign
         uses: sigstore/cosign-installer@v3.8.1
@@ -59,25 +55,25 @@ jobs:
           context: .
           file: Containerfile
           platforms: linux/amd64,linux/arm/v7,linux/arm64
-          build-args: VERSION='${{ steps.release-version.outputs.release_version }}'
+          build-args: VERSION='${{ github.ref_name }}'
           labels: |
             project='aws-lambda-calculator'
             org='zmynx'
             commit-sha='${{ github.sha }}'
-            version='${{ steps.release-version.outputs.release_version }}'
+            version='${{ github.ref_name }}'
             org.opencontainers.image.source='https://github.com/${{ github.repository }}'
             org.opencontainers.image.description='AWS Lambda Calculator is the only extensive and thorough cost estimation tool for the AWS Lambda product. It's based on a simple API that produces a cost estimation based on different Lambda configuration variables and parameters such as CPU, RAM, concurrency, invocations, free tier, and much more. This can be helpful for any FinOps fields or tools in the future.'
             org.opencontainers.image.licenses='Apache-2.0'
           tags: |
             ${{ steps.docker_meta.outputs.tags }}
             ghcr.io/${{ github.repository }}:${{ github.sha }}
-            ghcr.io/${{ github.repository }}:${{ steps.release-version.outputs.release_version }}
+            ghcr.io/${{ github.repository }}:${{ github.ref_name }}
             ghcr.io/${{ github.repository }}:latest
           provenance: true
           sbom: true
           cache-from: |
             ghcr.io/${{ github.repository }}:${{ github.sha }}
-            ghcr.io/${{ github.repository }}:${{ steps.release-version.outputs.release_version }}
+            ghcr.io/${{ github.repository }}:${{ github.ref_name }}
             ghcr.io/${{ github.repository }}:latest
           cache-to: type=inline
           push: true

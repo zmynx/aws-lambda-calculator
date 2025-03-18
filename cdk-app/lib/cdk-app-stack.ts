@@ -16,7 +16,7 @@ export class CdkAppStack extends cdk.Stack {
 
     // Lambda function
     const myLambda = new lambda.Function(this, "MyLambdaFunction", {
-      runtime: lambda.Runtime.NODEJS_14_X,
+      runtime: lambda.Runtime.NODEJS_20_X,
       handler: "index.handler",
       code: lambda.Code.fromAsset("lambda"),
     });

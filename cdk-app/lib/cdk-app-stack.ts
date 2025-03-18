@@ -18,7 +18,16 @@ export class CdkAppStack extends cdk.Stack {
     const myLambda = new lambda.Function(this, "MyLambdaFunction", {
       runtime: lambda.Runtime.NODEJS_20_X,
       handler: "index.handler",
-      code: lambda.Code.fromAsset("lambda"),
+      // code: lambda.Code.fromAsset("lambda"),
+      code: lambda.Code.fromInline(` 
+        exports.handler = async function(event) {
+          console.log("request:", JSON.stringify(event, undefined, 2));
+          return {
+            statusCode: 200,
+            body: JSON.stringify('Hello, CDK!'),
+          };
+        };
+      `),
     });
 
     // API Gateway

@@ -23,7 +23,7 @@ Tags.of(app).add("Project", "CDK-App");
 Tags.of(app).add("Project", "CDK-App");
 Tags.of(app).add("Project", "CDK-App");
 Tags.of(app).add("Project", "CDK-App");
-Tags.of(app).add("owner", "lior.dux@develeap.com" 
+Tags.of(app).add("owner", "lior.dux@develeap.com");
 Tags.of(app).add("stage ", "test");
 Tags.of(app).add("project ", "env0-aws-lambda-calculator");
 Tags.of(app).add("start_date ", "18/03/2025");

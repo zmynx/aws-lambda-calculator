@@ -10,7 +10,8 @@ deploy:
             sudo npm install -g esbuild
             sudo npm install -g aws-cdk
             npm install
-            cdk deploy --require-approval never --no-execute --build -o . 
+            cdk synth
+            # cdk deploy --require-approval never --no-execute --build -o . 
 destroy:
   steps:
     setupVariables:

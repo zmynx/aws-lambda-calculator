@@ -1,0 +1,26 @@
+version: 2
+
+deploy:
+  steps:
+    setupVariables: &cdk
+      after:
+        - name: cdk synth
+          run: |
+            set -ex
+            sudo npm install -g esbuild
+            sudo npm install -g aws-cdk
+            npm install
+            cdk synth
+            cp cdk.out/CdkAppStack.template.json env0.yaml
+            # cdk deploy --require-approval never --no-execute --build -o . 
+destroy:
+  steps:
+    setupVariables:
+      after:
+        - name: cdk synth
+          run: |
+            set -ex
+            sudo npm install -g esbuild
+            sudo npm install -g aws-cdk
+            npm install
+            ls -la

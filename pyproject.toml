@@ -1,7 +1,7 @@
 [project]
 name = "aws-lambda-calculator"
 dynamic = [ "version" ]
-description = ""
+description = "AWS Lambda Calculator"
 authors = [
     {name = "zMynx",email = "lior.dux@develeap.com"}
 ]
@@ -11,8 +11,7 @@ maintainers = [
 readme = "README.md"
 requires-python = ">=3.13"
 license = { file = "../LICENSE" }
-dependencies = [
-]
+# dependencies = []
 
 [tool.poetry]
 requires-poetry = ">=2.1.1"

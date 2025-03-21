@@ -1,0 +1,185 @@
+{
+  "version": "39.0.0",
+  "artifacts": {
+    "CdkAppStack.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "CdkAppStack.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "CdkAppStack": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://unknown-account/unknown-region",
+      "properties": {
+        "templateFile": "CdkAppStack.template.json",
+        "terminationProtection": false,
+        "tags": {
+          "email": "lior.dux@develeap.com",
+          "end_date": "19/03/2025",
+          "Expiration": "true",
+          "managed_by": "env0-cdk",
+          "Objective": "env0",
+          "owner": "lior.dux@develeap.com",
+          "project": "env0-aws-lambda-calculator",
+          "stage": "test",
+          "start_date": "18/03/2025"
+        },
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-${AWS::Region}",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-${AWS::Region}",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/54807d575ddbe2ac59b7d823e42db52c3bacdeef95cfab6f6027efa31a07dfe8.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "CdkAppStack.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-lookup-role-${AWS::AccountId}-${AWS::Region}",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "CdkAppStack.assets"
+      ],
+      "metadata": {
+        "/CdkAppStack": [
+          {
+            "type": "aws:cdk:stack-tags",
+            "data": [
+              {
+                "Key": "email",
+                "Value": "lior.dux@develeap.com"
+              },
+              {
+                "Key": "end_date",
+                "Value": "19/03/2025"
+              },
+              {
+                "Key": "Expiration",
+                "Value": "true"
+              },
+              {
+                "Key": "managed_by",
+                "Value": "env0-cdk"
+              },
+              {
+                "Key": "Objective",
+                "Value": "env0"
+              },
+              {
+                "Key": "owner",
+                "Value": "lior.dux@develeap.com"
+              },
+              {
+                "Key": "project",
+                "Value": "env0-aws-lambda-calculator"
+              },
+              {
+                "Key": "stage",
+                "Value": "test"
+              },
+              {
+                "Key": "start_date",
+                "Value": "18/03/2025"
+              }
+            ]
+          }
+        ],
+        "/CdkAppStack/MyLambdaFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MyLambdaFunctionServiceRole313A4D46"
+          }
+        ],
+        "/CdkAppStack/MyLambdaFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MyLambdaFunction67CCA873"
+          }
+        ],
+        "/CdkAppStack/ApiGatewayAccessLogs/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiGatewayAccessLogsFB871B4C"
+          }
+        ],
+        "/CdkAppStack/MyApiGateway/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MyApiGateway04A753E5"
+          }
+        ],
+        "/CdkAppStack/MyApiGateway/Deployment/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MyApiGatewayDeployment44AAC03136d9966ea6f33177e4013b4781907e8a"
+          }
+        ],
+        "/CdkAppStack/MyApiGateway/DeploymentStage.prod/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MyApiGatewayDeploymentStageprodEBC77C1B"
+          }
+        ],
+        "/CdkAppStack/MyApiGateway/Endpoint": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MyApiGatewayEndpoint84AE9DBF"
+          }
+        ],
+        "/CdkAppStack/MyApiGateway/Default/GET/ApiPermission.CdkAppStackMyApiGateway88BAB52C.GET..": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MyApiGatewayGETApiPermissionCdkAppStackMyApiGateway88BAB52CGETB65EB72A"
+          }
+        ],
+        "/CdkAppStack/MyApiGateway/Default/GET/ApiPermission.Test.CdkAppStackMyApiGateway88BAB52C.GET..": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MyApiGatewayGETApiPermissionTestCdkAppStackMyApiGateway88BAB52CGETE22DFC1B"
+          }
+        ],
+        "/CdkAppStack/MyApiGateway/Default/GET/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MyApiGatewayGET1AB9774C"
+          }
+        ],
+        "/CdkAppStack/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/CdkAppStack/CDKMetadata/Condition": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadataAvailable"
+          }
+        ],
+        "/CdkAppStack/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/CdkAppStack/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "CdkAppStack"
+    },
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    }
+  }
+}

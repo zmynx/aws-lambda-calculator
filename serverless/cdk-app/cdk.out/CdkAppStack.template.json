@@ -1,0 +1,812 @@
+{
+ "Resources": {
+  "MyLambdaFunctionServiceRole313A4D46": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "email",
+      "Value": "lior.dux@develeap.com"
+     },
+     {
+      "Key": "end_date",
+      "Value": "19/03/2025"
+     },
+     {
+      "Key": "Expiration",
+      "Value": "true"
+     },
+     {
+      "Key": "managed_by",
+      "Value": "env0-cdk"
+     },
+     {
+      "Key": "Objective",
+      "Value": "env0"
+     },
+     {
+      "Key": "owner",
+      "Value": "lior.dux@develeap.com"
+     },
+     {
+      "Key": "project",
+      "Value": "env0-aws-lambda-calculator"
+     },
+     {
+      "Key": "stage",
+      "Value": "test"
+     },
+     {
+      "Key": "start_date",
+      "Value": "18/03/2025"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "CdkAppStack/MyLambdaFunction/ServiceRole/Resource"
+   }
+  },
+  "MyLambdaFunction67CCA873": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "ImageUri": {
+      "Fn::Join": [
+       "",
+       [
+        {
+         "Ref": "AWS::AccountId"
+        },
+        ".dkr.ecr.",
+        {
+         "Ref": "AWS::Region"
+        },
+        ".",
+        {
+         "Ref": "AWS::URLSuffix"
+        },
+        "/",
+        {
+         "Fn::Sub": "cdk-hnb659fds-container-assets-${AWS::AccountId}-${AWS::Region}"
+        },
+        ":latest"
+       ]
+      ]
+     }
+    },
+    "PackageType": "Image",
+    "Role": {
+     "Fn::GetAtt": [
+      "MyLambdaFunctionServiceRole313A4D46",
+      "Arn"
+     ]
+    },
+    "Tags": [
+     {
+      "Key": "email",
+      "Value": "lior.dux@develeap.com"
+     },
+     {
+      "Key": "end_date",
+      "Value": "19/03/2025"
+     },
+     {
+      "Key": "Expiration",
+      "Value": "true"
+     },
+     {
+      "Key": "managed_by",
+      "Value": "env0-cdk"
+     },
+     {
+      "Key": "Objective",
+      "Value": "env0"
+     },
+     {
+      "Key": "owner",
+      "Value": "lior.dux@develeap.com"
+     },
+     {
+      "Key": "project",
+      "Value": "env0-aws-lambda-calculator"
+     },
+     {
+      "Key": "stage",
+      "Value": "test"
+     },
+     {
+      "Key": "start_date",
+      "Value": "18/03/2025"
+     }
+    ]
+   },
+   "DependsOn": [
+    "MyLambdaFunctionServiceRole313A4D46"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "CdkAppStack/MyLambdaFunction/Resource"
+   }
+  },
+  "ApiGatewayAccessLogsFB871B4C": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "RetentionInDays": 30,
+    "Tags": [
+     {
+      "Key": "email",
+      "Value": "lior.dux@develeap.com"
+     },
+     {
+      "Key": "end_date",
+      "Value": "19/03/2025"
+     },
+     {
+      "Key": "Expiration",
+      "Value": "true"
+     },
+     {
+      "Key": "managed_by",
+      "Value": "env0-cdk"
+     },
+     {
+      "Key": "Objective",
+      "Value": "env0"
+     },
+     {
+      "Key": "owner",
+      "Value": "lior.dux@develeap.com"
+     },
+     {
+      "Key": "project",
+      "Value": "env0-aws-lambda-calculator"
+     },
+     {
+      "Key": "stage",
+      "Value": "test"
+     },
+     {
+      "Key": "start_date",
+      "Value": "18/03/2025"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "CdkAppStack/ApiGatewayAccessLogs/Resource"
+   }
+  },
+  "MyApiGateway04A753E5": {
+   "Type": "AWS::ApiGateway::RestApi",
+   "Properties": {
+    "Name": "MyApiGateway",
+    "Tags": [
+     {
+      "Key": "email",
+      "Value": "lior.dux@develeap.com"
+     },
+     {
+      "Key": "end_date",
+      "Value": "19/03/2025"
+     },
+     {
+      "Key": "Expiration",
+      "Value": "true"
+     },
+     {
+      "Key": "managed_by",
+      "Value": "env0-cdk"
+     },
+     {
+      "Key": "Objective",
+      "Value": "env0"
+     },
+     {
+      "Key": "owner",
+      "Value": "lior.dux@develeap.com"
+     },
+     {
+      "Key": "project",
+      "Value": "env0-aws-lambda-calculator"
+     },
+     {
+      "Key": "stage",
+      "Value": "test"
+     },
+     {
+      "Key": "start_date",
+      "Value": "18/03/2025"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "CdkAppStack/MyApiGateway/Resource"
+   }
+  },
+  "MyApiGatewayDeployment44AAC03136d9966ea6f33177e4013b4781907e8a": {
+   "Type": "AWS::ApiGateway::Deployment",
+   "Properties": {
+    "Description": "Automatically created by the RestApi construct",
+    "RestApiId": {
+     "Ref": "MyApiGateway04A753E5"
+    }
+   },
+   "DependsOn": [
+    "MyApiGatewayGET1AB9774C"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "CdkAppStack/MyApiGateway/Deployment/Resource"
+   }
+  },
+  "MyApiGatewayDeploymentStageprodEBC77C1B": {
+   "Type": "AWS::ApiGateway::Stage",
+   "Properties": {
+    "AccessLogSetting": {
+     "DestinationArn": {
+      "Fn::GetAtt": [
+       "ApiGatewayAccessLogsFB871B4C",
+       "Arn"
+      ]
+     },
+     "Format": "{\"requestId\":\"$context.requestId\",\"ip\":\"$context.identity.sourceIp\",\"user\":\"$context.identity.user\",\"caller\":\"$context.identity.caller\",\"requestTime\":\"$context.requestTime\",\"httpMethod\":\"$context.httpMethod\",\"resourcePath\":\"$context.resourcePath\",\"status\":\"$context.status\",\"protocol\":\"$context.protocol\",\"responseLength\":\"$context.responseLength\"}"
+    },
+    "DeploymentId": {
+     "Ref": "MyApiGatewayDeployment44AAC03136d9966ea6f33177e4013b4781907e8a"
+    },
+    "MethodSettings": [
+     {
+      "DataTraceEnabled": true,
+      "HttpMethod": "*",
+      "LoggingLevel": "INFO",
+      "MetricsEnabled": true,
+      "ResourcePath": "/*"
+     }
+    ],
+    "RestApiId": {
+     "Ref": "MyApiGateway04A753E5"
+    },
+    "StageName": "prod",
+    "Tags": [
+     {
+      "Key": "email",
+      "Value": "lior.dux@develeap.com"
+     },
+     {
+      "Key": "end_date",
+      "Value": "19/03/2025"
+     },
+     {
+      "Key": "Expiration",
+      "Value": "true"
+     },
+     {
+      "Key": "managed_by",
+      "Value": "env0-cdk"
+     },
+     {
+      "Key": "Objective",
+      "Value": "env0"
+     },
+     {
+      "Key": "owner",
+      "Value": "lior.dux@develeap.com"
+     },
+     {
+      "Key": "project",
+      "Value": "env0-aws-lambda-calculator"
+     },
+     {
+      "Key": "stage",
+      "Value": "test"
+     },
+     {
+      "Key": "start_date",
+      "Value": "18/03/2025"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "CdkAppStack/MyApiGateway/DeploymentStage.prod/Resource"
+   }
+  },
+  "MyApiGatewayGETApiPermissionCdkAppStackMyApiGateway88BAB52CGETB65EB72A": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "MyLambdaFunction67CCA873",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:",
+       {
+        "Ref": "AWS::Region"
+       },
+       ":",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "MyApiGateway04A753E5"
+       },
+       "/",
+       {
+        "Ref": "MyApiGatewayDeploymentStageprodEBC77C1B"
+       },
+       "/GET/"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CdkAppStack/MyApiGateway/Default/GET/ApiPermission.CdkAppStackMyApiGateway88BAB52C.GET.."
+   }
+  },
+  "MyApiGatewayGETApiPermissionTestCdkAppStackMyApiGateway88BAB52CGETE22DFC1B": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "MyLambdaFunction67CCA873",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:",
+       {
+        "Ref": "AWS::Region"
+       },
+       ":",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "MyApiGateway04A753E5"
+       },
+       "/test-invoke-stage/GET/"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CdkAppStack/MyApiGateway/Default/GET/ApiPermission.Test.CdkAppStackMyApiGateway88BAB52C.GET.."
+   }
+  },
+  "MyApiGatewayGET1AB9774C": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "GET",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:",
+        {
+         "Ref": "AWS::Region"
+        },
+        ":lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "MyLambdaFunction67CCA873",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "MethodResponses": [
+     {
+      "StatusCode": "200"
+     }
+    ],
+    "ResourceId": {
+     "Fn::GetAtt": [
+      "MyApiGateway04A753E5",
+      "RootResourceId"
+     ]
+    },
+    "RestApiId": {
+     "Ref": "MyApiGateway04A753E5"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CdkAppStack/MyApiGateway/Default/GET/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/01Q0U7DMAz8Ft6zAENiz2MTCAkEKh8wZakJXps4il2mquq/k7Rj6pPPd2fZ57W+3zzquxtz5pWtm1WLRz18ibGNytRhAJsOhhmE9Z5sA+nVGwfbwqis6QoiMQql/skwqNb4Y230sPA+d8EKUlC777DEn5A8MuduVGi8HipqoQiljqolx3p4I/eSqIuF/8ejMhGdETibPk8ByzbiNHiBe4gt9R6CFHbR5VxuWjGD7KcuWZgufwf5obqIMxpHNaUsVgzuai6Oj05iJ5eVV3ZHoUaZ8gSqQZ/49nf9oDf5uydGXKUuCHrQ1Vz/AMldUQ16AQAA"
+   },
+   "Metadata": {
+    "aws:cdk:path": "CdkAppStack/CDKMetadata/Default"
+   },
+   "Condition": "CDKMetadataAvailable"
+  }
+ },
+ "Outputs": {
+  "MyApiGatewayEndpoint84AE9DBF": {
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "https://",
+      {
+       "Ref": "MyApiGateway04A753E5"
+      },
+      ".execute-api.",
+      {
+       "Ref": "AWS::Region"
+      },
+      ".",
+      {
+       "Ref": "AWS::URLSuffix"
+      },
+      "/",
+      {
+       "Ref": "MyApiGatewayDeploymentStageprodEBC77C1B"
+      },
+      "/"
+     ]
+    ]
+   }
+  }
+ },
+ "Conditions": {
+  "CDKMetadataAvailable": {
+   "Fn::Or": [
+    {
+     "Fn::Or": [
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "af-south-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-east-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-northeast-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-northeast-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-northeast-3"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-south-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-south-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-southeast-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-southeast-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-southeast-3"
+       ]
+      }
+     ]
+    },
+    {
+     "Fn::Or": [
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-southeast-4"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ca-central-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ca-west-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "cn-north-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "cn-northwest-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-central-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-central-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-north-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-south-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-south-2"
+       ]
+      }
+     ]
+    },
+    {
+     "Fn::Or": [
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-west-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-west-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-west-3"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "il-central-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "me-central-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "me-south-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "sa-east-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "us-east-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "us-east-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "us-west-1"
+       ]
+      }
+     ]
+    },
+    {
+     "Fn::Equals": [
+      {
+       "Ref": "AWS::Region"
+      },
+      "us-west-2"
+     ]
+    }
+   ]
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

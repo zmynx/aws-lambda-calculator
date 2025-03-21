@@ -1,0 +1,702 @@
+{
+  "version": "tree-0.1",
+  "tree": {
+    "id": "App",
+    "path": "",
+    "children": {
+      "CdkAppStack": {
+        "id": "CdkAppStack",
+        "path": "CdkAppStack",
+        "children": {
+          "MyLambdaImage": {
+            "id": "MyLambdaImage",
+            "path": "CdkAppStack/MyLambdaImage",
+            "children": {
+              "Staging": {
+                "id": "Staging",
+                "path": "CdkAppStack/MyLambdaImage/Staging",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.AssetStaging",
+                  "version": "2.176.0"
+                }
+              },
+              "Repository": {
+                "id": "Repository",
+                "path": "CdkAppStack/MyLambdaImage/Repository",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ecr.RepositoryBase",
+                  "version": "2.176.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_ecr_assets.DockerImageAsset",
+              "version": "2.176.0"
+            }
+          },
+          "MyLambdaFunction": {
+            "id": "MyLambdaFunction",
+            "path": "CdkAppStack/MyLambdaFunction",
+            "children": {
+              "ServiceRole": {
+                "id": "ServiceRole",
+                "path": "CdkAppStack/MyLambdaFunction/ServiceRole",
+                "children": {
+                  "ImportServiceRole": {
+                    "id": "ImportServiceRole",
+                    "path": "CdkAppStack/MyLambdaFunction/ServiceRole/ImportServiceRole",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.Resource",
+                      "version": "2.176.0"
+                    }
+                  },
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "CdkAppStack/MyLambdaFunction/ServiceRole/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                      "aws:cdk:cloudformation:props": {
+                        "assumeRolePolicyDocument": {
+                          "Statement": [
+                            {
+                              "Action": "sts:AssumeRole",
+                              "Effect": "Allow",
+                              "Principal": {
+                                "Service": "lambda.amazonaws.com"
+                              }
+                            }
+                          ],
+                          "Version": "2012-10-17"
+                        },
+                        "managedPolicyArns": [
+                          {
+                            "Fn::Join": [
+                              "",
+                              [
+                                "arn:",
+                                {
+                                  "Ref": "AWS::Partition"
+                                },
+                                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+                              ]
+                            ]
+                          }
+                        ],
+                        "tags": [
+                          {
+                            "key": "email",
+                            "value": "lior.dux@develeap.com"
+                          },
+                          {
+                            "key": "end_date",
+                            "value": "19/03/2025"
+                          },
+                          {
+                            "key": "Expiration",
+                            "value": "true"
+                          },
+                          {
+                            "key": "managed_by",
+                            "value": "env0-cdk"
+                          },
+                          {
+                            "key": "Objective",
+                            "value": "env0"
+                          },
+                          {
+                            "key": "owner",
+                            "value": "lior.dux@develeap.com"
+                          },
+                          {
+                            "key": "project",
+                            "value": "env0-aws-lambda-calculator"
+                          },
+                          {
+                            "key": "stage",
+                            "value": "test"
+                          },
+                          {
+                            "key": "start_date",
+                            "value": "18/03/2025"
+                          }
+                        ]
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_iam.CfnRole",
+                      "version": "2.176.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_iam.Role",
+                  "version": "2.176.0"
+                }
+              },
+              "Resource": {
+                "id": "Resource",
+                "path": "CdkAppStack/MyLambdaFunction/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::Lambda::Function",
+                  "aws:cdk:cloudformation:props": {
+                    "code": {
+                      "imageUri": {
+                        "Fn::Join": [
+                          "",
+                          [
+                            {
+                              "Ref": "AWS::AccountId"
+                            },
+                            ".dkr.ecr.",
+                            {
+                              "Ref": "AWS::Region"
+                            },
+                            ".",
+                            {
+                              "Ref": "AWS::URLSuffix"
+                            },
+                            "/",
+                            {
+                              "Fn::Sub": "cdk-hnb659fds-container-assets-${AWS::AccountId}-${AWS::Region}"
+                            },
+                            ":latest"
+                          ]
+                        ]
+                      }
+                    },
+                    "packageType": "Image",
+                    "role": {
+                      "Fn::GetAtt": [
+                        "MyLambdaFunctionServiceRole313A4D46",
+                        "Arn"
+                      ]
+                    },
+                    "tags": [
+                      {
+                        "key": "email",
+                        "value": "lior.dux@develeap.com"
+                      },
+                      {
+                        "key": "end_date",
+                        "value": "19/03/2025"
+                      },
+                      {
+                        "key": "Expiration",
+                        "value": "true"
+                      },
+                      {
+                        "key": "managed_by",
+                        "value": "env0-cdk"
+                      },
+                      {
+                        "key": "Objective",
+                        "value": "env0"
+                      },
+                      {
+                        "key": "owner",
+                        "value": "lior.dux@develeap.com"
+                      },
+                      {
+                        "key": "project",
+                        "value": "env0-aws-lambda-calculator"
+                      },
+                      {
+                        "key": "stage",
+                        "value": "test"
+                      },
+                      {
+                        "key": "start_date",
+                        "value": "18/03/2025"
+                      }
+                    ]
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_lambda.CfnFunction",
+                  "version": "2.176.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_lambda.DockerImageFunction",
+              "version": "2.176.0"
+            }
+          },
+          "ApiGatewayAccessLogs": {
+            "id": "ApiGatewayAccessLogs",
+            "path": "CdkAppStack/ApiGatewayAccessLogs",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "CdkAppStack/ApiGatewayAccessLogs/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::Logs::LogGroup",
+                  "aws:cdk:cloudformation:props": {
+                    "retentionInDays": 30,
+                    "tags": [
+                      {
+                        "key": "email",
+                        "value": "lior.dux@develeap.com"
+                      },
+                      {
+                        "key": "end_date",
+                        "value": "19/03/2025"
+                      },
+                      {
+                        "key": "Expiration",
+                        "value": "true"
+                      },
+                      {
+                        "key": "managed_by",
+                        "value": "env0-cdk"
+                      },
+                      {
+                        "key": "Objective",
+                        "value": "env0"
+                      },
+                      {
+                        "key": "owner",
+                        "value": "lior.dux@develeap.com"
+                      },
+                      {
+                        "key": "project",
+                        "value": "env0-aws-lambda-calculator"
+                      },
+                      {
+                        "key": "stage",
+                        "value": "test"
+                      },
+                      {
+                        "key": "start_date",
+                        "value": "18/03/2025"
+                      }
+                    ]
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_logs.CfnLogGroup",
+                  "version": "2.176.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_logs.LogGroup",
+              "version": "2.176.0"
+            }
+          },
+          "MyApiGateway": {
+            "id": "MyApiGateway",
+            "path": "CdkAppStack/MyApiGateway",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "CdkAppStack/MyApiGateway/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::ApiGateway::RestApi",
+                  "aws:cdk:cloudformation:props": {
+                    "name": "MyApiGateway",
+                    "tags": [
+                      {
+                        "key": "email",
+                        "value": "lior.dux@develeap.com"
+                      },
+                      {
+                        "key": "end_date",
+                        "value": "19/03/2025"
+                      },
+                      {
+                        "key": "Expiration",
+                        "value": "true"
+                      },
+                      {
+                        "key": "managed_by",
+                        "value": "env0-cdk"
+                      },
+                      {
+                        "key": "Objective",
+                        "value": "env0"
+                      },
+                      {
+                        "key": "owner",
+                        "value": "lior.dux@develeap.com"
+                      },
+                      {
+                        "key": "project",
+                        "value": "env0-aws-lambda-calculator"
+                      },
+                      {
+                        "key": "stage",
+                        "value": "test"
+                      },
+                      {
+                        "key": "start_date",
+                        "value": "18/03/2025"
+                      }
+                    ]
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_apigateway.CfnRestApi",
+                  "version": "2.176.0"
+                }
+              },
+              "Deployment": {
+                "id": "Deployment",
+                "path": "CdkAppStack/MyApiGateway/Deployment",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "CdkAppStack/MyApiGateway/Deployment/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::ApiGateway::Deployment",
+                      "aws:cdk:cloudformation:props": {
+                        "description": "Automatically created by the RestApi construct",
+                        "restApiId": {
+                          "Ref": "MyApiGateway04A753E5"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_apigateway.CfnDeployment",
+                      "version": "2.176.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_apigateway.Deployment",
+                  "version": "2.176.0"
+                }
+              },
+              "DeploymentStage.prod": {
+                "id": "DeploymentStage.prod",
+                "path": "CdkAppStack/MyApiGateway/DeploymentStage.prod",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "CdkAppStack/MyApiGateway/DeploymentStage.prod/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::ApiGateway::Stage",
+                      "aws:cdk:cloudformation:props": {
+                        "accessLogSetting": {
+                          "destinationArn": {
+                            "Fn::GetAtt": [
+                              "ApiGatewayAccessLogsFB871B4C",
+                              "Arn"
+                            ]
+                          },
+                          "format": "{\"requestId\":\"$context.requestId\",\"ip\":\"$context.identity.sourceIp\",\"user\":\"$context.identity.user\",\"caller\":\"$context.identity.caller\",\"requestTime\":\"$context.requestTime\",\"httpMethod\":\"$context.httpMethod\",\"resourcePath\":\"$context.resourcePath\",\"status\":\"$context.status\",\"protocol\":\"$context.protocol\",\"responseLength\":\"$context.responseLength\"}"
+                        },
+                        "deploymentId": {
+                          "Ref": "MyApiGatewayDeployment44AAC03136d9966ea6f33177e4013b4781907e8a"
+                        },
+                        "methodSettings": [
+                          {
+                            "httpMethod": "*",
+                            "resourcePath": "/*",
+                            "dataTraceEnabled": true,
+                            "loggingLevel": "INFO",
+                            "metricsEnabled": true
+                          }
+                        ],
+                        "restApiId": {
+                          "Ref": "MyApiGateway04A753E5"
+                        },
+                        "stageName": "prod",
+                        "tags": [
+                          {
+                            "key": "email",
+                            "value": "lior.dux@develeap.com"
+                          },
+                          {
+                            "key": "end_date",
+                            "value": "19/03/2025"
+                          },
+                          {
+                            "key": "Expiration",
+                            "value": "true"
+                          },
+                          {
+                            "key": "managed_by",
+                            "value": "env0-cdk"
+                          },
+                          {
+                            "key": "Objective",
+                            "value": "env0"
+                          },
+                          {
+                            "key": "owner",
+                            "value": "lior.dux@develeap.com"
+                          },
+                          {
+                            "key": "project",
+                            "value": "env0-aws-lambda-calculator"
+                          },
+                          {
+                            "key": "stage",
+                            "value": "test"
+                          },
+                          {
+                            "key": "start_date",
+                            "value": "18/03/2025"
+                          }
+                        ]
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_apigateway.CfnStage",
+                      "version": "2.176.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_apigateway.Stage",
+                  "version": "2.176.0"
+                }
+              },
+              "Endpoint": {
+                "id": "Endpoint",
+                "path": "CdkAppStack/MyApiGateway/Endpoint",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnOutput",
+                  "version": "2.176.0"
+                }
+              },
+              "Default": {
+                "id": "Default",
+                "path": "CdkAppStack/MyApiGateway/Default",
+                "children": {
+                  "GET": {
+                    "id": "GET",
+                    "path": "CdkAppStack/MyApiGateway/Default/GET",
+                    "children": {
+                      "ApiPermission.CdkAppStackMyApiGateway88BAB52C.GET..": {
+                        "id": "ApiPermission.CdkAppStackMyApiGateway88BAB52C.GET..",
+                        "path": "CdkAppStack/MyApiGateway/Default/GET/ApiPermission.CdkAppStackMyApiGateway88BAB52C.GET..",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::Lambda::Permission",
+                          "aws:cdk:cloudformation:props": {
+                            "action": "lambda:InvokeFunction",
+                            "functionName": {
+                              "Fn::GetAtt": [
+                                "MyLambdaFunction67CCA873",
+                                "Arn"
+                              ]
+                            },
+                            "principal": "apigateway.amazonaws.com",
+                            "sourceArn": {
+                              "Fn::Join": [
+                                "",
+                                [
+                                  "arn:",
+                                  {
+                                    "Ref": "AWS::Partition"
+                                  },
+                                  ":execute-api:",
+                                  {
+                                    "Ref": "AWS::Region"
+                                  },
+                                  ":",
+                                  {
+                                    "Ref": "AWS::AccountId"
+                                  },
+                                  ":",
+                                  {
+                                    "Ref": "MyApiGateway04A753E5"
+                                  },
+                                  "/",
+                                  {
+                                    "Ref": "MyApiGatewayDeploymentStageprodEBC77C1B"
+                                  },
+                                  "/GET/"
+                                ]
+                              ]
+                            }
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_lambda.CfnPermission",
+                          "version": "2.176.0"
+                        }
+                      },
+                      "ApiPermission.Test.CdkAppStackMyApiGateway88BAB52C.GET..": {
+                        "id": "ApiPermission.Test.CdkAppStackMyApiGateway88BAB52C.GET..",
+                        "path": "CdkAppStack/MyApiGateway/Default/GET/ApiPermission.Test.CdkAppStackMyApiGateway88BAB52C.GET..",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::Lambda::Permission",
+                          "aws:cdk:cloudformation:props": {
+                            "action": "lambda:InvokeFunction",
+                            "functionName": {
+                              "Fn::GetAtt": [
+                                "MyLambdaFunction67CCA873",
+                                "Arn"
+                              ]
+                            },
+                            "principal": "apigateway.amazonaws.com",
+                            "sourceArn": {
+                              "Fn::Join": [
+                                "",
+                                [
+                                  "arn:",
+                                  {
+                                    "Ref": "AWS::Partition"
+                                  },
+                                  ":execute-api:",
+                                  {
+                                    "Ref": "AWS::Region"
+                                  },
+                                  ":",
+                                  {
+                                    "Ref": "AWS::AccountId"
+                                  },
+                                  ":",
+                                  {
+                                    "Ref": "MyApiGateway04A753E5"
+                                  },
+                                  "/test-invoke-stage/GET/"
+                                ]
+                              ]
+                            }
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_lambda.CfnPermission",
+                          "version": "2.176.0"
+                        }
+                      },
+                      "Resource": {
+                        "id": "Resource",
+                        "path": "CdkAppStack/MyApiGateway/Default/GET/Resource",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::ApiGateway::Method",
+                          "aws:cdk:cloudformation:props": {
+                            "authorizationType": "NONE",
+                            "httpMethod": "GET",
+                            "integration": {
+                              "type": "AWS_PROXY",
+                              "uri": {
+                                "Fn::Join": [
+                                  "",
+                                  [
+                                    "arn:",
+                                    {
+                                      "Ref": "AWS::Partition"
+                                    },
+                                    ":apigateway:",
+                                    {
+                                      "Ref": "AWS::Region"
+                                    },
+                                    ":lambda:path/2015-03-31/functions/",
+                                    {
+                                      "Fn::GetAtt": [
+                                        "MyLambdaFunction67CCA873",
+                                        "Arn"
+                                      ]
+                                    },
+                                    "/invocations"
+                                  ]
+                                ]
+                              },
+                              "integrationHttpMethod": "POST"
+                            },
+                            "methodResponses": [
+                              {
+                                "statusCode": "200"
+                              }
+                            ],
+                            "resourceId": {
+                              "Fn::GetAtt": [
+                                "MyApiGateway04A753E5",
+                                "RootResourceId"
+                              ]
+                            },
+                            "restApiId": {
+                              "Ref": "MyApiGateway04A753E5"
+                            }
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_apigateway.CfnMethod",
+                          "version": "2.176.0"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_apigateway.Method",
+                      "version": "2.176.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_apigateway.ResourceBase",
+                  "version": "2.176.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_apigateway.RestApi",
+              "version": "2.176.0"
+            }
+          },
+          "CDKMetadata": {
+            "id": "CDKMetadata",
+            "path": "CdkAppStack/CDKMetadata",
+            "children": {
+              "Default": {
+                "id": "Default",
+                "path": "CdkAppStack/CDKMetadata/Default",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnResource",
+                  "version": "2.176.0"
+                }
+              },
+              "Condition": {
+                "id": "Condition",
+                "path": "CdkAppStack/CDKMetadata/Condition",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnCondition",
+                  "version": "2.176.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "constructs.Construct",
+              "version": "10.4.2"
+            }
+          },
+          "BootstrapVersion": {
+            "id": "BootstrapVersion",
+            "path": "CdkAppStack/BootstrapVersion",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnParameter",
+              "version": "2.176.0"
+            }
+          },
+          "CheckBootstrapVersion": {
+            "id": "CheckBootstrapVersion",
+            "path": "CdkAppStack/CheckBootstrapVersion",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnRule",
+              "version": "2.176.0"
+            }
+          }
+        },
+        "constructInfo": {
+          "fqn": "aws-cdk-lib.Stack",
+          "version": "2.176.0"
+        }
+      },
+      "Tree": {
+        "id": "Tree",
+        "path": "Tree",
+        "constructInfo": {
+          "fqn": "constructs.Construct",
+          "version": "10.4.2"
+        }
+      }
+    },
+    "constructInfo": {
+      "fqn": "aws-cdk-lib.App",
+      "version": "2.176.0"
+    }
+  }
+}

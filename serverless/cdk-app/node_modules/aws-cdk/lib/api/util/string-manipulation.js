@@ -1,0 +1,11 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.leftPad = leftPad;
+/**
+ * Pad 's' on the left with 'char' until it is n characters wide
+ */
+function leftPad(s, n, char) {
+    const padding = Math.max(0, n - s.length);
+    return char.repeat(padding) + s;
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoic3RyaW5nLW1hbmlwdWxhdGlvbi5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbInN0cmluZy1tYW5pcHVsYXRpb24udHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7QUFHQSwwQkFHQztBQU5EOztHQUVHO0FBQ0gsU0FBZ0IsT0FBTyxDQUFDLENBQVMsRUFBRSxDQUFTLEVBQUUsSUFBWTtJQUN4RCxNQUFNLE9BQU8sR0FBRyxJQUFJLENBQUMsR0FBRyxDQUFDLENBQUMsRUFBRSxDQUFDLEdBQUcsQ0FBQyxDQUFDLE1BQU0sQ0FBQyxDQUFDO0lBQzFDLE9BQU8sSUFBSSxDQUFDLE1BQU0sQ0FBQyxPQUFPLENBQUMsR0FBRyxDQUFDLENBQUM7QUFDbEMsQ0FBQyIsInNvdXJjZXNDb250ZW50IjpbIi8qKlxuICogUGFkICdzJyBvbiB0aGUgbGVmdCB3aXRoICdjaGFyJyB1bnRpbCBpdCBpcyBuIGNoYXJhY3RlcnMgd2lkZVxuICovXG5leHBvcnQgZnVuY3Rpb24gbGVmdFBhZChzOiBzdHJpbmcsIG46IG51bWJlciwgY2hhcjogc3RyaW5nKSB7XG4gIGNvbnN0IHBhZGRpbmcgPSBNYXRoLm1heCgwLCBuIC0gcy5sZW5ndGgpO1xuICByZXR1cm4gY2hhci5yZXBlYXQocGFkZGluZykgKyBzO1xufVxuIl19

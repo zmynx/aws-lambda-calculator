@@ -1,6 +1,6 @@
 # .github/workflows/cd-image.yaml
 ---
-name: CD Image
+name: CD CLI Image
 
 on:
   workflow_run:
@@ -19,6 +19,7 @@ jobs:
     defaults:
       run:
         shell: bash
+        working-directory: cli
     steps:
 
       - name: Download a Build Artifact

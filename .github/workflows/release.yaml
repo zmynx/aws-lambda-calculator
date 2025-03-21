@@ -1,6 +1,6 @@
 # .github/workflows/release.yaml
 ---
-name: Release 
+name: Release
 on:
   workflow_run:
     workflows: [CD]

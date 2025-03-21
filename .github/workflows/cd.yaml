@@ -28,7 +28,6 @@ jobs:
       contents: write
     defaults:
       run:
-        working-directory: aws-lambda-calculator
         shell: bash
     outputs:
       release_version: ${{ steps.release-version.outputs.release_version }}
@@ -82,8 +81,8 @@ jobs:
         with:
           name: aws_lambda_calculator
           path: |
-            aws-lambda-calculator/dist/*.whl
-            aws-lambda-calculator/dist/*.tar.gz
+            dist/*.whl
+            dist/*.tar.gz
           if-no-files-found: error
           retention-days: 1
           overwrite: true
@@ -98,6 +97,7 @@ jobs:
     defaults:
       run:
         shell: bash
+        working-directory: cli
     steps:
       - name: Checkout
         uses: actions/checkout@v4.2.2
@@ -117,6 +117,9 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install poetry==2.1.1
 
+      - name: Remove the latest pacakge
+        run: python -m poetry remove aws-lambda-calculator
+
       - name: Download a Build Artifact
         id: download-artifact
         uses: actions/download-artifact@v4.1.8
@@ -126,7 +129,7 @@ jobs:
           repository: ${{ github.repository }}
           run-id: ${{ github.run_id }}
 
-      - name: Add the package
+      - name: Add the build package
         run: python -m poetry add ${{ steps.download-artifact.outputs.download-path }}/aws_lambda_calculator-${{ needs.package.outputs.release_version }}-py3-none-any.whl
 
       - name: Install dependencies
@@ -138,7 +141,7 @@ jobs:
   tag:
     needs:
       - package
-      - test-package 
+      - test-package
     name: Add Official tags
     runs-on: ubuntu-latest
     permissions:

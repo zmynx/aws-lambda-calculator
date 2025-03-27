@@ -1,0 +1,13 @@
+{
+  "name": "Python 3.13 & Poetry 2.1.1",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": "."
+  },
+  "settings": {
+    "terminal.integrated.shell.linux": "/bin/zsh"
+  },
+  "extensions": ["ms-python.python", "ms-azuretools.vscode-docker"],
+  "postCreateCommand": "pyenv install 3.13.0 && pyenv global 3.13.0 && poetry install",
+  "remoteUser": "vscode"
+}

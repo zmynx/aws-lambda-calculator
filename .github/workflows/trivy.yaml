@@ -1,3 +1,4 @@
+---
 name: Trivy
 on:
   push:
@@ -7,7 +8,6 @@ jobs:
     name: Scan latest image
     runs-on: ubuntu-latest
     permissions:
-      attestation: read
       contents: write
       security-events: write
       packages: read

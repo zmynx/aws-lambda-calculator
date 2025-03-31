@@ -80,6 +80,16 @@ jobs:
       - name: Create a package
         run: python -m poetry build
 
+      - uses: sigstore/gh-action-sigstore-python@v3.0.0
+        with:
+          inputs: |
+            aws-lambda-calculator/dist/*.whl
+            aws-lambda-calculator/dist/*.tar.gz
+          upload-signing-artifacts: true
+          verify: true
+          verify-cert-identity: 'https://github.com/${{ github.repository }}/.github/workflows/cd.yaml@refs/heads/${{ github.ref_name }}'
+          verify-oidc-issuer: https://token.actions.githubusercontent.com
+
       - name: Upload a Build Artifact
         id: upload
         uses: actions/upload-artifact@v4.6.1
@@ -92,6 +102,17 @@ jobs:
           retention-days: 1
           overwrite: true
           include-hidden-files: false
+
+      - uses: sigstore/gh-action-sigstore-python@v3.0.0
+        with:
+          # inputs: |
+          #   aws-lambda-calculator/dist/*.whl
+          #   aws-lambda-calculator/dist/*.tar.gz
+          # upload-signing-artifacts: true
+          release-signing-artifacts: true
+          verify: true
+          verify-cert-identity: 'https://github.com/${{ github.repository }}/.github/workflows/cd.yaml@refs/heads/${{ github.ref_name }}'
+          verify-oidc-issuer: https://token.actions.githubusercontent.com
 
       - uses: actions/attest-build-provenance@v2
         with:

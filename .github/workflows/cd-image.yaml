@@ -16,6 +16,7 @@ jobs:
       contents: read
       packages: write
       id-token: write # needed for signing the images with GitHub OIDC Token
+      attestations: write
     defaults:
       run:
         shell: bash
@@ -43,6 +44,7 @@ jobs:
         uses: actions/checkout@v4.2.2
         with:
           ref: ${{ steps.release-version.outputs.release_version }}
+          fetch-depth: 1
           persist-credentials: false
 
       - name: Install Cosign
@@ -97,6 +99,14 @@ jobs:
           cache-to: type=inline
           push: true
 
+      - name: Attest
+        uses: actions/attest-build-provenance@v2
+        id: attest
+        with:
+          subject-name: ghcr.io/${{ github.repository }}
+          subject-digest: ${{ steps.build-and-push.outputs.digest }}
+          push-to-registry: true
+
       - name: Sign and verify the images with GitHub OIDC Token
         env:
           DIGEST: ${{ steps.build-and-push.outputs.digest }}
@@ -107,9 +117,9 @@ jobs:
             images+="${tag}@${DIGEST} "
           done
           cosign sign --yes ${images}
-          # cosign verify ${images} \
-          #   --certificate-identity='https://github.com/${{ github.repository }}/.github/workflows/cd.yaml@refs/heads/${{ github.ref }}' \
-          #   --certificate-oidc-issuer='https://token.actions.githubusercontent.com'
+          cosign verify ${images} \
+            --certificate-identity='https://github.com/${{ github.repository }}/.github/workflows/cd-image.yaml@refs/heads/${{ github.ref_name }}' \
+            --certificate-oidc-issuer='https://token.actions.githubusercontent.com'
 
       #############################################
       # PODMAN

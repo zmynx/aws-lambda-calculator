@@ -93,17 +93,6 @@ jobs:
           overwrite: true
           include-hidden-files: false
 
-      - uses: sigstore/gh-action-sigstore-python@v3.0.0
-        with:
-          # inputs: |
-          #   aws-lambda-calculator/dist/*.whl
-          #   aws-lambda-calculator/dist/*.tar.gz
-          # upload-signing-artifacts: true
-          release-signing-artifacts: true
-          verify: true
-          verify-cert-identity: 'https://github.com/${{ github.repository }}/.github/workflows/cd.yaml@refs/heads/${{ github.ref_name }}'
-          verify-oidc-issuer: https://token.actions.githubusercontent.com
-
       - uses: actions/attest-build-provenance@v2
         with:
           subject-name: aws_lambda_calculator
@@ -158,7 +147,7 @@ jobs:
   tag:
     needs:
       - package
-      - test-package 
+      - test-package
     name: Add Official tags
     runs-on: ubuntu-latest
     permissions:
@@ -180,7 +169,7 @@ jobs:
       #     passphrase: ${{ secrets.GPG_PASSPHRASE }}
       #     git_user_signingkey: true
       #     git_commit_gpgsign: true
-      
+
       - uses: zmynx/git-auto-commit-action@master
         with:
           git_tag_only: true
@@ -191,7 +180,7 @@ jobs:
           commit_user_email: github-actions[bot]@zmynx.users.noreply.github.com
           commit_author: Author <actions@github.com> # defaults to "username <username@users.noreply.github.com>", where "username" belongs to the author of the commit that triggered the run
           tagging_message: ${{ needs.package.outputs.release_version }}
-          
+
       # - name: Git tag
       #   run: |
       #     git config --local user.name github-actions[bot] #${{ steps.import-gpg.outputs.name }}

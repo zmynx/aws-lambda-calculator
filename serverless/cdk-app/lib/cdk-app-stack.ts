@@ -6,8 +6,12 @@ import * as apigateway from "aws-cdk-lib/aws-apigateway";
 import * as ecrAssets from "aws-cdk-lib/aws-ecr-assets";
 import * as logs from "aws-cdk-lib/aws-logs";
 
+export interface CdkAppStackProps extends cdk.StackProps {
+  readonly env: string;
+}
+
 export class CdkAppStack extends cdk.Stack {
-  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
+  constructor(scope: Construct, id: string, props?: CdkAppStackProps) {
     super(scope, id, props);
 
     // Lambda function

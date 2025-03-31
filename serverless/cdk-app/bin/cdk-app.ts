@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+<<<<<<< HEAD
 import * as cdk from "aws-cdk-lib";
 import { Tags } from "aws-cdk-lib";
 import { CdkAppStack } from "../lib/cdk-app-stack";
@@ -16,6 +17,24 @@ new CdkAppStack(app, "CdkAppStack", {
   // env: { account: '123456789012', region: 'us-east-1' },
   // env: { account: '123456789012', region: 'us-east-1' },
   /* For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html */
+=======
+import { App, Tags } from "aws-cdk-lib";
+import { CdkAppStack } from "../lib/cdk-app-stack";
+import { loadConfig } from "./utils";
+
+const app = new App();
+
+// Load context dynamically based on environment
+const env = app.node.tryGetContext("env") as string;
+const context = loadConfig(env);
+
+new CdkAppStack(app, `${env}-CdkAppStack`, {
+  env: {
+    account: process.env.CDK_DEFAULT_ACCOUNT,
+    region: process.env.CDK_DEFAULT_REGION,
+  },
+  ...context, // Expand the context
+>>>>>>> 586c7f6a3a7f2acb60f3a6c45c85b99cd21c771f
 });
 
 Tags.of(app).add("owner", "lior.dux@develeap.com");

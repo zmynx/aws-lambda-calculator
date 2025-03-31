@@ -43,7 +43,7 @@ jobs:
             ${{ steps.download-artifact.outputs.download-path }}/aws_lambda_calculator-*.tar.gz
           release-signing-artifacts: true
           verify: true
-          verify-cert-identity: 'https://github.com/${{ github.repository }}/.github/workflows/cd.yaml@refs/heads/${{ github.ref_name }}'
+          verify-cert-identity: 'https://github.com/${{ github.repository }}/.github/workflows/release.yaml@refs/heads/${{ github.ref_name }}'
           verify-oidc-issuer: https://token.actions.githubusercontent.com
 
       - name: GH Release

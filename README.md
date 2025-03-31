@@ -24,6 +24,7 @@ More info can be found in our [LICENSE file](./docs/LICENSE).
 
 <p align="center">
 Shout out to our contributors!
+<br>
 <a href="https://github.com/zmynx/aws-lambda-calculator/graphs/contributors">
 <img src="https://contrib.rocks/image?repo=zmynx/aws-lambda-calculator" />
 </a>

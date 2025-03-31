@@ -14,13 +14,13 @@
 > [!NOTE]
 > This project is a work in progress, and yet to be operational nor compelete.
 
-# LICENSE
+# License
 
 This project is under the served with the Apache License.\
 Provided AS IS, no warranty given, not liability taken - USE AT YOUR OWN RISK.\
 More info can be found in our [LICENSE file](./docs/LICENSE).
 
-# CONTRIBUTING
+# Contributing
 
 Shout out to:\
 @zMyxx @alexmachulsky @itayyosef
@@ -28,9 +28,7 @@ Shout out to:\
 Wanna contribute?\
 Follow our [CONTRIBUTING](./docs/CONTRIBUTING) guide on our docs section.
 
-[![Open in DevPod!](https://devpod.sh/assets/open-in-devpod.svg)](https://devpod.sh/open#https://github.com/zmynx/aws-lambda-calculator)
-
-# Show Appriciation
+# Sponser
 
 <img src="./docs/assets/bmc_qr.png" alt="buy-me-a-coffee-qr-code" style="width:80px;height:80px;"></a>
 

@@ -11,7 +11,7 @@ Thank you for taking an interest in contributing to zMynx's open source projects
 ## Pull Requests
 
 1. Every Pull Request should have an associated Issue, unless you are fixing a trivial documentation issue.
-2. We will not accept changes to LICENSE, NOTICE or CONTRIBUTING from outside the zMynx Security team. Please raise an Issue if you believe there is a problem with any of these files. 
+2. We will not accept changes to LICENSE, NOTICE or CONTRIBUTING from outside the zMynx Security team. Please raise an Issue if you believe there is a problem with any of these files.
 3. Your PR is more likely to be accepted if it focuses on just one change.
 4. Describe what the PR does. There's no convention enforced, but please try to be concise and descriptive. Treat the PR description as a commit message. Titles that start with "fix"/"add"/"improve"/"remove" are good examples.
 5. Please add the associated Issue in the PR description.
@@ -31,9 +31,10 @@ Thank you for taking an interest in contributing to zMynx's open source projects
 - [ ] `black --check .`
 - [ ] `mypy --check-untyped-defs .`
 
-which are validated in our CI as part of the PR status checks. If your code fails the checks, it can be fixed locally by running `just checks`.
-4. Explicit decleration is always better.
-5. Use long flags `--version` instead of short `-v` whenever possible.
-6. Always think about security when writing code, and explore how it can be done better.
-7. FOLLOW BEST PRACTICES.
-8. Document when needed, especially when completing a task with a PR or passing on a task to a fellow contributer.
+which are validated in our CI as part of the PR status checks. If your code fails the checks, it can be fixed locally by running `just checks`. 4. Explicit decleration is always better. 5. Use long flags `--version` instead of short `-v` whenever possible. 6. Always think about security when writing code, and explore how it can be done better. 7. FOLLOW BEST PRACTICES. 8. Document when needed, especially when completing a task with a PR or passing on a task to a fellow contributer.
+
+## Development Environment
+
+[![Open in DevPod!](https://devpod.sh/assets/open-in-devpod.svg)](https://devpod.sh/open#https://github.com/zmynx/aws-lambda-calculator)
+To get started with development, use the devpod button.
+This will create a devpod with all the necessary tools and dependencies installed.

@@ -53,7 +53,9 @@ jobs:
           tag_name: ${{ steps.release-version.outputs.release_version }}
           files: |
             aws_lambda_calculator-*-py3-none-any.whl
+            aws_lambda_calculator-*-py3-none-any.whl.sigstore.json
             aws_lambda_calculator-*.tar.gz
+            aws_lambda_calculator-*.tar.gz.sigstore.json
           fail_on_unmatched_files: true
           draft: false
           repository: ${{ github.repository }}

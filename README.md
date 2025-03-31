@@ -14,25 +14,24 @@
 > [!NOTE]
 > This project is a work in progress, and yet to be operational nor compelete.
 
-<h1 align="center"><samp>Licence</samp></h1>
+<h1 align="left"><samp>Licence</samp></h1>
 
 This project is under the served with the Apache License.\
 Provided AS IS, no warranty given, not liability taken - USE AT YOUR OWN RISK.\
 More info can be found in our [LICENSE file](./docs/LICENSE).
 
-<h1 align="center"><samp>Contributing</samp></h1>
+<h1 align="left"><samp>Contributing</samp></h1>
 
 <p align="center">
 <a href="https://github.com/zmynx/aws-lambda-calculator/graphs/contributors">
 <img src="https://contrib.rocks/image?repo=zmynx/aws-lambda-calculator" />
 </a>
 </p>
-Made with [contrib.rocks](https://contrib.rocks).
 
 Shout out to our amazing contributors!. Wanna contribute?\
 Follow our [CONTRIBUTING](./docs/CONTRIBUTING) guide on our docs section.
 
-<h1 align="center"><samp>Sponser</samp></h1>
+<h1 align="left"><samp>Sponser</samp></h1>
 <p align="center">
 <img src="./docs/assets/bmc_qr.png" alt="buy-me-a-coffee-qr-code" style="width:80px;height:80px;"></a>
 </p>

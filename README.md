@@ -22,8 +22,14 @@ More info can be found in our [LICENSE file](./docs/LICENSE).
 
 # Contributing
 
-Shout out to:\
-@zMyxx @alexmachulsky @itayyosef
+<p align="center">
+Shout out to our contributors!
+<a href="https://github.com/zmynx/aws-lambda-calculator/graphs/contributors">
+<img src="https://contrib.rocks/image?repo=zmynx/aws-lambda-calculator" />
+</a>
+</p>
+
+Made with [contrib.rocks](https://contrib.rocks).
 
 Wanna contribute?\
 Follow our [CONTRIBUTING](./docs/CONTRIBUTING) guide on our docs section.

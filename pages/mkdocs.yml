@@ -1,0 +1,55 @@
+site_name: AWS Lambda Calulator 
+repo_name: zmynx/aws-lambda-calculator
+repo_url: https://github.com/zmynx/aws-lambda-calculator
+edit_uri: edit/main/docs/
+use_directory_urls: true
+
+# theme: readthedocs
+theme:
+  name: material
+  icon:
+    logo: material/rocket-launch-outline
+  palette:
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/weather-night
+        name: Switch to system preference
+    - scheme: default
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to dark mode
+  features:
+    - content.code.copy
+    - content.action.edit
+    - navigation.instant
+    - navigation.instant.progress
+    - navigation.tracking
+    - pymdownx.snippets
+    - navigation.footer
+
+extra:
+  status:
+    new: Recently added
+    deprecated: Deprecated
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/zmynx/aws-lambda-calculator
+
+
+markdown_extensions:
+  - pymdownx.snippets:
+      check_paths: true
+  - pymdownx.emoji:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+
+nav:
+  - Introduction: index.md
+  - Configuration: configuration.md
+  - Getting started: getting-started.md
+  - Security: security.md
+  - Home: index.md
+  - About: about.md
+

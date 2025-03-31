@@ -13,6 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      id-token: write
     defaults:
       run:
         shell: bash
@@ -35,6 +36,16 @@ jobs:
           echo "Discovered release version: $release_version"
           echo release_version=$release_version >> $GITHUB_OUTPUT
 
+      - uses: sigstore/gh-action-sigstore-python@v3.0.0
+        with:
+          inputs: |
+            ${{ steps.download-artifact.outputs.download-path }}/aws_lambda_calculator-*-py3-none-any.whl
+            ${{ steps.download-artifact.outputs.download-path }}/aws_lambda_calculator-*.tar.gz
+          release-signing-artifacts: true
+          verify: true
+          verify-cert-identity: 'https://github.com/${{ github.repository }}/.github/workflows/release.yaml@refs/heads/${{ github.ref_name }}'
+          verify-oidc-issuer: https://token.actions.githubusercontent.com
+
       - name: GH Release
         uses: softprops/action-gh-release@v2.2.1
         with:
@@ -42,7 +53,9 @@ jobs:
           tag_name: ${{ steps.release-version.outputs.release_version }}
           files: |
             aws_lambda_calculator-*-py3-none-any.whl
+            aws_lambda_calculator-*-py3-none-any.whl.sigstore.json
             aws_lambda_calculator-*.tar.gz
+            aws_lambda_calculator-*.tar.gz.sigstore.json
           fail_on_unmatched_files: true
           draft: false
           repository: ${{ github.repository }}

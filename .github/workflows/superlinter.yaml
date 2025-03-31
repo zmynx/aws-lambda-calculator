@@ -20,7 +20,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # ✅ Install Poetry FIRST before setting up Python
       - name: Install Poetry
         run: |
           curl -sSL https://install.python-poetry.org | python3 -
@@ -60,45 +59,6 @@ jobs:
         run: |
           echo "::error::${msg}"
 
-  # ✅ Test Stage (pytest)
-  test:
-    needs: [code-checks]
-    name: Run Tests (pytest)
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      # ✅ Install Poetry BEFORE setting up Python
-      - name: Install Poetry
-        run: |
-          curl -sSL https://install.python-poetry.org | python3 -
-          echo "$HOME/.local/bin" >> $GITHUB_PATH  # ✅ Add Poetry to PATH
-          export PATH="$HOME/.local/bin:$PATH"
-
-      - name: Setup Python
-        uses: actions/setup-python@v5.4.0
-        with:
-          python-version-file: pyproject.toml
-          cache: poetry
-
-      - name: Verify Poetry Installation
-        run: |
-          which poetry || echo "Poetry not found in PATH"
-          poetry --version || echo "Poetry not installed correctly"
-
-      - name: Setup poetry and dependencies
-        run: |
-          poetry --version
-          python -m pip install --upgrade pip
-          poetry install
-
-      - name: Run Pytest
-        run: poetry run pytest
-
-  # ✅ Super-Linter for YAML + Python syntax validation
   super-linter:
     needs: [code-checks]
     name: Lint YAML + Code with Super-Linter

@@ -40,7 +40,7 @@ jobs:
           inputs: |
             ${{ steps.download-artifact.outputs.download-path }}/aws_lambda_calculator-*-py3-none-any.whl
             ${{ steps.download-artifact.outputs.download-path }}/aws_lambda_calculator-*.tar.gz
-          upload-signing-artifacts: true
+          release-signing-artifacts: true
           verify: true
           verify-cert-identity: 'https://github.com/${{ github.repository }}/.github/workflows/cd.yaml@refs/heads/${{ github.ref_name }}'
           verify-oidc-issuer: https://token.actions.githubusercontent.com

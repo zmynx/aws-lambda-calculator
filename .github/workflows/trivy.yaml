@@ -7,8 +7,8 @@ jobs:
   scan-latest-image:
     name: Scan latest image
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
+    permissions: write-all
+      # contents: write
       # packages: read
       # id-token: read
     defaults:

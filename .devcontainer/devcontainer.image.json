@@ -1,0 +1,19 @@
+{
+  "name": "DevPod Demo",
+  "image": "ghcr.io/zmynx/devpod-demo:lts",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "editor.tabSize": 4
+      }
+    }
+  },
+  "extensions": [
+    "ms-python.python",
+    "ms-azuretools.vscode-docker",
+    "eamodio.gitlens",
+    "github.vscode-github-actions"
+  ],
+  "remoteUser": "vscode",
+  "containerUser": "vscode"
+}

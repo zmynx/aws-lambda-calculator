@@ -1,5 +1,6 @@
 # syntax=docker/dockerfile:1
 ARG PYTHON_VERSION=3.13.0
+ARG LAMBDA_PYTHON_VERSION=3.13
 
 ##############################
 # Builder Stage
@@ -60,7 +61,6 @@ HEALTHCHECK --interval=30s --timeout=10s --retries=3 CMD ps aux | grep 'python' 
 ##############################
 # Lambda Runtime Base Image
 ##############################
-ARG LAMBDA_PYTHON_VERSION=3.13
 FROM public.ecr.aws/lambda/python:${LAMBDA_PYTHON_VERSION} AS lambda_runtime
 
 WORKDIR /var/task

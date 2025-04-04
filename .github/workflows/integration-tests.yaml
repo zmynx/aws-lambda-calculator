@@ -1,0 +1,40 @@
+# .github/workflows/integration-tests.yaml
+---
+name: Integration Tests
+on:
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  integration-tests:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.2.2
+
+      - name: Install poetry
+        run: pipx install poetry==2.1.1
+
+      - name: Setup Python
+        uses: actions/setup-python@v5.4.0
+        with:
+          python-version-file: pyproject.toml
+          cache: poetry
+
+      - name: Setup poetry
+        run: |
+          python --version
+          python -m pip install --upgrade pip
+          python -m pip install poetry==2.1.1
+
+      - name: Install dependencies
+        run: python -m poetry install
+
+      - name: Test the new package
+        run: python -m poetry run pytest -svv tests/

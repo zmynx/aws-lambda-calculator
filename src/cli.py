@@ -1,7 +1,7 @@
 import argparse
 import sys
-from logger import logger
-from aws_lambda_calculator import *
+from utils.logger import logger
+from aws_lambda_calculator import calculate
 
 
 def parse_args() -> argparse.Namespace:
@@ -28,7 +28,7 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def main() -> None:
+def run() -> None:
     """Main function to parse arguments and execute my_function."""
     try:
         args = parse_args()
@@ -41,7 +41,7 @@ def main() -> None:
         logger.debug(f"Arguments received: {vars(args)}")
 
         # Call the function with parsed values
-        my_function(name=args.name, age=args.age, country=args.country)
+        calculate(name=args.name, age=args.age, country=args.country)
 
         logger.info("Execution completed successfully.")
 
@@ -51,4 +51,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    run()

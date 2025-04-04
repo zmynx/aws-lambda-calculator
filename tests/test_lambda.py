@@ -1,5 +1,5 @@
 import pytest
-from src.lambda import handler  # Import from src
+from aws_lambda import handler
 
 
 def test_lambda_success():
@@ -10,6 +10,7 @@ def test_lambda_success():
     assert response["status"] == "success"
     assert "Hello Alice from Canada" in response["message"]
 
+
 def test_lambda_missing_age():
     """Test Lambda handler when 'age' is missing."""
     event = {"name": "Bob", "country": "USA"}
@@ -17,6 +18,7 @@ def test_lambda_missing_age():
 
     assert response["status"] == "error"
     assert "Missing required field: age" in response["message"]
+
 
 def test_lambda_default_values():
     """Test Lambda handler when optional fields are missing."""

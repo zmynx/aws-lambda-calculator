@@ -1,6 +1,6 @@
 import os
 from dotenv import load_dotenv
-from logger import logger
+import logging
 
 # Load environment variables from .env file
 load_dotenv()
@@ -15,6 +15,8 @@ COST_FACTORS = {
     "free_tier_requests": int(os.getenv("FREE_TIER_REQUESTS", 1000000)),
     "request_cost_per_unit": float(os.getenv("REQUEST_COST_PER_UNIT", 0.0000002)),
 }
+
+logger = logging.getLogger(__name__)
 
 
 def calculate(

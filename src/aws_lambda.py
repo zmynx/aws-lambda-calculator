@@ -1,5 +1,6 @@
 import json
-from logger import logger
+from utils.logger import logger
+from aws_lambda_calculator import calculate
 
 
 def handler(event: dict, context: object) -> dict:
@@ -25,13 +26,15 @@ def handler(event: dict, context: object) -> dict:
         # Log extracted values
         logger.info(f"Processing user: Name={name}, Age={age}, Country={country}")
 
+        logger.info("Calculating values...")
+
         if not age:
             raise ValueError("Missing required field: age")
 
         # Example response
         response = {
             "status": "success",
-            "message": f"Hello {name} from {country}, age {age}!",
+            "message": calculate(name=name, age=age, country=country),
         }
 
         logger.info("Lambda execution completed successfully.")

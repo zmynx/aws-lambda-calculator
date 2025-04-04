@@ -52,12 +52,5 @@ file_handler.setFormatter(
 logger.addHandler(console_handler)
 logger.addHandler(file_handler)
 
-# Test logging
-logger.debug("This is a DEBUG message.")
-logger.info("This is an INFO message.")
-logger.warning("This is a WARNING message.")
-logger.error("This is an ERROR message.")
-logger.critical("This is a CRITICAL message.")
-
 # Expose the logger for imports
 __all__ = ["logger"]

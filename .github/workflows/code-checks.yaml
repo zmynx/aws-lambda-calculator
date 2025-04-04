@@ -10,7 +10,7 @@ jobs:
     name: Code Standard Checks
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read 
     defaults:
       run:
         working-directory: aws-lambda-calculator

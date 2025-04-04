@@ -32,6 +32,7 @@ pythonpath = ["src"]
 colorama = "^0.4.6"
 aws-lambda-calculator = { path = "./aws-lambda-calculator", develop = true }
 # aws-lambda-calculator = {git = "https://github.com/zMynx/aws-lambda-calculator.git", rev = "feat/package", subdirectory = "aws-lambda-calculator"}
+types-colorama = "^0.4.15.20240311"
 
 [project.urls]
 homepage = "https://zmynx.github.io/aws-lambda-calculator"

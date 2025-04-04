@@ -49,10 +49,10 @@ RUN adduser \
 USER appuser
 
 # Add the source code into the container.
-COPY src/main.py .
+COPY src/ .
 
 # Run the application.
 ENTRYPOINT [ "/usr/local/bin/python" ]
-CMD [ "main.py" ]
+CMD [ "cli.py" ]
 
 HEALTHCHECK --interval=30s --timeout=10s --retries=3 CMD ps aux | grep 'python' | grep -v 'grep' || exit 1

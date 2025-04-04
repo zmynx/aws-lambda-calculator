@@ -1,6 +1,6 @@
 [project]
 name = "aws-lambda-calculator-wrappers"
-dynamic = [ "version" ]
+dynamic = [ "version", "dependencies" ]
 description = ""
 authors = [
     {name = "Lior Dux", email = "lior.dux@develeap.com"}
@@ -24,10 +24,6 @@ version = "1.0"  # base version
 [tool.poetry.requires-plugins]
 poetry-plugin-export = ">=1.8"
 
-[tool.pytest.ini_options]
-pythonpath = ["src"]
-
-
 [tool.poetry.dependencies]
 colorama = "^0.4.6"
 aws-lambda-calculator = { path = "./aws-lambda-calculator", develop = true }
@@ -40,6 +36,7 @@ repository = "https://github.com/zMynx/aws-lambda-calculator"
 documentation = "https://github.com/zMynx/aws-lambda-calculator/docs/"
 
 [tool.pytest.ini_options]
+pythonpath = ["src"]
 addopts = """
     --cov
     --cov-report=term-missing
@@ -48,7 +45,6 @@ addopts = """
 testpaths = ["tests"]
 
 [tool.poetry.group.dev.dependencies]
-black = "^25.1.0"
 ruff = "^0.9.7"
 pytest = "^8.3.4"
 mypy = "^1.15.0"

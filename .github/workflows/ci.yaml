@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   code-checks:
-    uses: ${{ github.repository }}/.github/workflows/code-checks.yaml@${{ github.ref}}
+    uses: '${{ github.repository }}'/.github/workflows/code-checks.yaml@'${{ github.ref }}'
 
   unit-tests:
     uses: .github/workflows/unit-tests.yaml

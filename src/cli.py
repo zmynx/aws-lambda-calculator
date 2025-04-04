@@ -13,12 +13,19 @@ def parse_args() -> argparse.Namespace:
 
     # Required arguments
     parser.add_argument(
-        "-n", "--name", type=str, required=True, help="Name of the user"
+        "-d", "--duration-ms", type=int, required=True, help="Duration in milliseconds"
     )
-    parser.add_argument("-a", "--age", type=int, required=True, help="Age of the user")
     parser.add_argument(
-        "-c", "--country", type=str, required=True, help="Country of the user"
+        "-r",
+        "--requests-millions",
+        type=int,
+        required=True,
+        help="Requests in millions",
     )
+    parser.add_argument(
+        "-c", "--concurrency", type=int, required=True, help="Concurrency level"
+    )
+    parser.add_argument("-m", "--ram-gb", type=float, required=True, help="RAM in GB")
 
     # Optional verbose flag
     parser.add_argument(
@@ -29,7 +36,7 @@ def parse_args() -> argparse.Namespace:
 
 
 def run() -> None:
-    """Main function to parse arguments and execute my_function."""
+    """Main function to parse arguments and execute calculate."""
     try:
         args = parse_args()
 
@@ -40,9 +47,16 @@ def run() -> None:
         logger.info("Starting CLI tool...")
         logger.debug(f"Arguments received: {vars(args)}")
 
-        # Call the function with parsed values
-        calculate(name=args.name, age=args.age, country=args.country)
+        # Call the calculate function with parsed values
+        total_cost = calculate(
+            duration_ms=args.duration_ms,
+            requests_millions=args.requests_millions,
+            concurrency=args.concurrency,
+            ram_gb=args.ram_gb,
+        )
 
+        print(f"Total cost: {total_cost:.6f} USD")
+        logger.info(f"Total cost: {total_cost:.6f} USD")
         logger.info("Execution completed successfully.")
 
     except Exception as e:

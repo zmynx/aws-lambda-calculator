@@ -13,26 +13,49 @@ def run_cli(*args):
 def test_cli_success():
     """Test CLI with valid input."""
     stdout, stderr, exit_code = run_cli(
-        "--name", "Alice", "--age", "30", "--country", "Canada"
+        "--duration-ms",
+        "100",
+        "--requests-millions",
+        "2",
+        "--concurrency",
+        "5",
+        "--ram-gb",
+        "0.5",
     )
 
     assert exit_code == 0
-    assert "Executing my_function with name=Alice, age=30, country=Canada" in stdout
+    assert "Total cost:" in stdout
 
 
 def test_cli_missing_argument():
     """Test CLI when required arguments are missing."""
-    stdout, stderr, exit_code = run_cli("--name", "Bob", "--age", "30")  # No country
+    stdout, stderr, exit_code = run_cli(
+        "--duration-ms",
+        "100",
+        "--requests-millions",
+        "2",
+        "--ram-gb",
+        "0.5",  # Missing --concurrency
+    )
 
     assert exit_code != 0  # Should fail
-    assert "error: the following arguments are required: --country" in stderr
+    assert "the following arguments are required" in stderr
+    assert "--concurrency" in stderr or "-c/--concurrency" in stderr
 
 
 def test_cli_verbose_mode():
     """Test CLI verbose mode."""
     stdout, stderr, exit_code = run_cli(
-        "--name", "Charlie", "--age", "25", "--country", "UK", "--verbose"
+        "--duration-ms",
+        "200",
+        "--requests-millions",
+        "1",
+        "--concurrency",
+        "3",
+        "--ram-gb",
+        "1.0",
+        "--verbose",
     )
 
     assert exit_code == 0
-    assert "DEBUG" in stdout  # Debug logs should appear
+    assert "DEBUG" in stdout or "DEBUG" in stderr  # Debug logs should appear

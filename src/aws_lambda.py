@@ -18,28 +18,27 @@ def handler(event: dict, context: object) -> dict:
     logger.debug(f"Received event: {json.dumps(event, indent=2)}")
 
     try:
-        # Extracting data (modify as per your use case)
-        name = event.get("name", "Guest")
-        age = event.get("age")
-        country = event.get("country", "Unknown")
+        duration_ms = event["duration_ms"]
+        requests_millions = event["requests_millions"]
+        concurrency = event["concurrency"]
+        ram_gb = event["ram_gb"]
 
-        # Log extracted values
-        logger.info(f"Processing user: Name={name}, Age={age}, Country={country}")
+        logger.info("Calculating cost...")
+        cost = calculate(
+            duration_ms=duration_ms,
+            requests_millions=requests_millions,
+            concurrency=concurrency,
+            ram_gb=ram_gb,
+        )
 
-        logger.info("Calculating values...")
-
-        if not age:
-            raise ValueError("Missing required field: age")
-
-        # Example response
-        response = {
+        return {
             "status": "success",
-            "message": calculate(name=name, age=age, country=country),
+            "cost": round(cost, 6),
         }
 
-        logger.info("Lambda execution completed successfully.")
-        return response
-
+    except KeyError as e:
+        logger.error(f"Missing required field: {e}")
+        return {"status": "error", "message": f"Missing required field: {e}"}
     except Exception as e:
         logger.error(f"Error processing request: {e}")
         return {"status": "error", "message": str(e)}

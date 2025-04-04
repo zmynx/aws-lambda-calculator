@@ -25,6 +25,6 @@ from aws_lambda_calculator.calculator import calculate
 )
 def test_calculate(duration, requests_millions, concurrency, ram, expected_cost):
     cost = calculate(duration, requests_millions, concurrency, ram)
-    assert round(cost, 5) == round(
-        expected_cost, 5
-    ), f"Expected {expected_cost}, got {cost}"
+    assert round(cost, 5) == round(expected_cost, 5), (
+        f"Expected {expected_cost}, got {cost}"
+    )

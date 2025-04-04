@@ -15,9 +15,10 @@ export class CdkAppStack extends cdk.Stack {
     super(scope, id, props);
 
     // Lambda function
-    const dockerImagePath = path.resolve(__dirname, "../lambda");
+    const dockerImagePath = path.resolve(__dirname, "../../..");
     const dockerAsset = new ecrAssets.DockerImageAsset(this, "MyLambdaImage", {
       directory: dockerImagePath, // Absolute path to Dockerfile
+      file: "Containerfile.lambda", // Specify the Containerfile (or Dockerfile) to use
     });
     const myLambda = new lambda.DockerImageFunction(this, "MyLambdaFunction", {
       code: lambda.DockerImageCode.fromEcr(dockerAsset.repository),

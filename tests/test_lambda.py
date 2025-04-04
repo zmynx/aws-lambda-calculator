@@ -1,4 +1,3 @@
-import pytest
 from aws_lambda import handler
 
 

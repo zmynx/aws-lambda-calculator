@@ -1,3 +1,4 @@
 **/*cache*
 .pytest_cache
 **/*secret*
+**/*.log

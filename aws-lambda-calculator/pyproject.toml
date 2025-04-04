@@ -12,6 +12,8 @@ readme = "README.md"
 requires-python = ">=3.13"
 license = { file = "../docs/LICENSE.md" }
 dependencies = [
+    "python-dotenv (>=1.1.0,<2.0.0)",
+    "colorama (>=0.4.6,<0.5.0)"
 ]
 
 [tool.poetry]

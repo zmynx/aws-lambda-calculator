@@ -29,7 +29,6 @@ repository = "https://github.com/zMynx/aws-lambda-calculator"
 documentation = "https://github.com/zMynx/aws-lambda-calculator/docs/"
 
 [tool.poetry.group.dev.dependencies]
-black = "^25.1.0"
 ruff = "^0.9.7"
 pytest = "^8.3.4"
 mypy = "^1.15.0"

@@ -72,11 +72,6 @@ type-check:
     echo "Running type checks with mypy..."
     python -m poetry run mypy .
 
-# Format code with black
-format:
-    echo "Formatting code with black..."
-    python -m poetry run black .
-
 # Install dependencies with Poetry
 install:
     echo "Installing dependencies with Poetry..."
@@ -93,7 +88,6 @@ export:
 checks:
     just lint
     just type-check
-    just format
 
 # Create a tarball, wheel, dist from this package
 build:

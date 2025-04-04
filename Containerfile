@@ -1,6 +1,11 @@
 # syntax=docker/dockerfile:1
 ARG PYTHON_VERSION=3.13.0
-FROM python:${PYTHON_VERSION}-slim AS base
+ARG LAMBDA_PYTHON_VERSION=3.13
+
+##############################
+# Builder Stage
+##############################
+FROM python:${PYTHON_VERSION}-slim AS builder
 
 # Prevents Python from writing pyc files.
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -9,13 +14,6 @@ ENV PYTHONDONTWRITEBYTECODE=1
 # the application crashes without emitting any logs due to buffering.
 ENV PYTHONUNBUFFERED=1
 
-# Download dependencies as a separate step to take advantage of Docker's caching.
-# Leverage a cache mount to /root/.cache/pip to speed up subsequent builds.
-# Leverage a bind mount to requirements.txt to avoid having to copy them into
-# into this layer.
-# RUN --mount=type=cache,target=/root/.cache/pip \
-#     --mount=type=bind,source=requirements.txt,target=requirements.txt \
-#     python -m pip install -r requirements.txt
 
 WORKDIR /app
 
@@ -23,36 +21,53 @@ WORKDIR /app
 RUN apt-get update --yes &&\
 	apt-get install git --yes
 
+# Prepare custom install path
+RUN mkdir -p /install
+
 # Install dependencies
 COPY requirements.txt .
 RUN python -m pip install --upgrade pip && \
-	python -m pip install -r requirements.txt
+	python -m pip install --prefix=/install -r requirements.txt
 
 ARG VERSION=main
 ENV VERSION=${VERSION}
-RUN git config --global http.sslverify false
-RUN python -m pip install aws-lambda-calculator@git+https://github.com/zmynx/aws-lambda-calculator#egg=aws-lambda-calculator&subdirectory=aws-lambda-calculator@"${VERSION}"
-
-# Create a non-privileged user that the app will run under.
-# See https://docs.docker.com/go/dockerfile-user-best-practices/
-ARG UID=10001
-RUN adduser \
-	--disabled-password \
-	--gecos "" \
-	--home "/nonexistent" \
-	--shell "/sbin/nologin" \
-	--no-create-home \
-	--uid "${UID}" \
-	appuser
-
-# Switch to the non-privileged user to run the application.
-USER appuser
+# RUN git config --global http.sslverify false
+RUN python -m pip install --prefix=/install --no-build-isolation --no-cache-dir aws-lambda-calculator@git+https://github.com/zmynx/aws-lambda-calculator#egg=aws-lambda-calculator&subdirectory=aws-lambda-calculator@"${VERSION}"
 
 # Add the source code into the container.
-COPY src/main.py .
+COPY src/ .
+
+##############################
+# Final Stage (Distroless)
+##############################
+FROM gcr.io/distroless/python3-debian12 as distroless
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+	PYTHONUNBUFFERED=1
+
+WORKDIR /app
+
+# Copy dependencies and app code from builder
+COPY --from=builder /install /usr/local
+COPY --from=builder /app/src/cli.py . 
 
 # Run the application.
-ENTRYPOINT [ "/usr/local/bin/python" ]
-CMD [ "main.py" ]
+ENTRYPOINT [ "/usr/local/bin/python"]
+CMD [ "cli.py" ]
 
 HEALTHCHECK --interval=30s --timeout=10s --retries=3 CMD ps aux | grep 'python' | grep -v 'grep' || exit 1
+
+
+##############################
+# Lambda Runtime Base Image
+##############################
+FROM public.ecr.aws/lambda/python:${LAMBDA_PYTHON_VERSION} AS lambda_runtime
+
+WORKDIR /var/task
+
+# Copy dependencies and app code from builder
+COPY --from=builder /install /usr/local
+COPY --from=builder /app/src/aws_lambda.py .
+
+# Lambda expects to find the function handler as an environment variable
+CMD [ "aws_lambda.handler" ]

@@ -1,5 +1,5 @@
 [project]
-name = "aws-lambda-calculator-cli"
+name = "aws-lambda-calculator-wrappers"
 dynamic = [ "version" ]
 description = ""
 authors = [
@@ -15,15 +15,27 @@ license = { file = "./docs/LICENSE.md" }
 [tool.poetry]
 package-mode = false
 version = "1.0"  # base version
+# packages = [
+#   { include = "cli", from = "src" },
+#   { include = "lambda", from = "src" }
+#   # { include = "utils", from = "src" }
+# ]
 
 [tool.poetry.requires-plugins]
 poetry-plugin-export = ">=1.8"
 
-# [tool.poetry.dependencies]
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+
+
+[tool.poetry.dependencies]
+colorama = "^0.4.6"
+aws-lambda-calculator = { path = "./aws-lambda-calculator", develop = true }
 # aws-lambda-calculator = {git = "https://github.com/zMynx/aws-lambda-calculator.git", rev = "feat/package", subdirectory = "aws-lambda-calculator"}
+types-colorama = "^0.4.15.20240311"
 
 [project.urls]
-homepage = "https://github.com/zMynx/aws-lambda-calculator"
+homepage = "https://zmynx.github.io/aws-lambda-calculator"
 repository = "https://github.com/zMynx/aws-lambda-calculator"
 documentation = "https://github.com/zMynx/aws-lambda-calculator/docs/"
 

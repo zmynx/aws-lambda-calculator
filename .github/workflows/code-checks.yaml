@@ -47,9 +47,6 @@ jobs:
           python -m poetry run ruff format --check
           python -m poetry run ruff check
 
-      - name: Format (black)
-        run: python -m poetry run black --check .
-
       - name: Types cheking (mypy)
         run: python -m poetry run mypy --check-untyped-defs .
 

@@ -8,6 +8,7 @@ import * as logs from "aws-cdk-lib/aws-logs";
 
 export interface CdkAppStackProps extends cdk.StackProps {
   readonly env: string;
+  readonly lambdaPythonVersion: string;
 }
 
 export class CdkAppStack extends cdk.Stack {
@@ -18,7 +19,13 @@ export class CdkAppStack extends cdk.Stack {
     const dockerImagePath = path.resolve(__dirname, "../../..");
     const dockerAsset = new ecrAssets.DockerImageAsset(this, "MyLambdaImage", {
       directory: dockerImagePath, // Absolute path to Dockerfile
-      file: "Containerfile.lambda", // Specify the Containerfile (or Dockerfile) to use
+      file: "Containerfile", // Specify the Containerfile (or Dockerfile) to use
+      target: "build", // Specify the build stage if using multi-stage builds
+      buildArgs: {
+        // Add any build arguments here if needed
+        // Example: MY_BUILD_ARG: "value"
+        LAMBDA_PYTHON_VERSION: props.pythonVersion,
+      },
     });
     const myLambda = new lambda.DockerImageFunction(this, "MyLambdaFunction", {
       code: lambda.DockerImageCode.fromEcr(dockerAsset.repository),

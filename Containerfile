@@ -39,19 +39,35 @@ COPY src/ .
 ##############################
 # Final Stage (Distroless)
 ##############################
-FROM gcr.io/distroless/python3-debian12
+FROM gcr.io/distroless/python3-debian12 as distroless
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
 	PYTHONUNBUFFERED=1
 
-# Copy dependencies and app code from builder
-COPY --from=builder /install /usr/local
-COPY --from=builder /app /app
-
 WORKDIR /app
 
+# Copy dependencies and app code from builder
+COPY --from=builder /install /usr/local
+COPY --from=builder /app/src/cli.py . 
+
 # Run the application.
-ENTRYPOINT [ "/usr/local/bin/python", "src/"]
+ENTRYPOINT [ "/usr/local/bin/python"]
 CMD [ "cli.py" ]
 
 HEALTHCHECK --interval=30s --timeout=10s --retries=3 CMD ps aux | grep 'python' | grep -v 'grep' || exit 1
+
+
+##############################
+# Lambda Runtime Base Image
+##############################
+ARG LAMBDA_PYTHON_VERSION=3.13
+FROM public.ecr.aws/lambda/python:${LAMBDA_PYTHON_VERSION} AS lambda_runtime
+
+WORKDIR /var/task
+
+# Copy dependencies and app code from builder
+COPY --from=builder /install /usr/local
+COPY --from=builder /app/src/aws_lambda.py .
+
+# Lambda expects to find the function handler as an environment variable
+CMD [ "aws_lambda.handler" ]

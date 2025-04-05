@@ -49,7 +49,7 @@ WORKDIR /app
 
 # Copy dependencies and app code from builder
 COPY --from=builder /install /usr/local
-COPY --from=builder /app/src/cli.py .
+COPY --from=builder /app/cli.py .
 
 # Run the application.
 ENTRYPOINT [ "/usr/local/bin/python"]
@@ -67,7 +67,7 @@ WORKDIR /var/task
 
 # Copy dependencies and app code from builder
 COPY --from=builder /install /usr/local
-COPY --from=builder /app/src/aws_lambda.py .
+COPY --from=builder /app/aws_lambda.py .
 
 # Lambda expects to find the function handler as an environment variable
 CMD [ "aws_lambda.handler" ]

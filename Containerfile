@@ -40,7 +40,7 @@ COPY src/ .
 ##############################
 # Final Stage (Distroless)
 ##############################
-FROM gcr.io/distroless/python3-debian12 as distroless
+FROM gcr.io/distroless/python3-debian12:nonroot as distroless
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
 	PYTHONUNBUFFERED=1
@@ -49,7 +49,7 @@ WORKDIR /app
 
 # Copy dependencies and app code from builder
 COPY --from=builder /install /usr/local
-COPY --from=builder /app/src/cli.py . 
+COPY --from=builder /app/src/cli.py .
 
 # Run the application.
 ENTRYPOINT [ "/usr/local/bin/python"]

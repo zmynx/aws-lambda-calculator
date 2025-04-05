@@ -40,7 +40,7 @@ COPY src/ .
 ##############################
 # Final Stage (Distroless)
 ##############################
-FROM gcr.io/distroless/python3-debian12 as distroless
+FROM gcr.io/distroless/python3-debian12:nonroot as distroless
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
 	PYTHONUNBUFFERED=1

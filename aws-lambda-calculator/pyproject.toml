@@ -39,6 +39,10 @@ addopts = """
     --cov-branch
 """
 
+[tool.coverage.run]
+branch = true
+relative_files = true
+
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.9.7"
 pytest = "^8.3.4"

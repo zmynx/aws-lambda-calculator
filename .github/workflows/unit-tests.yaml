@@ -9,9 +9,9 @@ jobs:
   unit-tests:
     name: Unit Tests
     runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
-      contents: write
+    permissions: write-all
+    #   pull-requests: write
+    #   contents: write
     defaults:
       run:
         shell: bash

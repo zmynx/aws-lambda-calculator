@@ -75,7 +75,7 @@ jobs:
         with:
           context: .
           file: Containerfile
-          platforms: linux/amd64,linux/arm/v7,linux/arm64
+          platforms: linux/amd64,linux/arm64
           build-args: VERSION='${{ steps.release-version.outputs.release_version }}'
           target: distroless
           labels: |

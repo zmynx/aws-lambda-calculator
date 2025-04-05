@@ -1,7 +1,7 @@
 [project]
 name = "aws-lambda-calculator-wrappers"
 dynamic = [ "version", "dependencies" ]
-description = ""
+description = "AWS Lambda calculator wrappers. Supporting AWS Lambda calculator and AWS Lambda calculator CLI."
 authors = [
     {name = "Lior Dux", email = "lior.dux@develeap.com"}
 ]
@@ -26,9 +26,9 @@ poetry-plugin-export = ">=1.8"
 
 [tool.poetry.dependencies]
 colorama = "^0.4.6"
+types-colorama = "^0.4.15.20240311"
 aws-lambda-calculator = { path = "./aws-lambda-calculator", develop = true }
 # aws-lambda-calculator = {git = "https://github.com/zMynx/aws-lambda-calculator.git", rev = "feat/package", subdirectory = "aws-lambda-calculator"}
-types-colorama = "^0.4.15.20240311"
 
 [project.urls]
 homepage = "https://zmynx.github.io/aws-lambda-calculator"
@@ -37,12 +37,13 @@ documentation = "https://github.com/zMynx/aws-lambda-calculator/docs/"
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]
+testpaths = ["tests"]
 addopts = """
     --cov
     --cov-report=term-missing
     --cov-report=xml:coverage.xml
+    --cov-branch
 """
-testpaths = ["tests"]
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.9.7"

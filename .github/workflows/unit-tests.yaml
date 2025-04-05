@@ -39,3 +39,8 @@ jobs:
 
       - name: Test the new package
         run: python -m poetry run pytest -svv tests/
+
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v4
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

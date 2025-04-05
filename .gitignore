@@ -4,3 +4,5 @@
 **/*.log
 **/*.coverage
 **/coverage.xml
+**/coverage.xml
+**/*.coverage

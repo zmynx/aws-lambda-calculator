@@ -3,7 +3,7 @@
 [[package]]
 name = "aws-lambda-calculator"
 version = "1.0"
-description = ""
+description = "AWS Lambda Calculator. Python library for calculating AWS Lambda costs."
 optional = false
 python-versions = ">=3.13"
 groups = ["main"]
@@ -11,8 +11,9 @@ files = []
 develop = true
 
 [package.dependencies]
-colorama = ">=0.4.6,<0.5.0"
-python-dotenv = ">=1.1.0,<2.0.0"
+colorama = "^0.4.6"
+python-dotenv = "^1.1.0"
+types-colorama = "^0.4.15.20240311"
 
 [package.source]
 type = "directory"

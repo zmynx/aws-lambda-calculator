@@ -49,7 +49,7 @@ WORKDIR /app
 
 # Copy dependencies and app code from builder
 COPY --from=builder /install /usr/local
-COPY --from=builder /app/src/cli.py . 
+COPY --from=builder /app/src/cli.py .
 
 # Run the application.
 ENTRYPOINT [ "/usr/local/bin/python"]

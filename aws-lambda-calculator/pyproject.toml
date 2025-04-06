@@ -10,7 +10,7 @@ maintainers = [
 ]
 readme = "README.md"
 requires-python = ">=3.13"
-license = { file = "../docs/LICENSE.md" }
+license = "../docs/LICENSE.md"
 dependencies = [
 ]
 

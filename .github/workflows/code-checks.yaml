@@ -1,0 +1,59 @@
+# .github/workflows/code-checks.yaml
+---
+name: Code Standard Checks
+on:
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  code-checks:
+    name: Code Standard Checks
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read 
+    defaults:
+      run:
+        working-directory: aws-lambda-calculator
+        shell: bash
+    steps:
+      - uses: step-security/harden-runner@446798f8213ac2e75931c1b0769676d927801858  # v2.10.3
+        with:
+          egress-policy: audit
+          disable-sudo: true
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install poetry
+        run: pipx install poetry==2.1.1
+
+      - name: Setup Python
+        uses: actions/setup-python@v5.4.0
+        with:
+          python-version-file: pyproject.toml
+          cache: poetry
+
+      - name: Setup poetry
+        run: |
+          python --version
+          python -m pip install --upgrade pip
+          python -m pip install poetry==2.1.1
+
+      - name: Install dependencies
+        run: python -m poetry install
+
+      - name: Lint (ruff)
+        run: |
+          python -m poetry run ruff format --check
+          python -m poetry run ruff check
+
+      - name: Types cheking (mypy)
+        run: python -m poetry run mypy --check-untyped-defs .
+
+      - name: Notify failure if checks failed
+        if: ${{ failure() }}
+        env:
+          msg: Some of the code standard checks have failed. Please run `just checks`
+            locally before pushing your changes.
+        run: |-
+          echo "::error::${msg}"

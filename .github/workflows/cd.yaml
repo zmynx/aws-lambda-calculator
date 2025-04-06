@@ -98,56 +98,9 @@ jobs:
           subject-name: aws_lambda_calculator
           subject-digest: sha256:${{ steps.upload.outputs.artifact-digest }}
 
-  test-package:
-    needs: package
-    name: Test uploaded package
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    defaults:
-      run:
-        shell: bash
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4.2.2
-
-      - name: Install poetry
-        run: pipx install poetry==2.1.1
-
-      - name: Setup Python
-        uses: actions/setup-python@v5.4.0
-        with:
-          python-version-file: pyproject.toml
-          cache: poetry
-
-      - name: Setup poetry
-        run: |
-          python --version
-          python -m pip install --upgrade pip
-          python -m pip install poetry==2.1.1
-
-      - name: Download a Build Artifact
-        id: download-artifact
-        uses: actions/download-artifact@v4.1.8
-        with:
-          name: aws_lambda_calculator
-          github-token: ${{ github.token }}
-          repository: ${{ github.repository }}
-          run-id: ${{ github.run_id }}
-
-      - name: Add the package
-        run: python -m poetry add ${{ steps.download-artifact.outputs.download-path }}/aws_lambda_calculator-${{ needs.package.outputs.release_version }}-py3-none-any.whl
-
-      - name: Install dependencies
-        run: python -m poetry install
-
-      - name: Test the new package
-        run: python -m poetry run pytest
-
   tag:
     needs:
       - package
-      - test-package
     name: Add Official tags
     runs-on: ubuntu-latest
     permissions:

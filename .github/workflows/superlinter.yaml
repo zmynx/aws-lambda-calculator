@@ -7,60 +7,7 @@ on:
     branches: [main]
 
 jobs:
-  code-checks:
-    name: Code Standard Checks
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    defaults:
-      run:
-        working-directory: aws-lambda-calculator
-        shell: bash
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Install Poetry
-        run: |
-          curl -sSL https://install.python-poetry.org | python3 -
-          echo "$HOME/.local/bin" >> $GITHUB_PATH  # ✅ Add Poetry to PATH
-          export PATH="$HOME/.local/bin:$PATH"
-
-      - name: Setup Python
-        uses: actions/setup-python@v5.4.0
-        with:
-          python-version-file: pyproject.toml
-          cache: poetry
-
-      - name: Setup poetry
-        run: |
-          poetry --version
-          python --version
-          python -m pip install --upgrade pip
-
-      - name: Install dependencies
-        run: poetry install
-
-      - name: Lint (ruff)
-        run: |
-          poetry run ruff format --check
-          poetry run ruff check
-
-      - name: Format (black)
-        run: poetry run black --check .
-
-      - name: Types checking (mypy)
-        run: poetry run mypy --check-untyped-defs .
-
-      - name: Notify failure if checks failed
-        if: ${{ failure() }}
-        env:
-          msg: Some of the code standard checks have failed. Please run `just checks` locally before pushing your changes.
-        run: |
-          echo "::error::${msg}"
-
   super-linter:
-    needs: [code-checks]
     name: Lint YAML + Code with Super-Linter
     runs-on: ubuntu-latest
     permissions:

@@ -1,3 +1,8 @@
 **/*cache*
 .pytest_cache
 **/*secret*
+**/*.log
+**/*.coverage
+**/coverage.xml
+**/coverage.xml
+**/*.coverage

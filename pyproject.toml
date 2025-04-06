@@ -1,7 +1,7 @@
 [project]
-name = "aws-lambda-calculator-cli"
-dynamic = [ "version" ]
-description = ""
+name = "aws-lambda-calculator-wrappers"
+dynamic = [ "version", "dependencies" ]
+description = "AWS Lambda calculator wrappers. Supporting AWS Lambda calculator and AWS Lambda calculator CLI."
 authors = [
     {name = "Lior Dux", email = "lior.dux@develeap.com"}
 ]
@@ -15,23 +15,45 @@ license = "./docs/LICENSE.md"
 [tool.poetry]
 package-mode = false
 version = "1.0"  # base version
+# packages = [
+#   { include = "cli", from = "src" },
+#   { include = "lambda", from = "src" }
+#   # { include = "utils", from = "src" }
+# ]
 
 [tool.poetry.requires-plugins]
 poetry-plugin-export = ">=1.8"
 
-# [tool.poetry.dependencies]
+[tool.poetry.dependencies]
+colorama = "^0.4.6"
+types-colorama = "^0.4.15.20240311"
+aws-lambda-calculator = { path = "./aws-lambda-calculator", develop = true }
 # aws-lambda-calculator = {git = "https://github.com/zMynx/aws-lambda-calculator.git", rev = "feat/package", subdirectory = "aws-lambda-calculator"}
 
 [project.urls]
-homepage = "https://github.com/zMynx/aws-lambda-calculator"
+homepage = "https://zmynx.github.io/aws-lambda-calculator"
 repository = "https://github.com/zMynx/aws-lambda-calculator"
 documentation = "https://github.com/zMynx/aws-lambda-calculator/docs/"
 
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+addopts = """
+    --cov
+    --cov-report=term-missing
+    --cov-report=xml:coverage.xml
+    --cov-branch
+"""
+
+[tool.coverage.run]
+branch = true
+relative_files = true
+
 [tool.poetry.group.dev.dependencies]
-black = "^25.1.0"
 ruff = "^0.9.7"
 pytest = "^8.3.4"
 mypy = "^1.15.0"
+pytest-cov = "^6.1.0"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]

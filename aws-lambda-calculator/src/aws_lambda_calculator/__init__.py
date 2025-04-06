@@ -1,3 +1,3 @@
-from .aws_lambda_calculator import run, calc_cost
+from .calculator import calculate
 
-__all__ = ["run", "calc_cost"]
+__all__ = ["calculate"]

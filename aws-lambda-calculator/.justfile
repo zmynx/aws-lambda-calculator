@@ -53,7 +53,7 @@ all: env && clean install checks run
 # Set env
 env:
     echo "Setting up the environment..."
-    pyenv local 3.13.0
+    pyenv local 3.13
     python --version
 
 # Run the Python script
@@ -98,6 +98,10 @@ build:
 version ARG:
     echo "Updating the project package version..."
     python -m poetry version {{ARG}}
+
+test:
+    echo "Running tests..."
+    python -m poetry run pytest -svv
 
 ####################################################################################################################################################################################
 ## Podman

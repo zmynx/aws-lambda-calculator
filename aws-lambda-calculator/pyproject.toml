@@ -10,7 +10,7 @@ maintainers = [
 ]
 readme = "README.md"
 requires-python = ">=3.13"
-license = { file = "../docs/LICENSE.md" }
+license = "Apache-2.0"
 
 [tool.poetry]
 packages = [{include = "aws_lambda_calculator", from = "src"}]

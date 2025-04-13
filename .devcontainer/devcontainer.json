@@ -12,7 +12,7 @@
       "userGid": "1000"
     },
     "ghcr.io/devcontainers/features/git:1": {
-      "version": "latest",
+      "version": "2.39.5",
       "ppa": "false"
     },
     "ghcr.io/devcontainers/features/github-cli:1": {

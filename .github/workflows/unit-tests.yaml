@@ -46,7 +46,7 @@ jobs:
       - name: Get Cover
         uses: orgoro/coverage@v3.2
         with:
-            coverageFile: coverage.xml
+            coverageFile: ./aws-lambda-calculator/coverage.xml
             token: ${{ github.token }}
 
       - name: Coverage comment

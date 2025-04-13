@@ -6,3 +6,31 @@
 **/coverage.xml
 **/coverage.xml
 **/*.coverage
+
+# ── Nix ─────────────────────────────────────────────────────────────
+/result
+/result-*
+*.drv
+*.lock
+*.gc-daemon-log
+
+# Nix Flakes
+/flake.lock
+
+# direnv (optional but recommended)
+/.envrc
+.direnv/
+
+# Python (since you're using pyenv)
+/.python-version
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+.env/
+.venv/
+
+# macOS & general system clutter
+.DS_Store
+

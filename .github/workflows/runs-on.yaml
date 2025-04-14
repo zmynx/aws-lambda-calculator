@@ -1,0 +1,25 @@
+# .github/workflows/runs-on.yaml
+---
+name: Runs-on
+
+on:
+  workflow_dispatch:
+
+jobs:
+  runs-on:
+    name: Runs-on demo
+    runs-on:
+      - runs-on=${{ github.run_id }}
+      - runner=2cpu-linux-x64
+    permissions: read-all
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.2.2
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+
+      - run: echo "Hello world from runs-on!"

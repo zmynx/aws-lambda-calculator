@@ -9,6 +9,7 @@ jobs:
   code-checks:
     name: Code Standard Checks
     runs-on:
+      - linux
       - poc
       - test
     permissions:

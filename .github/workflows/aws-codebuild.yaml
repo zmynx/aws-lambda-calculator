@@ -2,6 +2,7 @@
 ---
 name: AWS CodeBuild
 on:
+  push:
   workflow_dispatch:
   
 jobs:

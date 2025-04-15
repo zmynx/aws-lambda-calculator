@@ -1,4 +1,6 @@
-name: Hello World
+# .github/workflows/aws-codebuild.yaml
+---
+name: AWS CodeBuild
 on:
   workflow_dispatch:
   

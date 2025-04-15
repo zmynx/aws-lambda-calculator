@@ -8,7 +8,9 @@ on:
 jobs:
   code-checks:
     name: Code Standard Checks
-    runs-on: ubuntu-latest
+    runs-on:
+      - poc
+      - test
     permissions:
       contents: read 
     defaults:

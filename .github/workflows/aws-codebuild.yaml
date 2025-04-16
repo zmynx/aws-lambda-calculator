@@ -2,11 +2,27 @@
 ---
 name: AWS CodeBuild
 on:
+  push:
   workflow_dispatch:
-  
+  schedule:
+    - cron: '15,45 * * * *' # twice an hour
+
 jobs:
-  Hello-World-Job:
-    runs-on:
-      - codebuild-poc-codebuild-github-runners-${{ github.run_id }}-${{ github.run_attempt }}
-    steps:
-      - run: echo "Hello World!"
+  code-checks:
+    uses: zmynx/aws-lambda-calculator/.github/workflows/code-checks.yaml@feat/aws-codebuild
+    permissions:
+      contents: read
+
+  unit-tests:
+    uses: zmynx/aws-lambda-calculator/.github/workflows/unit-tests.yaml@feat/aws-codebuild
+    permissions:
+      contents: write
+      pull-requests: write
+    secrets: inherit
+
+  integration-tests:
+    uses: zmynx/aws-lambda-calculator/.github/workflows/integration-tests.yaml@feat/aws-codebuild
+    permissions:
+      contents: write
+      pull-requests: write
+    secrets: inherit

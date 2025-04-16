@@ -8,7 +8,12 @@ on:
 jobs:
   integration-tests:
     name: Integration Tests
-    runs-on: ubuntu-latest
+    runs-on:
+      - runs-on=${{ github.run_id }}
+      - runner=2cpu-linux-x64
+      - env=poc
+      - spot=lowest-price
+      - region=eu-central-1
     permissions:
       contents: write
       pull-requests: write

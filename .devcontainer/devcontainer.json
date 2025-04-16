@@ -3,7 +3,7 @@
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
   "customizations": {
     "devpod": {
-      "prebuildRepository": "ghcr.io/zmynx/devpod-demo:amd64"
+      "prebuildRepository": "ghcr.io/zmynx/devpod-demo"
     }
   },
   "features": {

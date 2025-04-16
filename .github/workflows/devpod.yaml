@@ -3,6 +3,7 @@
 name: Devcontainer Build
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - '.devcontainer/**'

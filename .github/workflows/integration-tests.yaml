@@ -8,7 +8,10 @@ on:
 jobs:
   integration-tests:
     name: Integration Tests
-    runs-on: ubuntu-latest
+    runs-on:
+      - linux
+      - poc
+      - test
     permissions:
       contents: write
       pull-requests: write

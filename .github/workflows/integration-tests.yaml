@@ -24,9 +24,6 @@ jobs:
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
 
-      - name: Install poetry
-        run: pipx install poetry==2.1.1
-
       - name: Setup Python
         uses: actions/setup-python@v5.4.0
         with:

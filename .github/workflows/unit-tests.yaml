@@ -12,6 +12,7 @@ jobs:
       - linux
       - poc
       - test
+      - ubuntu-latest
     permissions:
       pull-requests: write
       contents: write

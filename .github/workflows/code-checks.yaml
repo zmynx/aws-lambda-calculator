@@ -12,6 +12,7 @@ jobs:
       - linux
       - poc
       - test
+      - ubuntu-latest
     permissions:
       contents: read 
     defaults:

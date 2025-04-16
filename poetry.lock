@@ -5,7 +5,7 @@ name = "aws-lambda-calculator"
 version = "1.0"
 description = "AWS Lambda Calculator. Python library for calculating AWS Lambda costs."
 optional = false
-python-versions = ">=3.13"
+python-versions = ">=3.12"
 groups = ["main"]
 files = []
 develop = true
@@ -321,5 +321,5 @@ files = [
 
 [metadata]
 lock-version = "2.1"
-python-versions = ">=3.13"
-content-hash = "9e4c7c778f5593606b4206e3b0a848b31e77dfd0aca904fd72a879dddfc91780"
+python-versions = ">=3.12"
+content-hash = "483ea9f2b5f70460a5589771804c90e3e6c2e1f65119d6a905d70dbc1653e5a4"

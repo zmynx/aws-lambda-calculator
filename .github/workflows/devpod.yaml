@@ -25,26 +25,42 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4.2.2
 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3.6.0
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3.10.0
+
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3.3.0
         with:
           registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ github.token }}
+          username: zmynxx
+          password: ${{ secret.PAT }}
+
+      - id: docker_meta
+        uses: docker/metadata-action@v5.7.0
+        with:
+          images: ghcr.io/zmynx/devpod-demo
+          tags: type=sha,format=long
 
       - name: Install Devpod
         run: |
-          if [ "${{ matrix.platform }}" == "linux/amd64" ]; then
-            curl -L -o devpod "https://github.com/loft-sh/devpod/releases/latest/download/devpod-linux-amd64" && sudo install -c -m 0755 devpod /usr/local/bin && rm -f devpod
-          elif [ "${{ matrix.platform }}" == "linux/arm64" ]; then
-            curl -L -o devpod "https://github.com/loft-sh/devpod/releases/latest/download/devpod-linux-arm64" && sudo install -c -m 0755 devpod /usr/local/bin && rm -f devpod
-          fi
+          curl -L -o devpod "https://github.com/loft-sh/devpod/releases/latest/download/devpod-linux-amd64" && sudo install -c -m 0755 devpod /usr/local/bin && rm -f devpod
+
+      - name: Set Devpod Context Options
+        run: devpod context set-options -o REGISTRY_CACHE='ghcr.io/zmynx/devpod-demo'
+
+      - name: Add docker provider
+        run: devpod provider add docker || true
 
       - name: Build with Devpod
-        working-directory: .devcontainer
         run: |
+          #!/bin/bash
+          set -exuo pipefail
+          tag=$(echo "${{ matrix.platform }}" | tr -d 'linux/') 
           devpod build . \
-            --repository ghcr.io/'${{ github.repository }}' \
+            --repository ghcr.io/zmynx/devpod-demo \
             --provider docker \
             --platform '${{ matrix.platform }}' \
-            --tag '${{ matrix.platform }}'
+            --tag "${tag}"

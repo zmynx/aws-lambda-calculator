@@ -24,12 +24,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # - name: Setup Python
-      #   uses: actions/setup-python@v5.4.0
-      #   with:
-      #     python-version-file: pyproject.toml
-      #     cache: poetry
-      #
+      - name: Setup Python
+        uses: actions/setup-python@v5.4.0
+        with:
+          python-version-file: pyproject.toml
+          cache: poetry
+
       - run: python3 --version || python2 --version || python --version
 
       - name: Setup poetry

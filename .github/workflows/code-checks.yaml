@@ -8,7 +8,7 @@ on:
 jobs:
   code-checks:
     name: Code Standard Checks
-    runs-on: ubuntu-latest
+    runs-on: codebuild-poc-codebuild-github-runners-${{ github.run_id }}-${{ github.run_attempt }}
     permissions:
       contents: read 
     defaults:

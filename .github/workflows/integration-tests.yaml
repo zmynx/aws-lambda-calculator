@@ -12,6 +12,7 @@ jobs:
       - linux
       - poc
       - test
+      - terraform-aws-github-runner
     permissions:
       contents: write
       pull-requests: write

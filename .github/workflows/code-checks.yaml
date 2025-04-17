@@ -36,7 +36,7 @@ jobs:
 
       - name: Setup poetry
         run: |
-          sudo dnf install python3.13 python3.13-pip --yes
+          sudo dnf install python3.13 python3.13-pip -y
           python3.13 --version
           python3.13 -m pip install --upgrade pip
           python3.13 -m pip install poetry==2.1.1

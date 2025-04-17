@@ -36,6 +36,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - run: pyenv global 3.13 || pyenv install 3.13
+
       # - name: Setup Python
       #   uses: actions/setup-python@v5.4.0
       #   with:
@@ -44,22 +46,20 @@ jobs:
 
       - name: Setup poetry
         run: |
-          sudo dnf update
-          sudo dnf install python3.12 python3.12-pip -y
-          python3.12 --version
-          python3.12 -m pip install --upgrade pip
-          python3.12 -m pip install poetry==2.1.1
+          python --version
+          python -m pip install --upgrade pip
+          python -m pip install poetry==2.1.1
 
       - name: Install dependencies
-        run: python3.12 -m poetry install
+        run: python -m poetry install
 
       - name: Lint (ruff)
         run: |
-          python3.12 -m poetry run ruff format --check
-          python3.12 -m poetry run ruff check
+          python -m poetry run ruff format --check
+          python -m poetry run ruff check
 
       - name: Types cheking (mypy)
-        run: python3.12 -m poetry run mypy --check-untyped-defs .
+        run: python -m poetry run mypy --check-untyped-defs .
 
       - name: Notify failure if checks failed
         if: ${{ failure() }}

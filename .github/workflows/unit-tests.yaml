@@ -4,6 +4,8 @@ name: Unit Tests
 on:
   workflow_dispatch:
   workflow_call:
+  push:
+    branches: [feat/terraform-aws-github-runner]
 
 jobs:
   unit-tests:

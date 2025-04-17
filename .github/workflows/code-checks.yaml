@@ -38,7 +38,9 @@ jobs:
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
 
-      - run: pyenv global 3.13 || pyenv install 3.13
+      - run: |
+            sudo dnf update
+            sudo dnf install python3.12 python3.12-pip -y
 
       # - name: Setup Python
       #   uses: actions/setup-python@v5.4.0
@@ -48,20 +50,21 @@ jobs:
 
       - name: Setup poetry
         run: |
-          python --version
-          python -m pip install --upgrade pip
-          python -m pip install poetry==2.1.1
+          python3.12 --version
+          python3.12 -m pip install --upgrade pip
+          python3.12 -m pip install poetry==2.1.1
+          python3.12 -m poetry env use 3.12
 
       - name: Install dependencies
-        run: python -m poetry install
+        run: python3.12 -m poetry install
 
       - name: Lint (ruff)
         run: |
-          python -m poetry run ruff format --check
-          python -m poetry run ruff check
+          python3.12 -m poetry run ruff format --check
+          python3.12 -m poetry run ruff check
 
       - name: Types cheking (mypy)
-        run: python -m poetry run mypy --check-untyped-defs .
+        run: python3.12 -m poetry run mypy --check-untyped-defs .
 
       - name: Notify failure if checks failed
         if: ${{ failure() }}

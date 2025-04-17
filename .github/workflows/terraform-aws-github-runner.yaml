@@ -3,6 +3,8 @@
 name: terraform-aws-github-runner
 on:
   workflow_dispatch:
+  push:
+    branches: [feat/terraform-aws-github-runner]
   schedule:
     - cron: '15,45 * * * *' # twice an hour
 

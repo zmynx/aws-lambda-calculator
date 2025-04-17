@@ -52,7 +52,9 @@ jobs:
         run: |
           python3.12 --version
           python3.12 -m pip install --upgrade pip
-          python3.12 -m pip install poetry==2.1.1
+          python3.12 -m pip install poetry==2.1.1 || true
+          python3.12 -m poetry env list
+          python3.12 -m poetry env remove 3.13 || true
           python3.12 -m poetry env use 3.12
 
       - name: Install dependencies

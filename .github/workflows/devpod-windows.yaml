@@ -22,9 +22,9 @@ jobs:
       contents: read
       packages: write
       id-token: write
-    defaults:
-      run:
-        shell: powershell
+    # defaults:
+      # run:
+      #   shell: powershell
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4.2.2

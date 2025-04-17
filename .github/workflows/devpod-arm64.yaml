@@ -64,4 +64,4 @@ jobs:
             --repository ghcr.io/zmynx/devpod-demo \
             --provider docker \
             --platform linux/arm64 \
-            --tag "${tag}"
+            --tag arm64

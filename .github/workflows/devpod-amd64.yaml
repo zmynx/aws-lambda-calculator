@@ -75,4 +75,4 @@ jobs:
             --repository ghcr.io/zmynx/devpod-demo \
             --provider docker \
             --platform windows/amd64 \
-            --tag amd64
+            --tag windows

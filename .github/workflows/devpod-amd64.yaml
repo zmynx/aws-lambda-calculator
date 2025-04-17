@@ -7,6 +7,7 @@ on:
   push:
     paths:
       - '.devcontainer/**'
+      - '.github/workflows/devpod-amd64.yaml'
 
 jobs:
   build:
@@ -64,4 +65,14 @@ jobs:
             --repository ghcr.io/zmynx/devpod-demo \
             --provider docker \
             --platform linux/amd64 \
+            --tag amd64
+
+      - name: Build with Devpod (windows)
+        run: |
+          #!/bin/bash
+          set -exuo pipefail
+          devpod build . \
+            --repository ghcr.io/zmynx/devpod-demo \
+            --provider docker \
+            --platform windows/amd64 \
             --tag amd64

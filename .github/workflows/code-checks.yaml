@@ -24,7 +24,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - run: pyenv global 3.13 || pyenv versions
+      - run: pyenv global 3.13 || pyenv install 3.13
       - run: python3 --version || python2 --version || python --version
 
       - name: Setup Python

@@ -7,6 +7,7 @@ on:
   push:
     paths:
       - '.devcontainer/**'
+      - '.github/workflows/devpod-windows.yaml'
 
 jobs:
   build:

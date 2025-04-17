@@ -20,6 +20,14 @@ jobs:
         working-directory: aws-lambda-calculator
         shell: bash
     steps:
+
+      - run: sudo chown -R $USER:$USER $GITHUB_WORKSPACE
+
+      - name: Pre cleanup
+        uses: zmynx/org-github-actions/.github/actions/shared/clean-workspace@main
+        with:
+          github-workspace: ${{ github.workspace }}
+
       - uses: step-security/harden-runner@446798f8213ac2e75931c1b0769676d927801858  # v2.10.3
         with:
           egress-policy: audit
@@ -60,3 +68,9 @@ jobs:
             locally before pushing your changes.
         run: |-
           echo "::error::${msg}"
+
+      - name: Post cleanup
+        if: ${{ always() }}
+        uses: zmynx/org-github-actions/.github/actions/shared/clean-workspace@main
+        with:
+          github-workspace: ${{ github.workspace }}

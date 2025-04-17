@@ -1,6 +1,11 @@
 {
-  "name": "Python 3.13 & Poetry 2.1.1",
+  "name": "DevPod Demo",
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
+  "customizations": {
+    "devpod": {
+      "prebuildRepository": "ghcr.io/zmynx/devpod-demo"
+    }
+  },
   "features": {
     "ghcr.io/devcontainers/features/common-utils:2": {
       "installZsh": "true",
@@ -11,10 +16,6 @@
       "userUid": "1000",
       "userGid": "1000"
     },
-    "ghcr.io/devcontainers/features/git:1": {
-      "version": "latest",
-      "ppa": "false"
-    },
     "ghcr.io/devcontainers/features/github-cli:1": {
       "version": "latest",
       "installDirectlyFromGitHubRelease": "true"
@@ -22,6 +23,12 @@
     "ghcr.io/eitsupi/devcontainer-features/jq-likes:2": {
       "jqVersion": "1.7.1",
       "yqVersion": "4.45.1"
+    },
+    "ghcr.io/devcontainers-extra/features/fzf:1": {
+      "version": "latest"
+    },
+    "ghcr.io/guiyomh/features/just:0": {
+      "version": "latest"
     },
     "ghcr.io/dhoeric/features/trivy:1": {
       "version": "latest"
@@ -35,28 +42,16 @@
     "ghcr.io/devcontainers-extra/features/aws-cdk:2": {
       "version": "latest"
     },
-    "ghcr.io/guiyomh/features/just:0": {
-      "version": "latest"
-    },
     "ghcr.io/devcontainers/features/python:1": {
-      "version": "3.12",
+      "version": "3.13",
       "installTools": "true",
-      "toolsToInstall": "flake8,autopep8,black,yapf,mypy,pydocstyle,pycodestyle,bandit,pipenv,virtualenv,pytest,pylint"
+      "toolsToInstall": "ruff,mypy,bandit,pipenv,virtualenv,pytest"
     },
     "ghcr.io/devcontainers-extra/features/poetry:2": {
       "version": "latest"
-    },
-    "ghcr.io/devcontainers/features/docker-in-docker:2": {
-      "version": "latest",
-      "installDockerBuildx": "true"
     }
   },
-  "extensions": [
-    "ms-python.python",
-    "ms-python.vscode-pylance",
-    "ms-python.autopep8",
-    "ms-azuretools.vscode-docker"
-  ],
+  "extensions": ["ms-python.python", "ms-azuretools.vscode-docker"],
   "remoteUser": "vscode",
   "containerUser": "vscode"
 }

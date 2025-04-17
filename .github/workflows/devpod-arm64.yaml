@@ -10,7 +10,12 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on:
+      - runs-on=${{ github.run_id }}
+      - runner=2cpu-linux-arm64
+      - env=poc
+      - spot=lowest-price
+      - region=eu-central-1
     permissions:
       contents: read
       packages: write
@@ -18,9 +23,6 @@ jobs:
     defaults:
       run:
         shell: bash
-    strategy:
-      matrix:
-        platform: [linux/amd64, linux/arm64]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4.2.2
@@ -46,7 +48,7 @@ jobs:
 
       - name: Install Devpod
         run: |
-          curl -L -o devpod "https://github.com/loft-sh/devpod/releases/latest/download/devpod-linux-amd64" && sudo install -c -m 0755 devpod /usr/local/bin && rm -f devpod
+          curl -L -o devpod "https://github.com/loft-sh/devpod/releases/latest/download/devpod-linux-arm64" && sudo install -c -m 0755 devpod /usr/local/bin && rm -f devpod
 
       - name: Set Devpod Context Options
         run: devpod context set-options -o REGISTRY_CACHE='ghcr.io/zmynx/devpod-demo'
@@ -58,9 +60,8 @@ jobs:
         run: |
           #!/bin/bash
           set -exuo pipefail
-          tag=$(echo "${{ matrix.platform }}" | tr -d 'linux/') 
           devpod build . \
             --repository ghcr.io/zmynx/devpod-demo \
             --provider docker \
-            --platform '${{ matrix.platform }}' \
+            --platform linux/arm64 \
             --tag "${tag}"

@@ -28,28 +28,29 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v5.4.0
-        with:
-          python-version-file: pyproject.toml
-          cache: poetry
+      # - name: Setup Python
+      #   uses: actions/setup-python@v5.4.0
+      #   with:
+      #     python-version-file: pyproject.toml
+      #     cache: poetry
 
       - name: Setup poetry
         run: |
-          python --version
-          python -m pip install --upgrade pip
-          python -m pip install poetry==2.1.1
+          sudo dnf install python3.13 python3.13-pip --yes
+          python3.13 --version
+          python3.13 -m pip install --upgrade pip
+          python3.13 -m pip install poetry==2.1.1
 
       - name: Install dependencies
-        run: python -m poetry install
+        run: python3.13 -m poetry install
 
       - name: Lint (ruff)
         run: |
-          python -m poetry run ruff format --check
-          python -m poetry run ruff check
+          python3.13 -m poetry run ruff format --check
+          python3.13 -m poetry run ruff check
 
       - name: Types cheking (mypy)
-        run: python -m poetry run mypy --check-untyped-defs .
+        run: python3.13 -m poetry run mypy --check-untyped-defs .
 
       - name: Notify failure if checks failed
         if: ${{ failure() }}

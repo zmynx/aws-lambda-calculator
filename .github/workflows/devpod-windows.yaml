@@ -29,9 +29,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4.2.2
 
-      - name: Install docker w/ buildx
-        run: |
-          Invoke-WebRequest -Uri https://desktop.docker.com/win/stable/Docker%20Desktop%20Installer.exe -OutFile DockerDesktopInstaller.exe; Start-Process -FilePath DockerDesktopInstaller.exe -ArgumentList "/install" -Wait; & "$Env:ProgramFiles\Docker\Docker\resources\bin\docker.exe" buildx install
+      - name: Set up Docker
+        uses: docker/setup-docker-action@v4
+        with:
+          daemon-config: |
+            {
+              "debug": true,
+              "features": {
+                "containerd-snapshotter": true
+              }
+            }
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3.6.0

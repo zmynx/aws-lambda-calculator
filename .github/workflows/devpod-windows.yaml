@@ -29,6 +29,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4.2.2
 
+      - run: |
+          Invoke-WebRequest -Uri https://github.com/PowerShell/PowerShell/releases/download/v7.3.4/PowerShell-7.3.4-win-x64.msi -OutFile PowerShell-7.3.4-win-x64.msi; Start-Process msiexec.exe -ArgumentList '/i PowerShell-7.3.4-win-x64.msi /quiet /norestart' -Wait; Remove-Item -Path PowerShell-7.3.4-win-x64.msi
+
       - name: Set up Docker
         uses: docker/setup-docker-action@v4.3.0
         with:

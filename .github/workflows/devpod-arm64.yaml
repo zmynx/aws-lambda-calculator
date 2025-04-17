@@ -1,6 +1,6 @@
-# .github/worklows/devpod.yaml
+# .github/worklows/devpod-arm64.yaml
 ---
-name: Devcontainer Build
+name: Devcontainer Build (arm64)
 
 on:
   workflow_dispatch:

@@ -24,6 +24,8 @@ jobs:
         working-directory: aws-lambda-calculator
     steps:
 
+      - run: sudo chown -R $USER:$USER $(dirname $GITHUB_WORKSPACE)
+
       - name: Pre cleanup
         uses: zmynx/org-github-actions/.github/actions/shared/clean-workspace@main
         with:
@@ -39,8 +41,6 @@ jobs:
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
           ref: feat/terraform-aws-github-runner
-
-      - run: sudo chown -R $USER:$USER $(dirname $GITHUB_WORKSPACE)
 
       - run: |
             sudo dnf update

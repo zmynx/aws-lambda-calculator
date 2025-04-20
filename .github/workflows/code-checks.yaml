@@ -21,9 +21,6 @@ jobs:
         shell: bash
     steps:
 
-      - run: sudo chown -R $USER:$USER $GITHUB_WORKSPACE
-        working-directory: ${{ github.workspace }}
-
       - name: Pre cleanup
         uses: zmynx/org-github-actions/.github/actions/shared/clean-workspace@main
         with:
@@ -39,9 +36,6 @@ jobs:
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
           ref: feat/terraform-aws-github-runner
-
-      - run: sudo chown -R $USER:$USER $GITHUB_WORKSPACE
-        working-directory: ${{ github.workspace }}
 
       - run: |
             sudo dnf update

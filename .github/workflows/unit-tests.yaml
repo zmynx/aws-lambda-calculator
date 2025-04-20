@@ -4,6 +4,9 @@ name: Unit Tests
 on:
   workflow_dispatch:
   workflow_call:
+  push:
+    paths:
+      - .github/workflows/unit-tests.yaml
 
 jobs:
   unit-tests:

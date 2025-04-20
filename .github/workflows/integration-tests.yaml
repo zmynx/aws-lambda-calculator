@@ -8,10 +8,8 @@ on:
 jobs:
   integration-tests:
     name: Integration Tests
-    runs-on: 
+    runs-on:
       - codebuild-poc-codebuild-github-runners-${{ github.run_id }}-${{ github.run_attempt }}
-      - image:ubuntu-07
-      - instance-size:2xlarge
     permissions:
       contents: write
       pull-requests: write

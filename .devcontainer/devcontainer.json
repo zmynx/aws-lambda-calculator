@@ -58,8 +58,9 @@
     }
   },
   "containerEnv": {
-    "JF_HOST": "artcb",
-    "JF_USER": "jf-ai-svc-w@cellebrite.com",
+    "JF_HOST": "${localEnv:JF_HOST}",
+    "JF_USER": "${localEnv:JF_USER}",
+    "JF_PASSWORD": "${localEnv:JF_PASSWORD}",
     "PATH": "${env.GOROOT}/bin:${env.PATH}"
   },
   "extensions": ["ms-python.python", "ms-azuretools.vscode-docker"],

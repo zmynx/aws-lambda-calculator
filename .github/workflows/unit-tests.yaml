@@ -21,7 +21,7 @@ jobs:
         working-directory: aws-lambda-calculator
     steps:
 
-      - run: sudo chown -R $USER:$USER $GITHUB_WORKSPACE
+      - run: sudo chown -R $USER:$USER dirname $(dirname($GITHUB_WORKSPACE)
 
       - name: Pre cleanup
         uses: zmynx/org-github-actions/.github/actions/shared/clean-workspace@main

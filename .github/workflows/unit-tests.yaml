@@ -18,6 +18,7 @@ jobs:
         working-directory: aws-lambda-calculator
     steps:
 
+      - run: ldd --version
       # - run: sudo chown -R $USER:$USER $GITHUB_WORKSPACE
 
       - name: Pre cleanup

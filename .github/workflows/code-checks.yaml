@@ -9,72 +9,68 @@ jobs:
   code-checks:
     name: Code Standard Checks
     runs-on: 
-      - codebuild-poc-codebuild-github-runners-${{ github.run_id }}-${{ github.run_attempt }}
+      - codebuild-poc-codebuild-github-runners-${{ github.run_id }}-${{ github.run_attempt }}-al2-5.0-2xlarge
     permissions:
       contents: read
     defaults:
       run:
-        # working-directory: aws-lambda-calculator
+        working-directory: aws-lambda-calculator
         shell: bash
     steps:
 
-      - run: echo "Hello world!"
-      - run: nvm --version 
+      - name: Pre cleanup
+        uses: zmynx/org-github-actions/.github/actions/shared/clean-workspace@main
+        with:
+          github-workspace: ${{ github.workspace }}
 
-      - run: ldd --version
-      # - name: Pre cleanup
-      #   uses: zmynx/org-github-actions/.github/actions/shared/clean-workspace@main
-      #   with:
-      #     github-workspace: ${{ github.workspace }}
-      #
-      # - uses: step-security/harden-runner@446798f8213ac2e75931c1b0769676d927801858  # v2.10.3
-      #   with:
-      #     egress-policy: audit
-      #     disable-sudo: true
-      #
+      - uses: step-security/harden-runner@446798f8213ac2e75931c1b0769676d927801858  # v2.10.3
+        with:
+          egress-policy: audit
+          disable-sudo: true
+
       - name: Checkout
         uses: actions/checkout@v4.0.0
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
           ref: feat/aws-codebuild
-      #
-      # - run: |
-      #     pyenv install 3.13 || true
-      #     pyenv local 3.13
-      #
-      # # - name: Setup Python
-      # #   uses: actions/setup-python@v5.4.0
-      # #   with:
-      # #     python-version-file: pyproject.toml
-      # #     cache: poetry
-      #
-      # - name: Setup poetry
-      #   run: |
-      #     python --version
-      #     python -m pip install --upgrade pip
-      #     python -m pip install poetry==2.1.1
-      #
-      # - name: Install dependencies
-      #   run: python -m poetry install
-      #
-      # - name: Lint (ruff)
-      #   run: |
-      #     python -m poetry run ruff format --check
-      #     python -m poetry run ruff check
-      #
-      # - name: Types cheking (mypy)
-      #   run: python -m poetry run mypy --check-untyped-defs .
-      #
-      # - name: Notify failure if checks failed
-      #   if: ${{ failure() }}
-      #   env:
-      #     msg: Some of the code standard checks have failed. Please run `just checks`
-      #       locally before pushing your changes.
-      #   run: |-
-      #     echo "::error::${msg}"
-      #
-      # - name: Post cleanup
-      #   if: ${{ always() }}
-      #   uses: zmynx/org-github-actions/.github/actions/shared/clean-workspace@main
+
+      - run: |
+          pyenv install 3.13 || true
+          pyenv local 3.13
+
+      # - name: Setup Python
+      #   uses: actions/setup-python@v5.4.0
       #   with:
-      #     github-workspace: ${{ github.workspace }}
+      #     python-version-file: pyproject.toml
+      #     cache: poetry
+
+      - name: Setup poetry
+        run: |
+          python --version
+          python -m pip install --upgrade pip
+          python -m pip install poetry==2.1.1
+
+      - name: Install dependencies
+        run: python -m poetry install
+
+      - name: Lint (ruff)
+        run: |
+          python -m poetry run ruff format --check
+          python -m poetry run ruff check
+
+      - name: Types cheking (mypy)
+        run: python -m poetry run mypy --check-untyped-defs .
+
+      - name: Notify failure if checks failed
+        if: ${{ failure() }}
+        env:
+          msg: Some of the code standard checks have failed. Please run `just checks`
+            locally before pushing your changes.
+        run: |-
+          echo "::error::${msg}"
+
+      - name: Post cleanup
+        if: ${{ always() }}
+        uses: zmynx/org-github-actions/.github/actions/shared/clean-workspace@main
+        with:
+          github-workspace: ${{ github.workspace }}

@@ -43,7 +43,7 @@
       "version": "latest"
     },
     "ghcr.io/devcontainers/features/python:1": {
-      "version": "3.13",
+      "version": "3.11",
       "installTools": "true",
       "toolsToInstall": "ruff,mypy,bandit,pipenv,virtualenv,pytest"
     },
@@ -56,6 +56,11 @@
     "ghcr.io/devcontainers/features/rust:1": {
       "version": "latest"
     }
+  },
+  "containerEnv": {
+    "JF_HOST": "artcb",
+    "JF_USER": "jf-ai-svc-w@cellebrite.com",
+    "PATH": "${env.GOROOT}/bin:${env.PATH}"
   },
   "extensions": ["ms-python.python", "ms-azuretools.vscode-docker"],
   "remoteUser": "vscode",

@@ -57,6 +57,21 @@
       "version": "latest"
     }
   },
+  "overrideFeatureInstallOrder": [
+    "ghcr.io/devcontainers/features/common-utils",
+    "ghcr.io/devcontainers/features/github-cli",
+    "ghcr.io/eitsupi/devcontainer-features/jq-likes",
+    "ghcr.io/devcontainers-extra/features/fzf",
+    "ghcr.io/guiyomh/features/just",
+    "ghcr.io/dhoeric/features/trivy",
+    "ghcr.io/devcontainers-extra/features/cosign",
+    "ghcr.io/devcontainers/features/aws-cli",
+    "ghcr.io/devcontainers-extra/features/aws-cdk",
+    "ghcr.io/devcontainers/features/python",
+    "ghcr.io/devcontainers-extra/features/poetry",
+    "ghcr.io/devcontainers/features/go",
+    "ghcr.io/devcontainers/features/rust"
+  ],
   "containerEnv": {
     "JF_HOST": "${localEnv:JF_HOST}",
     "JF_USER": "${localEnv:JF_USER}",

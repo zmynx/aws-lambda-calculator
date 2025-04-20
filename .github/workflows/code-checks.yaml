@@ -19,7 +19,7 @@ jobs:
     steps:
 
       - run: echo "Hello world!"
-      - run: sudo dnf -y install glibc
+      - run: nvm --version 
 
       - run: ldd --version
       # - name: Pre cleanup

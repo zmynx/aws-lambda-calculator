@@ -19,6 +19,7 @@ jobs:
     steps:
 
       - run: echo "Running integration tests"
+      - run: yum install -y glibc
       # - name: Pre cleanup
       #   uses: zmynx/org-github-actions/.github/actions/shared/clean-workspace@main
       #   with:

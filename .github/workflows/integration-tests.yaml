@@ -9,7 +9,7 @@ jobs:
   integration-tests:
     name: Integration Tests
     runs-on:
-      - codebuild-poc-codebuild-github-runners-${{ github.run_id }}-${{ github.run_attempt }}
+      - codebuild-poc-codebuild-github-runners-${{ github.run_id }}-${{ github.run_attempt }}-al2-5.0-small
     permissions:
       contents: write
       pull-requests: write
@@ -19,8 +19,6 @@ jobs:
     steps:
 
       - run: echo "Running integration tests"
-      - run: yum update -y
-      - run: yum install -y glibc
       # - name: Pre cleanup
       #   uses: zmynx/org-github-actions/.github/actions/shared/clean-workspace@main
       #   with:

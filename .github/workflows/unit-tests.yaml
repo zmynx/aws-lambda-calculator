@@ -11,7 +11,10 @@ on:
 jobs:
   unit-tests:
     name: Unit Tests
-    runs-on: codebuild-poc-codebuild-github-runners-${{ github.run_id }}-${{ github.run_attempt }}
+    runs-on: 
+      - codebuild-poc-codebuild-github-runners-${{ github.run_id }}-${{ github.run_attempt }}
+      - image:ubuntu-07
+      - instance-size:2xlarge
     permissions:
       pull-requests: write
       contents: write
@@ -20,7 +23,6 @@ jobs:
         shell: bash
         working-directory: aws-lambda-calculator
     steps:
-
 
       - name: Pre cleanup
         uses: zmynx/org-github-actions/.github/actions/shared/clean-workspace@main

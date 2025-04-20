@@ -16,9 +16,7 @@ jobs:
 
   unit-tests:
     uses: zmynx/aws-lambda-calculator/.github/workflows/unit-tests.yaml@feat/terraform-aws-github-runner
-    permissions:
-      contents: write
-      pull-requests: write
+    permissions: write-all
     secrets: inherit
 
   integration-tests:

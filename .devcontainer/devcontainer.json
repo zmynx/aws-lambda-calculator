@@ -49,7 +49,9 @@
     },
     "ghcr.io/devcontainers-extra/features/poetry:2": {
       "version": "latest"
-    }
+    },
+    "ghcr.io/devcontainers/features/go:1": {},
+    "ghcr.io/devcontainers/features/rust:1": {}
   },
   "extensions": ["ms-python.python", "ms-azuretools.vscode-docker"],
   "remoteUser": "vscode",

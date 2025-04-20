@@ -12,7 +12,7 @@ jobs:
   unit-tests:
     name: Unit Tests
     runs-on:
-      - codebuild-poc-codebuild-github-runners-${{ github.run_id }}-${{ github.run_attempt }}-al2-5.0-2xlarge
+      - codebuild-poc-codebuild-github-runners-${{ github.run_id }}-${{ github.run_attempt }}-al2-5.0-large
     permissions:
       pull-requests: write
       contents: write

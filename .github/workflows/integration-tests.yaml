@@ -9,7 +9,7 @@ jobs:
   integration-tests:
     name: Integration Tests
     runs-on:
-      - codebuild-poc-codebuild-github-runners-${{ github.run_id }}-${{ github.run_attempt }}-al2-5.0-2xlarge
+      - codebuild-poc-codebuild-github-runners-${{ github.run_id }}-${{ github.run_attempt }}-al2-5.0-large
     permissions:
       contents: write
       pull-requests: write

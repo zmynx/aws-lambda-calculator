@@ -8,8 +8,8 @@ on:
 jobs:
   code-checks:
     name: Code Standard Checks
-    runs-on: 
-      - codebuild-poc-codebuild-github-runners-${{ github.run_id }}-${{ github.run_attempt }}-al2-5.0-2xlarge
+    runs-on:
+      - codebuild-poc-codebuild-github-runners-${{ github.run_id }}-${{ github.run_attempt }}-al2-5.0-large
     permissions:
       contents: read
     defaults:

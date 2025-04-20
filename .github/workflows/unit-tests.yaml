@@ -13,7 +13,7 @@ jobs:
     name: Unit Tests
     runs-on: 
       - codebuild-poc-codebuild-github-runners-${{ github.run_id }}-${{ github.run_attempt }}
-      - image:ubuntu-07
+      - image:linux-05
       - instance-size:2xlarge
     permissions:
       pull-requests: write

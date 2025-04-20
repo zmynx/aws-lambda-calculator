@@ -24,10 +24,10 @@ jobs:
         with:
           github-workspace: ${{ github.workspace }}
 
-      # - uses: step-security/harden-runner@446798f8213ac2e75931c1b0769676d927801858  # v2.10.3
-      #   with:
-      #     egress-policy: audit
-      #     disable-sudo: true
+      - uses: step-security/harden-runner@446798f8213ac2e75931c1b0769676d927801858  # v2.10.3
+        with:
+          egress-policy: audit
+          disable-sudo: true
 
       - name: Checkout
         uses: actions/checkout@v4.2.2

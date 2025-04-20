@@ -33,12 +33,12 @@ jobs:
       #     egress-policy: audit
       #     disable-sudo: true
       #
-      # - name: Checkout
-      #   uses: actions/checkout@v4.2.2
-      #   with:
-      #     fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-      #     ref: feat/aws-codebuild
-      #
+      - name: Checkout
+        uses: actions/checkout@v4.2.2
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+          ref: feat/aws-codebuild
+
       # - run: ldd --version
       #
       # - run: |

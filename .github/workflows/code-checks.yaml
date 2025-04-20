@@ -31,7 +31,7 @@ jobs:
       #     disable-sudo: true
       #
       - name: Checkout
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v4.0.0
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
           ref: feat/aws-codebuild

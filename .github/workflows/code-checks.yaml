@@ -8,7 +8,10 @@ on:
 jobs:
   code-checks:
     name: Code Standard Checks
-    runs-on: codebuild-poc-codebuild-github-runners-${{ github.run_id }}-${{ github.run_attempt }}
+    runs-on: 
+      - codebuild-poc-codebuild-github-runners-${{ github.run_id }}-${{ github.run_attempt }}
+      - image:ubuntu-07
+      - instance-size:2xlarge
     permissions:
       contents: read 
     defaults:
@@ -17,7 +20,8 @@ jobs:
         shell: bash
     steps:
 
-      # - run: sudo chown -R $USER:$USER $GITHUB_WORKSPACE
+      - run: sudo chown -R $USER:$USER $GITHUB_WORKSPACE
+        working-directory: ${{ github.workspace }}
 
       - name: Pre cleanup
         uses: zmynx/org-github-actions/.github/actions/shared/clean-workspace@main
@@ -33,6 +37,10 @@ jobs:
         uses: actions/checkout@v4.2.2
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+          ref: feat/aws-codebuild
+
+      - run: sudo chown -R $USER:$USER $GITHUB_WORKSPACE
+        working-directory: ${{ github.workspace }}
 
       - run: |
           pyenv install 3.13 || true

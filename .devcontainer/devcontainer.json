@@ -72,9 +72,6 @@
     "ghcr.io/devcontainers/features/go",
     "ghcr.io/devcontainers/features/rust"
   ],
-  "containerEnv": {
-    "PATH": "${env.GOROOT}/bin:${env.PATH}"
-  },
   "extensions": ["ms-python.python", "ms-azuretools.vscode-docker"],
   "remoteUser": "vscode",
   "containerUser": "vscode"

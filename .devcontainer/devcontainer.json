@@ -72,6 +72,14 @@
     "ghcr.io/devcontainers/features/go",
     "ghcr.io/devcontainers/features/rust"
   ],
+  "containerEnv": {
+    "JF_HOST": "${localEnv:JF_HOST}",
+    "JF_USER": "${localEnv:JF_USER}",
+    "JF_PASSWORD": "${localEnv:JF_PASSWORD}"
+  },
+  "remoteEnv": {
+    "PATH": "${containerEnv.GOROOT}/bin:${containerEnv:PATH}"
+  },
   "extensions": ["ms-python.python", "ms-azuretools.vscode-docker"],
   "remoteUser": "vscode",
   "containerUser": "vscode"

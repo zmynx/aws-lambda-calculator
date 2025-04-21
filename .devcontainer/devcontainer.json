@@ -78,7 +78,7 @@
     "JF_PASSWORD": "${localEnv:JF_PASSWORD}"
   },
   "remoteEnv": {
-    "PATH": "${containerEnv.GOROOT}/bin:${containerEnv:PATH}"
+    "PATH": "${containerEnv:PATH}:${containerEnv:GOROOT}/bin"
   },
   "extensions": ["ms-python.python", "ms-azuretools.vscode-docker"],
   "remoteUser": "vscode",

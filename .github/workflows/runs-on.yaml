@@ -1,0 +1,28 @@
+# .github/workflows/runs-on.yaml
+---
+name: Runs-on
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '15,45 * * * *' # twice an hour
+
+jobs:
+  code-checks:
+    uses: zmynx/aws-lambda-calculator/.github/workflows/code-checks.yaml@feat/runs-on
+    permissions:
+      contents: read
+
+  unit-tests:
+    uses: zmynx/aws-lambda-calculator/.github/workflows/unit-tests.yaml@feat/runs-on
+    permissions:
+      contents: write
+      pull-requests: write
+    secrets: inherit
+
+  integration-tests:
+    uses: zmynx/aws-lambda-calculator/.github/workflows/integration-tests.yaml@feat/runs-on
+    permissions:
+      contents: write
+      pull-requests: write
+    secrets: inherit

@@ -74,10 +74,8 @@
   ],
   "containerEnv": {
     "AWS_CONFIG_FILE": "/.aws/config",
-    "AWS_SHARED_CREDENTIALS_FILE": "/.aws/credentials"
-  },
-  "remoteEnv": {
-    "PATH": "${containerEnv:PATH}:/usr/local/go/bin"
+    "AWS_SHARED_CREDENTIALS_FILE": "/.aws/credentials",
+    "PATH": "/usr/local/go/bin:${env.PATH}"
   },
   "extensions": [
     "ms-python.python",

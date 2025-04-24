@@ -14,6 +14,9 @@
 > [!NOTE]
 > This project is a work in progress, and yet to be operational nor compelete.
 
+> [!TIP]
+> Check it out locally / remote using DevPod [![Open in DevPod!](https://devpod.sh/assets/open-in-devpod.svg)](https://devpod.sh/open#https://github.com/zmynx/aws-lambda-calculator)
+
 <h1 align="left"><samp>Licence</samp></h1>
 
 This project is under the served with the Apache License.\

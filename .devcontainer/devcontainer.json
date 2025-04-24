@@ -82,9 +82,5 @@
     "ms-azuretools.vscode-docker"
   ],
   "remoteUser": "vscode",
-  "containerUser": "vscode",
-  "mounts": [
-    "source=${localEnv:HOME}/.aws,target=/.aws,type=bind,readonly",
-    "source=${localEnv:HOME}/.jfrog,target=/.jfrog,type=bind,readonly"
-  ]
+  "containerUser": "vscode"
 }

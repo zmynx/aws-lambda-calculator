@@ -2,14 +2,17 @@
 
 [Full report](https://htmlpreview.github.io/?https://github.com/zmynx/aws-lambda-calculator/blob/python-coverage-comment-action-data/htmlcov/index.html)
 
-| Name                                                 |    Stmts |     Miss |   Branch |   BrPart |   Cover |   Missing |
-|----------------------------------------------------- | -------: | -------: | -------: | -------: | ------: | --------: |
-| src/aws\_lambda\_calculator/\_\_init\_\_.py          |        2 |        0 |        0 |        0 |    100% |           |
-| src/aws\_lambda\_calculator/calculator.py            |       20 |        0 |        0 |        0 |    100% |           |
-| tests/\_\_init\_\_.py                                |        0 |        0 |        0 |        0 |    100% |           |
-| tests/test\_calculator.py                            |        6 |        0 |        0 |        0 |    100% |           |
-| tests/test\_pytest\_generate\_tests\_sample\_code.py |        9 |        0 |        2 |        1 |     91% |  16->exit |
-|                                            **TOTAL** |   **37** |    **0** |    **2** |    **1** | **97%** |           |
+| Name                                                              |    Stmts |     Miss |   Branch |   BrPart |   Cover |   Missing |
+|------------------------------------------------------------------ | -------: | -------: | -------: | -------: | ------: | --------: |
+| aws-lambda-calculator/src/aws\_lambda\_calculator/\_\_init\_\_.py |        2 |        0 |        0 |        0 |    100% |           |
+| aws-lambda-calculator/src/aws\_lambda\_calculator/calculator.py   |       20 |        0 |        0 |        0 |    100% |           |
+| src/aws\_lambda.py                                                |       20 |        3 |        0 |        0 |     85% |     42-44 |
+| src/cli.py                                                        |       28 |        2 |        4 |        1 |     91% |63-64, 67->exit |
+| src/utils/\_\_init\_\_.py                                         |        0 |        0 |        0 |        0 |    100% |           |
+| src/utils/logger.py                                               |       21 |        0 |        0 |        0 |    100% |           |
+| tests/test\_cli.py                                                |       17 |        0 |        0 |        0 |    100% |           |
+| tests/test\_lambda.py                                             |       16 |        0 |        0 |        0 |    100% |           |
+|                                                         **TOTAL** |  **124** |    **5** |    **4** |    **1** | **95%** |           |
 
 
 ## Setup coverage badge

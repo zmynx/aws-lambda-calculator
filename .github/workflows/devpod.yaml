@@ -13,6 +13,7 @@ jobs:
   build:
     name: Devcontainer Build ${{ matrix.name }}-${{ matrix.arch }}
     strategy:
+      fail-fast: false
       matrix:
         name: [docker, aws]
         arch: [amd64, arm64]
@@ -29,8 +30,6 @@ jobs:
     defaults:
       run:
         shell: bash
-    env:
-      AWS_REGION: eu-central-1
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4.2.2
@@ -55,14 +54,18 @@ jobs:
           tags: type=sha,format=long
 
       - name: Install Devpod
-        run: |
-          curl -L -o devpod "https://github.com/loft-sh/devpod/releases/latest/download/devpod-linux-${{ matrix.arch }}" && sudo install -c -m 0755 devpod /usr/local/bin && rm -f devpod
+        run: curl -L -o devpod "https://github.com/loft-sh/devpod/releases/latest/download/devpod-linux-${{ matrix.arch }}" && sudo install -c -m 0755 devpod /usr/local/bin && rm -f devpod
 
       - name: Set Devpod Context Options
         run: devpod context set-options -o REGISTRY_CACHE='ghcr.io/zmynx/devpod-demo'
 
       - name: Add docker provider
+        if: matrix.name == 'docker'
         run: devpod provider add '${{ matrix.name }}' || true
+
+      - name: Add aws provider
+        if: matrix.name == 'aws'
+        run: devpod provider add '${{ matrix.name }}' --option AWS_REGION='eu-central-1' || true
 
       - name: Build with Devpod
         run: |

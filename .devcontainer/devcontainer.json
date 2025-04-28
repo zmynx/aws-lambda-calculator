@@ -43,7 +43,7 @@
       "version": "latest"
     },
     "ghcr.io/devcontainers/features/python:1": {
-      "version": "3.11",
+      "version": "3.13",
       "installTools": "true",
       "toolsToInstall": "ruff,mypy,bandit,pipenv,virtualenv,pytest"
     },

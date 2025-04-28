@@ -1,18 +1,24 @@
-# .github/worklows/devpod-arm64.yaml
+# .github/worklows/devpod.yaml
 ---
-name: Devcontainer Build (arm64)
+name: Devcontainer Build
 
 on:
   workflow_dispatch:
   push:
     paths:
       - '.devcontainer/**'
+      - '.github/workflows/devpod-amd64.yaml'
 
 jobs:
   build:
+    name: Devcontainer Build ${{ matrix.name }}-${{ matrix.arch }
+    strategy:
+      matrix:
+        name: [docker, aws]
+        arch: [amd64, arm64]
     runs-on:
       - runs-on=${{ github.run_id }}
-      - runner=2cpu-linux-arm64
+      - ${{ matrix.arch == "amd64" && runner=2cpu-linux-x64 || runner=2cpu-linux-arm64 }}
       - env=poc
       - spot=lowest-price
       - region=eu-central-1
@@ -48,13 +54,13 @@ jobs:
 
       - name: Install Devpod
         run: |
-          curl -L -o devpod "https://github.com/loft-sh/devpod/releases/latest/download/devpod-linux-arm64" && sudo install -c -m 0755 devpod /usr/local/bin && rm -f devpod
+          curl -L -o devpod "https://github.com/loft-sh/devpod/releases/latest/download/devpod-linux-${{ matrix.arch }}" && sudo install -c -m 0755 devpod /usr/local/bin && rm -f devpod
 
       - name: Set Devpod Context Options
         run: devpod context set-options -o REGISTRY_CACHE='ghcr.io/zmynx/devpod-demo'
 
       - name: Add docker provider
-        run: devpod provider add docker || true
+        run: devpod provider add '${{ matrix.name }}' || true
 
       - name: Build with Devpod
         run: |
@@ -62,6 +68,6 @@ jobs:
           set -exuo pipefail
           devpod build . \
             --repository ghcr.io/zmynx/devpod-demo \
-            --provider docker \
-            --platform linux/arm64 \
-            --tag arm64
+            --provider '${{ matrix.name }}' \
+            --platform linux/'${{ matrix.arch }}' \
+            --tag '${{ matrix.name }}'-'${{ matrix.arch }}'

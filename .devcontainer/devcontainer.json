@@ -1,6 +1,11 @@
 {
-  "name": "Python 3.13 & Poetry 2.1.1",
+  "name": "DevPod Demo",
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
+  "customizations": {
+    "devpod": {
+      "prebuildRepository": "ghcr.io/zmynx/devpod-demo"
+    }
+  },
   "features": {
     "ghcr.io/devcontainers/features/common-utils:2": {
       "installZsh": "true",
@@ -10,10 +15,6 @@
       "username": "vscode",
       "userUid": "1000",
       "userGid": "1000"
-    },
-    "ghcr.io/devcontainers/features/git:1": {
-      "version": "2.39.5",
-      "ppa": "false"
     },
     "ghcr.io/devcontainers/features/github-cli:1": {
       "version": "latest",
@@ -48,7 +49,33 @@
     },
     "ghcr.io/devcontainers-extra/features/poetry:2": {
       "version": "latest"
+    },
+    "ghcr.io/devcontainers/features/go:1": {
+      "version": "latest"
+    },
+    "ghcr.io/devcontainers/features/rust:1": {
+      "version": "latest"
     }
+  },
+  "overrideFeatureInstallOrder": [
+    "ghcr.io/devcontainers/features/common-utils",
+    "ghcr.io/devcontainers/features/github-cli",
+    "ghcr.io/eitsupi/devcontainer-features/jq-likes",
+    "ghcr.io/devcontainers-extra/features/fzf",
+    "ghcr.io/guiyomh/features/just",
+    "ghcr.io/dhoeric/features/trivy",
+    "ghcr.io/devcontainers-extra/features/cosign",
+    "ghcr.io/devcontainers/features/aws-cli",
+    "ghcr.io/devcontainers-extra/features/aws-cdk",
+    "ghcr.io/devcontainers/features/python",
+    "ghcr.io/devcontainers-extra/features/poetry",
+    "ghcr.io/devcontainers/features/go",
+    "ghcr.io/devcontainers/features/rust"
+  ],
+  "containerEnv": {
+    "AWS_CONFIG_FILE": "/.aws/config",
+    "AWS_SHARED_CREDENTIALS_FILE": "/.aws/credentials",
+    "PATH": "/usr/local/go/bin:${env.PATH}"
   },
   "extensions": [
     "ms-python.python",

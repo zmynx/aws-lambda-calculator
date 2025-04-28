@@ -43,12 +43,16 @@
       "version": "latest"
     },
     "ghcr.io/devcontainers/features/python:1": {
-      "version": "3.11",
+      "version": "3.13",
       "installTools": "true",
       "toolsToInstall": "ruff,mypy,bandit,pipenv,virtualenv,pytest"
     },
     "ghcr.io/devcontainers-extra/features/poetry:2": {
       "version": "latest"
+    },
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {
+      "version": "latest",
+      "installDockerBuildx": "true
     },
     "ghcr.io/devcontainers/features/go:1": {
       "version": "latest"
@@ -75,10 +79,10 @@
   "containerEnv": {
     "JF_HOST": "${localEnv:JF_HOST}",
     "JF_USER": "${localEnv:JF_USER}",
-    "JF_PASSWORD": "${localEnv:JF_PASSWORD}"
-  },
-  "remoteEnv": {
-    "PATH": "/usr/local/go/bin:${containerEnv:PATH}"
+    "JF_PASSWORD": "${localEnv:JF_PASSWORD}",
+    "AWS_CONFIG_FILE": "/.aws/config",
+    "AWS_SHARED_CREDENTIALS_FILE": "/.aws/credentials",
+    "PATH": "/usr/local/go/bin:${env.PATH}"
   },
   "extensions": [
     "ms-python.python",

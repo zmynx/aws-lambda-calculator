@@ -43,6 +43,12 @@ jobs:
       - name: Test the new package
         run: python -m poetry run pytest -svv tests/
 
+      - name: Get Cover
+        uses: orgoro/coverage@v3.2
+        with:
+            coverageFile: ./aws-lambda-calculator/coverage.xml
+            token: ${{ github.token }}
+
       - name: Coverage comment
         id: coverage_comment
         uses: py-cov-action/python-coverage-comment-action@v3
@@ -58,7 +64,7 @@ jobs:
           name: python-coverage-comment-action
           # If you use a different name, update COMMENT_FILENAME accordingly
           path: python-coverage-comment-action.txt
-      
+
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v5.1.0
         env:

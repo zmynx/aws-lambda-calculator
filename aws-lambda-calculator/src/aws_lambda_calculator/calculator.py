@@ -53,34 +53,3 @@ def calculate(
     total_cost = compute_cost + request_cost
     logger.info(f"Total monthly cost: {total_cost:.6f} USD")
     return total_cost
-
-    # requests = requests_in_millions * 1000000
-    # compute = requests * duration * 0.001
-    # # logging.info(
-    # #     f"{requests} requests x {duration} ms x 0.001 ms to sec conversion factor = {compute} total compute (seconds)"
-    # # )
-    # compute_gb = ram * compute
-    # # logging.info(f"{ram} GB x {compute} seconds = {compute_gb} total compute (GB-s)")
-    # free_tier_gb = free_tier_duration
-    # # logging.info(
-    # #     f"{compute_gb} GB-s - {free_tier_gb} free tier GB-s = {compute_gb - free_tier_gb} GB-s"
-    # # )
-    # total_compute_gb = compute_gb - free_tier_gb
-    # # logging.info(
-    # #     f"Max ({total_compute_gb} GB-s, 0 ) = {max(total_compute_gb, 0)} total billable GB-s"
-    # # )
-    # tier_cost = max(total_compute_gb, 0) * duration_cost
-    # # logging.info(f"Tiered price cost: {tier_cost} USD")
-    #
-    # total_requests = requests - free_tier_requests
-    # # logging.info(
-    # #     f"{requests} requests - {free_tier_requests} free tier requests = {total_requests} monthly billable requests"
-    # # )
-    # total_requests_cost = total_requests * 0.0000002
-    # # logging.info(
-    # #     f"{total_requests} total monthly billable requests x 0.0000002 USD = {total_requests_cost} USD (monthly request charges)"
-    # # )
-    # total_cost = tier_cost + total_requests_cost
-    # # logging.info(f"Total tier cost = {total_cost} USD (monthly compute charges)")
-    #
-    # return total_cost

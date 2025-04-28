@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-    name: Devcontainer Build ${{ matrix.name }}-${{ matrix.arch }
+    name: Devcontainer Build ${{ matrix.name }}-${{ matrix.arch }}
     strategy:
       matrix:
         name: [docker, aws]

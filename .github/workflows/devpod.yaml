@@ -67,7 +67,9 @@ jobs:
           #!/bin/bash
           set -exuo pipefail
           devpod build . \
+            --devcontainer-path '.devcontainer/${{ matrix.name }}.json' \
             --repository ghcr.io/zmynx/devpod-demo \
             --provider '${{ matrix.name }}' \
             --platform linux/'${{ matrix.arch }}' \
-            --tag '${{ matrix.name }}'-'${{ matrix.arch }}'
+            --tag '${{ matrix.name }}'-'${{ matrix.arch }}' \
+            --tag latest

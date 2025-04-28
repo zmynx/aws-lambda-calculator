@@ -8,41 +8,30 @@ on:
 jobs:
   code-checks:
     name: Code Standard Checks
-    runs-on:
-      - codebuild-poc-codebuild-github-runners-${{ github.run_id }}-${{ github.run_attempt }}-al2-5.0-large
+    runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: read 
     defaults:
       run:
         working-directory: aws-lambda-calculator
         shell: bash
     steps:
-
-      - name: Pre cleanup
-        uses: zmynx/org-github-actions/.github/actions/shared/clean-workspace@main
-        with:
-          github-workspace: ${{ github.workspace }}
-
       - uses: step-security/harden-runner@446798f8213ac2e75931c1b0769676d927801858  # v2.10.3
         with:
           egress-policy: audit
           disable-sudo: true
 
       - name: Checkout
-        uses: actions/checkout@v4.0.0
+        uses: actions/checkout@v4
+
+      - name: Install poetry
+        run: pipx install poetry==2.1.1
+
+      - name: Setup Python
+        uses: actions/setup-python@v5.4.0
         with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-          ref: feat/aws-codebuild
-
-      - run: |
-          pyenv install 3.13 || true
-          pyenv local 3.13
-
-      # - name: Setup Python
-      #   uses: actions/setup-python@v5.4.0
-      #   with:
-      #     python-version-file: pyproject.toml
-      #     cache: poetry
+          python-version-file: pyproject.toml
+          cache: poetry
 
       - name: Setup poetry
         run: |
@@ -68,9 +57,3 @@ jobs:
             locally before pushing your changes.
         run: |-
           echo "::error::${msg}"
-
-      - name: Post cleanup
-        if: ${{ always() }}
-        uses: zmynx/org-github-actions/.github/actions/shared/clean-workspace@main
-        with:
-          github-workspace: ${{ github.workspace }}

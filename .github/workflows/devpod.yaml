@@ -29,6 +29,8 @@ jobs:
     defaults:
       run:
         shell: bash
+    env:
+      AWS_REGION: eu-central-1
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4.2.2

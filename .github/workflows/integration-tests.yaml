@@ -8,7 +8,8 @@ on:
 jobs:
   integration-tests:
     name: Integration Tests
-    runs-on: ubuntu-latest
+    runs-on:
+      - codebuild-poc-codebuild-github-runners-${{ github.run_id }}-${{ github.run_attempt }}-al2-5.0-large
     permissions:
       contents: write
       pull-requests: write
@@ -16,19 +17,32 @@ jobs:
       run:
         shell: bash
     steps:
+
+      - name: Pre cleanup
+        uses: zmynx/org-github-actions/.github/actions/shared/clean-workspace@main
+        with:
+          github-workspace: ${{ github.workspace }}
+
+      - uses: step-security/harden-runner@446798f8213ac2e75931c1b0769676d927801858  # v2.10.3
+        with:
+          egress-policy: audit
+          disable-sudo: true
+
       - name: Checkout
         uses: actions/checkout@v4.2.2
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+          ref: feat/aws-codebuild
 
-      - name: Install poetry
-        run: pipx install poetry==2.1.1
+      - run: |
+          pyenv install 3.13 || true
+          pyenv local 3.13
 
-      - name: Setup Python
-        uses: actions/setup-python@v5.4.0
-        with:
-          python-version-file: pyproject.toml
-          cache: poetry
+      # - name: Setup Python
+      #   uses: actions/setup-python@v5.4.0
+      #   with:
+      #     python-version-file: pyproject.toml
+      #     cache: poetry
 
       - name: Setup poetry
         run: |
@@ -67,3 +81,9 @@ jobs:
         uses: SonarSource/sonarqube-scan-action@v5.1.0
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      - name: Post cleanup
+        if: ${{ always() }}
+        uses: zmynx/org-github-actions/.github/actions/shared/clean-workspace@main
+        with:
+          github-workspace: ${{ github.workspace }}

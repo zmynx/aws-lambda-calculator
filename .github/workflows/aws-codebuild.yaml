@@ -1,0 +1,27 @@
+# .github/workflows/aws-codebuild.yaml
+---
+name: AWS CodeBuild
+on:
+  workflow_dispatch:
+  push:
+    branches: [feat/aws-codebuild]
+  schedule:
+    - cron: '15,45 * * * *' # twice an hour
+
+jobs:
+  code-checks:
+    uses: zmynx/aws-lambda-calculator/.github/workflows/code-checks.yaml@feat/aws-codebuild
+    permissions:
+      contents: read
+
+  unit-tests:
+    uses: zmynx/aws-lambda-calculator/.github/workflows/unit-tests.yaml@feat/aws-codebuild
+    permissions: write-all
+    secrets: inherit
+
+  integration-tests:
+    uses: zmynx/aws-lambda-calculator/.github/workflows/integration-tests.yaml@feat/aws-codebuild
+    permissions:
+      contents: write
+      pull-requests: write
+    secrets: inherit

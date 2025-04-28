@@ -50,6 +50,10 @@
     "ghcr.io/devcontainers-extra/features/poetry:2": {
       "version": "latest"
     },
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {
+      "version": "latest",
+      "installDockerBuildx": "true
+    },
     "ghcr.io/devcontainers/features/go:1": {
       "version": "latest"
     },
@@ -79,7 +83,10 @@
   },
   "extensions": [
     "ms-python.python",
-    "ms-azuretools.vscode-docker"
+    "ms-azuretools.vscode-docker",
+    "GitHub.copilot",
+    "GitHub.copilot-chat",
+    "ms-vscode-remote.remote-containers"
   ],
   "remoteUser": "vscode",
   "containerUser": "vscode"

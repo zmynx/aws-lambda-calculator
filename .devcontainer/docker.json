@@ -1,0 +1,92 @@
+{
+  "name": "DevPod Demo",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
+  "customizations": {
+    "devpod": {
+      "prebuildRepository": "ghcr.io/zmynx/devpod-demo"
+    }
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": "true",
+      "installOhMyZsh": "true",
+      "configureZshAsDefaultShell": "true",
+      "upgradePackages": "true",
+      "username": "vscode",
+      "userUid": "1000",
+      "userGid": "1000"
+    },
+    "ghcr.io/devcontainers/features/github-cli:1": {
+      "version": "latest",
+      "installDirectlyFromGitHubRelease": "true"
+    },
+    "ghcr.io/eitsupi/devcontainer-features/jq-likes:2": {
+      "jqVersion": "1.7.1",
+      "yqVersion": "4.45.1"
+    },
+    "ghcr.io/devcontainers-extra/features/fzf:1": {
+      "version": "latest"
+    },
+    "ghcr.io/guiyomh/features/just:0": {
+      "version": "latest"
+    },
+    "ghcr.io/dhoeric/features/trivy:1": {
+      "version": "latest"
+    },
+    "ghcr.io/devcontainers-extra/features/cosign:1": {
+      "version": "latest"
+    },
+    "ghcr.io/devcontainers/features/aws-cli:1": {
+      "version": "latest"
+    },
+    "ghcr.io/devcontainers-extra/features/aws-cdk:2": {
+      "version": "latest"
+    },
+    "ghcr.io/devcontainers/features/python:1": {
+      "version": "3.11",
+      "installTools": "true",
+      "toolsToInstall": "ruff,mypy,bandit,pipenv,virtualenv,pytest"
+    },
+    "ghcr.io/devcontainers-extra/features/poetry:2": {
+      "version": "latest"
+    },
+    "ghcr.io/devcontainers/features/go:1": {
+      "version": "latest"
+    },
+    "ghcr.io/devcontainers/features/rust:1": {
+      "version": "latest"
+    }
+  },
+  "overrideFeatureInstallOrder": [
+    "ghcr.io/devcontainers/features/common-utils",
+    "ghcr.io/devcontainers/features/github-cli",
+    "ghcr.io/eitsupi/devcontainer-features/jq-likes",
+    "ghcr.io/devcontainers-extra/features/fzf",
+    "ghcr.io/guiyomh/features/just",
+    "ghcr.io/dhoeric/features/trivy",
+    "ghcr.io/devcontainers-extra/features/cosign",
+    "ghcr.io/devcontainers/features/aws-cli",
+    "ghcr.io/devcontainers-extra/features/aws-cdk",
+    "ghcr.io/devcontainers/features/python",
+    "ghcr.io/devcontainers-extra/features/poetry",
+    "ghcr.io/devcontainers/features/go",
+    "ghcr.io/devcontainers/features/rust"
+  ],
+  "containerEnv": {
+    "JF_HOST": "${localEnv:JF_HOST}",
+    "JF_USER": "${localEnv:JF_USER}",
+    "JF_PASSWORD": "${localEnv:JF_PASSWORD}"
+  },
+  "remoteEnv": {
+    "PATH": "/usr/local/go/bin:${containerEnv:PATH}"
+  },
+  "extensions": [
+    "ms-python.python",
+    "ms-azuretools.vscode-docker",
+    "Github.copilot",
+    "Github.copilot-chat",
+    "ms-vscode-remote.remote-containers"
+  ],
+  "remoteUser": "vscode",
+  "containerUser": "vscode"
+}

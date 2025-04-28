@@ -1,0 +1,87 @@
+# .github/worklows/devpod-windows.yaml
+---
+name: Devcontainer Build (windows)
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.devcontainer/**'
+      - '.github/workflows/devpod-windows.yaml'
+
+jobs:
+  build:
+    runs-on:
+      - runs-on=${{ github.run_id }}
+      - image=windows22-base-x64
+      - family=m7i
+      - env=poc
+      - spot=lowest-price
+      - region=eu-central-1
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+    defaults:
+      run:
+        shell: powershell
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4.2.2
+
+      - run: |
+          Invoke-WebRequest -Uri https://github.com/PowerShell/PowerShell/releases/download/v7.3.4/PowerShell-7.3.4-win-x64.msi -OutFile PowerShell-7.3.4-win-x64.msi; 
+          Start-Process msiexec.exe -ArgumentList '/i PowerShell-7.3.4-win-x64.msi /quiet /norestart' -Wait; 
+          Remove-Item -Path PowerShell-7.3.4-win-x64.msi;
+          echo "$Env:ProgramFiles\PowerShell\7" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+
+      - name: Set up Docker
+        uses: docker/setup-docker-action@v4.3.0
+        with:
+          daemon-config: |
+            {
+              "debug": true,
+              "features": {
+                "containerd-snapshotter": true
+              }
+            }
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3.6.0
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3.10.0
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3.3.0
+        with:
+          registry: ghcr.io
+          username: zmynxx
+          password: ${{ secrets.PAT }}
+
+      - id: docker_meta
+        uses: docker/metadata-action@v5.7.0
+        with:
+          images: ghcr.io/zmynx/devpod-demo
+          tags: type=sha,format=long
+
+      - name: Install Devpod
+        run: |
+          md -Force "$Env:APPDATA\devpod"; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]'Tls,Tls11,Tls12';
+          Invoke-WebRequest -URI "https://github.com/loft-sh/devpod/releases/latest/download/devpod-windows-amd64.exe" -OutFile $Env:APPDATA\devpod\devpod.exe;
+          $env:Path += ";" + $Env:APPDATA + "\devpod";
+          [Environment]::SetEnvironmentVariable("Path", $env:Path, [System.EnvironmentVariableTarget]::User);
+
+      - name: Set Devpod Context Options
+        run: devpod context set-options -o REGISTRY_CACHE='ghcr.io/zmynx/devpod-demo'
+
+      - name: Add docker provider
+        run: devpod provider add docker || true
+
+      - name: Build with Devpod
+        run: |
+          devpod build . \
+            --repository ghcr.io/zmynx/devpod-demo \
+            --provider docker \
+            --platform windows/amd64 \
+            --tag windows

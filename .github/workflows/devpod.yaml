@@ -1,18 +1,25 @@
-# .github/worklows/devpod-arm64.yaml
+# .github/worklows/devpod.yaml
 ---
-name: Devcontainer Build (arm64)
+name: Devcontainer Build
 
 on:
   workflow_dispatch:
   push:
     paths:
       - '.devcontainer/**'
+      - '.github/workflows/devpod.yaml'
 
 jobs:
   build:
+    name: Devcontainer Build ${{ matrix.name }}-${{ matrix.arch }}
+    strategy:
+      fail-fast: false
+      matrix:
+        name: [docker, aws]
+        arch: [amd64, arm64]
     runs-on:
       - runs-on=${{ github.run_id }}
-      - runner=2cpu-linux-arm64
+      - ${{ matrix.arch == 'amd64' && 'runner=2cpu-linux-x64' || 'runner=2cpu-linux-arm64' }}
       - env=poc
       - spot=lowest-price
       - region=eu-central-1
@@ -47,21 +54,27 @@ jobs:
           tags: type=sha,format=long
 
       - name: Install Devpod
-        run: |
-          curl -L -o devpod "https://github.com/loft-sh/devpod/releases/latest/download/devpod-linux-arm64" && sudo install -c -m 0755 devpod /usr/local/bin && rm -f devpod
+        run: curl -L -o devpod "https://github.com/loft-sh/devpod/releases/latest/download/devpod-linux-${{ matrix.arch }}" && sudo install -c -m 0755 devpod /usr/local/bin && rm -f devpod
 
       - name: Set Devpod Context Options
         run: devpod context set-options -o REGISTRY_CACHE='ghcr.io/zmynx/devpod-demo'
 
       - name: Add docker provider
-        run: devpod provider add docker || true
+        if: matrix.name == 'docker'
+        run: devpod provider add '${{ matrix.name }}' || true
+
+      - name: Add aws provider
+        if: matrix.name == 'aws'
+        run: devpod provider add '${{ matrix.name }}' --option AWS_REGION='eu-central-1' || true
 
       - name: Build with Devpod
         run: |
           #!/bin/bash
           set -exuo pipefail
           devpod build . \
+            --devcontainer-path '.devcontainer/${{ matrix.name }}.json' \
             --repository ghcr.io/zmynx/devpod-demo \
-            --provider docker \
-            --platform linux/arm64 \
-            --tag arm64
+            --provider '${{ matrix.name }}' \
+            --platform linux/'${{ matrix.arch }}' \
+            --tag '${{ matrix.name }}'-'${{ matrix.arch }}' \
+            --tag latest

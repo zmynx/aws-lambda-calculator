@@ -77,6 +77,9 @@
     "ghcr.io/devcontainers/features/rust"
   ],
   "containerEnv": {
+    "JF_HOST": "${localEnv:JF_HOST}",
+    "JF_USER": "${localEnv:JF_USER}",
+    "JF_PASSWORD": "${localEnv:JF_PASSWORD}",
     "AWS_CONFIG_FILE": "/.aws/config",
     "AWS_SHARED_CREDENTIALS_FILE": "/.aws/credentials",
     "PATH": "/usr/local/go/bin:${env.PATH}"

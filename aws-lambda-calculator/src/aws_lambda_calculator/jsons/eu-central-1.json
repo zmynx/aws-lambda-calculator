@@ -1,0 +1,60 @@
+{
+  "Architecture": [
+    "x86",
+    "arm64"
+  ],
+  "Memory (MB)": "128 - 10240",
+  "Ephemeral Storage": "512MB - 10240MB",
+  "Pricing": {
+    "x86": [
+      {
+        "Tier": "First 6 Billion GB-seconds / month",
+        "Duration": "$0.0000166667 per GB-second",
+        "Requests": "$0.20 per 1M requests"
+      },
+      {
+        "Tier": "Next 9 Billion GB-seconds / month",
+        "Duration": "$0.000015 per GB-second",
+        "Requests": "$0.20 per 1M requests"
+      },
+      {
+        "Tier": "Over 15 Billion GB-seconds / month",
+        "Duration": "$0.0000133334 per GB-second",
+        "Requests": "$0.20 per 1M requests"
+      }
+    ],
+    "arm64": [
+      {
+        "Tier": "First 7.5 Billion GB-seconds / month",
+        "Duration": "$0.0000133334 per GB-second",
+        "Requests": "$0.20 per 1M requests"
+      },
+      {
+        "Tier": "Next 11.25 Billion GB-seconds / month",
+        "Duration": "$0.0000120001 per GB-second",
+        "Requests": "$0.20 per 1M requests"
+      },
+      {
+        "Tier": "Over 18.75 Billion GB-seconds / month",
+        "Duration": "$0.0000106667 per GB-second",
+        "Requests": "$0.20 per 1M requests"
+      }
+    ],
+    "Memory": {
+      "128": "$0.0000000021 per 1ms",
+      "512": "$0.0000000083 per 1ms",
+      "1024": "$0.0000000167 per 1ms",
+      "1536": "$0.0000000250 per 1ms",
+      "2048": "$0.0000000333 per 1ms",
+      "3072": "$0.0000000500 per 1ms",
+      "4096": "$0.0000000667 per 1ms",
+      "5120": "$0.0000000833 per 1ms",
+      "6144": "$0.0000001000 per 1ms",
+      "7168": "$0.0000001167 per 1ms",
+      "8192": "$0.0000001333 per 1ms",
+      "9216": "$0.0000001500 per 1ms",
+      "10240": "$0.0000001667 per 1ms"
+    },
+    "EphemeralStorage": "$0.0000000367 per GB-second"
+  }
+}

@@ -3,18 +3,8 @@ from playwright.sync_api import Playwright, sync_playwright, expect
 from time import sleep
 
 
-def fill_form(page, label, value):
-    field = page.get_by_label(label)
-    field.fill(value)
-
-
-def select_option(page, role_name, name, position=0):
-    field = page.get_by_role(role, {name: role_name}).locator("span").nth(position)
-    field.click()
-
-
-url = "https://calculator.aws/#/createCalculator/Lambda"
-
+# url = "https://calculator.aws/#/createCalculator/Lambda"
+url = "https://aws.amazon.com/lambda/pricing/"
 
 def run(playwright: Playwright) -> None:
     browser = playwright.chromium.launch(headless=False, slow_mo=200)
@@ -25,34 +15,66 @@ def run(playwright: Playwright) -> None:
         # Navigate to the URL
         page.goto(url)
 
-        # Fill out the form
-        page.get_by_label("Description - optional").fill("Example")
 
-        page.get_by_role("button", name="Choose a location type").filter(
-            has_text=re.compile(r"region", re.IGNORECASE)
-        )
+        # Locate the table under the "Monthly cost breakdown"
+        # We're going to assume it's the only or first visible table with those headers
+        table = page.locator("table").first
 
-        page.get_by_role("button", name="Choose a Region").filter(
-            has_text=re.compile(r"us east \(ohio\)", re.IGNORECASE)
-        ).click()
-        page.get_by_role("listbox").select_option(3)
+        # Get all header rows in the thead
+        header_rows = table.locator("thead tr")
+        headers = []
 
+        for i in range(header_rows.count()):
+            row = header_rows.nth(i)
+            cells = row.locator("th")
+            headers.extend([cell.text_content().strip() for cell in cells.all()])
 
-        # page.get_by_role("button", name="Choose a Region").press("Tab")
+        # Clean headers if there are duplicates or empty cells
+        headers = [h for h in headers if h]
 
-        page.get_by_role(
-            "radio",
-            name=re.compile("lambda function - without free tier", re.IGNORECASE),
-        ).check()
+        # Now get the body rows
+        body_rows = table.locator("tbody tr")
+        data = []
 
-        # Service settings
-        # fill_form(page, "Number of requests", "1000000")
-        page.get_by_role("button", name="Architecture x86").filter(
-            has_text=re.compile(r"x86", re.IGNORECASE)
-        ).first.click()
-        # page.get_by_role("button", name="Architecture x86").first.press("Tab")
-        sleep(5)
+        for i in range(body_rows.count()):
+            row = body_rows.nth(i)
+            cells = row.locator("td")
+            values = [cell.text_content().strip() for cell in cells.all()]
+            row_dict = dict(zip(headers, values))
+            data.append(row_dict)
 
+        # Print extracted data
+        for entry in data:
+            print(entry)
+        sleep(15)
+        # # Fill out the form
+        # page.get_by_label("Description - optional").fill("Example")
+        #
+        # page.get_by_role("button", name="Choose a location type").filter(
+        #     has_text=re.compile(r"region", re.IGNORECASE)
+        # )
+        #
+        # page.get_by_role("button", name="Choose a Region").filter(
+        #     has_text=re.compile(r"us east \(ohio\)", re.IGNORECASE)
+        # ).click()
+        # page.get_by_role("listbox").select_option(3)
+        #
+        #
+        # # page.get_by_role("button", name="Choose a Region").press("Tab")
+        #
+        # page.get_by_role(
+        #     "radio",
+        #     name=re.compile("lambda function - without free tier", re.IGNORECASE),
+        # ).check()
+        #
+        # # Service settings
+        # # fill_form(page, "Number of requests", "1000000")
+        # page.get_by_role("button", name="Architecture x86").filter(
+        #     has_text=re.compile(r"x86", re.IGNORECASE)
+        # ).first.click()
+        # # page.get_by_role("button", name="Architecture x86").first.press("Tab")
+        # sleep(5)
+        #
         # fill_form(page, "Duration of each request (in ms)", "1000")
         # fill_form(page, "Value", "512")
         #

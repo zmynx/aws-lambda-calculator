@@ -1,10 +1,10 @@
-import re
-from playwright.sync_api import Playwright, sync_playwright, expect
+from playwright.sync_api import Playwright, sync_playwright
 from time import sleep
 
 
 # url = "https://calculator.aws/#/createCalculator/Lambda"
 url = "https://aws.amazon.com/lambda/pricing/"
+
 
 def run(playwright: Playwright) -> None:
     browser = playwright.chromium.launch(headless=False, slow_mo=200)
@@ -14,7 +14,6 @@ def run(playwright: Playwright) -> None:
     with context.new_page() as page:
         # Navigate to the URL
         page.goto(url)
-
 
         # Locate the table under the "Monthly cost breakdown"
         # We're going to assume it's the only or first visible table with those headers

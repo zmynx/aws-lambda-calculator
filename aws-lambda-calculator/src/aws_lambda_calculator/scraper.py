@@ -142,8 +142,8 @@
     # page.get_by_role("option", name="GB").locator("span").nth(2).click()
 
     # ---------------------
-    browser.close()
-
-
-with sync_playwright() as playwright:
-    run(playwright)
+#     browser.close()
+#
+#
+# with sync_playwright() as playwright:
+#     run(playwright)

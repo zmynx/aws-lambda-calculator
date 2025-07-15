@@ -174,7 +174,8 @@ def calc_monthly_request_charges(
 def calc_monthly_ephemeral_storage_charges(
     storage_in_gb: float, ephemeral_storage_cost_factor: float
 ) -> float:
-    return float(storage_in_gb) * float(ephemeral_storage_cost_factor)
+    billable_storage = max(0.0, float(storage_in_gb) - 0.5)
+    return billable_storage * float(ephemeral_storage_cost_factor)
 
 
 # Flow:

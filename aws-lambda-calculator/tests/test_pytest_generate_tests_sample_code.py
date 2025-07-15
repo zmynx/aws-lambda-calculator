@@ -72,6 +72,6 @@ def pytest_generate_tests(metafunc):
 
 def test_calculate_dynamic(params, expected_cost):
     result = calculate(**params)
-    assert round(result, 5) == round(
-        expected_cost, 5
-    ), f"Expected {expected_cost}, got {result}"
+    assert round(result, 5) == round(expected_cost, 5), (
+        f"Expected {expected_cost}, got {result}"
+    )

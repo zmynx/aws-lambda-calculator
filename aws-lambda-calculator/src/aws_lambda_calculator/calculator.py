@@ -31,10 +31,8 @@ def unit_convertion_requests(number_of_requests: int, request_unit: str) -> floa
     """
     match request_unit:
         case "per second":
+            logger.debug(f"Number of requests: {number_of_requests} per second * (60 seconds in a minute * 60 minutes in an hour * 730 hours in a month) = {number_of_requests * (60 * 60 * 730)} per month")
             return number_of_requests * (60 * 60 * 730)
-            logger.debug(
-                f"Number of requests: {number_of_requests} per second * (60 seconds in a minute * 60 minutes in an hour * 730 hours in a month) = {number_of_requests * (60 * 60 * 730)} per month"
-            )
         case "per minute":
             return number_of_requests * (60 * 730)
             logger.debug(
@@ -166,7 +164,7 @@ def calc_monthly_request_charges(requests_per_month: int) -> float:
 
 def calc_monthly_ephemeral_storage_charges(storage_in_gb: int) -> float:
     global ephemeral_storage_cost_factor
-    return requests_per_month * ephemeral_storage_cost_factor
+    return storage_in_gb * ephemeral_storage_cost_factor
 
 
 # Flow:

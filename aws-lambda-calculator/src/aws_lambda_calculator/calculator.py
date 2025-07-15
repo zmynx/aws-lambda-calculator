@@ -31,7 +31,9 @@ def unit_convertion_requests(number_of_requests: int, request_unit: str) -> floa
     """
     match request_unit:
         case "per second":
-            logger.debug(f"Number of requests: {number_of_requests} per second * (60 seconds in a minute * 60 minutes in an hour * 730 hours in a month) = {number_of_requests * (60 * 60 * 730)} per month")
+            logger.debug(
+                f"Number of requests: {number_of_requests} per second * (60 seconds in a minute * 60 minutes in an hour * 730 hours in a month) = {number_of_requests * (60 * 60 * 730)} per month"
+            )
             return number_of_requests * (60 * 60 * 730)
         case "per minute":
             return number_of_requests * (60 * 730)
@@ -104,6 +106,7 @@ def calculate_tiered_cost(total_compute_gb_sec: float) -> float:
     Calculate the total cost for a given compute usage, based on tiered pricing.
     """
     # Convert string keys/values to sorted list of (int threshold, float rate)
+    global tier_cost_factor
     tiers = sorted(
         (int(thresh), float(rate)) for thresh, rate in tier_cost_factor.items()
     )

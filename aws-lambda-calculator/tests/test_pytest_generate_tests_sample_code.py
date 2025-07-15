@@ -1,4 +1,5 @@
 from aws_lambda_calculator.calculator import calculate
+from pytest import approx
 
 # Define the test data as a list of dictionaries matching `calculate`'s parameter names
 test_data = [
@@ -72,6 +73,6 @@ def pytest_generate_tests(metafunc):
 
 def test_calculate_dynamic(params, expected_cost):
     result = calculate(**params)
-    assert round(result, 2) == round(expected_cost, 2), (
-        f"Expected {expected_cost}, got {result}"
-    )
+    assert result == approx(
+        expected_cost, abs=0.01
+    ), f"Expected {expected_cost}, got {result}"

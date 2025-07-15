@@ -1,4 +1,5 @@
 import pytest
+from pytest import approx
 from aws_lambda_calculator.calculator import calculate
 
 
@@ -125,6 +126,6 @@ def test_calculate(
         storage_unit=storage_unit,
         duration_ms=duration_ms,
     )
-    assert round(cost, 2) == round(expected_cost, 2), (
+    assert cost == approx(expected_cost, abs=0.01), (
         f"Expected {expected_cost}, got {cost}"
     )

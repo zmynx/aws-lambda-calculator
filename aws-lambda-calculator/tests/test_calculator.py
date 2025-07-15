@@ -14,7 +14,6 @@ from aws_lambda_calculator.calculator import calculate
         "memory_unit",
         "ephemeral_storage",
         "storage_unit",
-        "duration_ms",
         "expected_cost",
     ),
     [

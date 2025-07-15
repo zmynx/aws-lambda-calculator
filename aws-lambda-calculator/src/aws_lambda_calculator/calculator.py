@@ -231,7 +231,7 @@ def calculate(
     if arch_config is None:
         raise ValueError(f"Unknown architecture: {architecture}")
 
-    memory_cost_factor = arch_config.get("Memory")
+    # memory_cost_factor = arch_config.get("Memory")
     tier_cost_factor = arch_config.get("Tier")
 
     # Step 4

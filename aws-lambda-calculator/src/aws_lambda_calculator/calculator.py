@@ -91,12 +91,12 @@ def unit_convertion_ephemeral_storage(
     @return: The ephemeral storage in GB.
     """
     match storage_unit:
-        case "per MB":
+        case "MB":
             return ephemeral_storage_mb * 0.0009765625
             logger.debug(
                 f"Amount of ephemeral storage allocated: {ephemeral_storage_mb} MB * 0.0009765625 GB in MB = {ephemeral_storage_mb * 0.0009765625} GB"
             )
-        case "per GB":
+        case "GB":
             return ephemeral_storage_mb
         case _:
             raise ValueError(f"Unknown storage unit: {storage_unit}")

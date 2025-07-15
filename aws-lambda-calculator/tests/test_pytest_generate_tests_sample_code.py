@@ -8,7 +8,7 @@ test_data = [
             "region": "us-east-1",
             "architecture": "x86",
             "number_of_requests": 1_000_000,
-            "request_unit": "total",
+            "request_unit": "per day",
             "duration_of_each_request_in_ms": 100,
             "memory": 1024,
             "memory_unit": "MB",
@@ -24,7 +24,7 @@ test_data = [
             "region": "us-east-1",
             "architecture": "x86",
             "number_of_requests": 500_000,
-            "request_unit": "total",
+            "request_unit": "per day",
             "duration_of_each_request_in_ms": 200,
             "memory": 2048,
             "memory_unit": "MB",
@@ -40,7 +40,7 @@ test_data = [
             "region": "us-east-1",
             "architecture": "x86",
             "number_of_requests": 2_000_000,
-            "request_unit": "total",
+            "request_unit": "per day",
             "duration_of_each_request_in_ms": 500,
             "memory": 1536,
             "memory_unit": "MB",
@@ -56,7 +56,7 @@ test_data = [
             "region": "us-east-1",
             "architecture": "x86",
             "number_of_requests": 10_000_000,
-            "request_unit": "total",
+            "request_unit": "per day",
             "duration_of_each_request_in_ms": 0,
             "memory": 1024,
             "memory_unit": "MB",
@@ -76,6 +76,6 @@ def pytest_generate_tests(metafunc):
 
 def test_calculate_dynamic(params, expected_cost):
     result = calculate(**params)
-    assert round(result, 5) == round(expected_cost, 5), (
-        f"Expected {expected_cost}, got {result}"
-    )
+    assert round(result, 5) == round(
+        expected_cost, 5
+    ), f"Expected {expected_cost}, got {result}"

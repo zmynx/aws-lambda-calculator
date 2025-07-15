@@ -11,7 +11,10 @@ logger = logging.getLogger(__name__)
 
 def open_json_file(region: str) -> dict:
     """Open a JSON file containing cost factors for a specific region."""
-    file_path = os.path.join("jsons", f"{region}.json")
+    base_dir = os.path.dirname(__file__)
+    file_path = os.path.join(base_dir, "jsons", f"{region}.json")
+    print(f"[DEBUG] Current working directory: {os.getcwd()}")
+    print(f"[DEBUG] Looking for file at: {file_path}")
     if not os.path.exists(file_path):
         logger.error(f"Cost factors file for region '{region}' not found.")
         return {}

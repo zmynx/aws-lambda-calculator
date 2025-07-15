@@ -23,7 +23,7 @@ def open_json_file(region: str) -> dict:
         return data
 
 
-def unit_convertion_requests(number_of_requests: int, request_unit: str) -> float:
+def unit_convertion_requests(number_of_requests: int, request_unit: str) -> int:
     """
     @brief Convert number of requests based on the unit provided. Assuming 730 hours in a month (30 days). Assuming 24 hours in a day.
     @param number_of_requests: The number of requests to convert.
@@ -113,7 +113,7 @@ def calculate_tiered_cost(total_compute_gb_sec: float, tier_cost_factor: dict) -
 
     total_cost = 0.0
     previous_threshold = 0
-
+    tier_units: float
     for threshold, rate in tiers:
         # Determine units in this tier
         if total_compute_gb_sec > threshold:
@@ -225,8 +225,8 @@ def calculate(
     cost_factors = open_json_file(region)
 
     # Step 3
-    requests_cost_factor = cost_factors.get("Requests")
-    ephemeral_storage_cost_factor = cost_factors.get("EphemeralStorage")
+    requests_cost_factor = float(cost_factors.get("Requests"))
+    ephemeral_storage_cost_factor = float(cost_factors.get("EphemeralStorage"))
     arch_config = cost_factors.get(architecture)
     if arch_config is None:
         raise ValueError(f"Unknown architecture: {architecture}")

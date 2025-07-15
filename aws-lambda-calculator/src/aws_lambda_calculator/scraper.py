@@ -1,52 +1,52 @@
-from playwright.sync_api import Playwright, sync_playwright
-from time import sleep
-
-
-# url = "https://calculator.aws/#/createCalculator/Lambda"
-url = "https://aws.amazon.com/lambda/pricing/"
-
-
-def run(playwright: Playwright) -> None:
-    browser = playwright.chromium.launch(headless=False, slow_mo=200)
-    context = browser.new_context()
-
-    # Open a new page
-    with context.new_page() as page:
-        # Navigate to the URL
-        page.goto(url)
-
-        # Locate the table under the "Monthly cost breakdown"
-        # We're going to assume it's the only or first visible table with those headers
-        table = page.locator("table").first
-
-        # Get all header rows in the thead
-        header_rows = table.locator("thead tr")
-        headers = []
-
-        for i in range(header_rows.count()):
-            row = header_rows.nth(i)
-            cells = row.locator("th")
-            headers.extend([cell.text_content().strip() for cell in cells.all()])
-
-        # Clean headers if there are duplicates or empty cells
-        headers = [h for h in headers if h]
-
-        # Now get the body rows
-        body_rows = table.locator("tbody tr")
-        data = []
-
-        for i in range(body_rows.count()):
-            row = body_rows.nth(i)
-            cells = row.locator("td")
-            values = [cell.text_content().strip() for cell in cells.all()]
-            row_dict = dict(zip(headers, values))
-            data.append(row_dict)
-
-        # Print extracted data
-        for entry in data:
-            print(entry)
-        sleep(15)
-        # # Fill out the form
+# from playwright.sync_api import Playwright, sync_playwright
+# from time import sleep
+#
+#
+# # url = "https://calculator.aws/#/createCalculator/Lambda"
+# url = "https://aws.amazon.com/lambda/pricing/"
+#
+#
+# def run(playwright: Playwright) -> None:
+#     browser = playwright.chromium.launch(headless=False, slow_mo=200)
+#     context = browser.new_context()
+#
+#     # Open a new page
+#     with context.new_page() as page:
+#         # Navigate to the URL
+#         page.goto(url)
+#
+#         # Locate the table under the "Monthly cost breakdown"
+#         # We're going to assume it's the only or first visible table with those headers
+#         table = page.locator("table").first
+#
+#         # Get all header rows in the thead
+#         header_rows = table.locator("thead tr")
+#         headers = []
+#
+#         for i in range(header_rows.count()):
+#             row = header_rows.nth(i)
+#             cells = row.locator("th")
+#             headers.extend([cell.text_content().strip() for cell in cells.all()])
+#
+#         # Clean headers if there are duplicates or empty cells
+#         headers = [h for h in headers if h]
+#
+#         # Now get the body rows
+#         body_rows = table.locator("tbody tr")
+#         data = []
+#
+#         for i in range(body_rows.count()):
+#             row = body_rows.nth(i)
+#             cells = row.locator("td")
+#             values = [cell.text_content().strip() for cell in cells.all()]
+#             row_dict = dict(zip(headers, values))
+#             data.append(row_dict)
+#
+#         # Print extracted data
+#         for entry in data:
+#             print(entry)
+#         sleep(15)
+#         # # Fill out the form
         # page.get_by_label("Description - optional").fill("Example")
         #
         # page.get_by_role("button", name="Choose a location type").filter(

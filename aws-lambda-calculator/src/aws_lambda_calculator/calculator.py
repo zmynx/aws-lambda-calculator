@@ -35,29 +35,29 @@ def unit_convertion_requests(number_of_requests: int, request_unit: str) -> int:
             logger.debug(
                 f"Number of requests: {number_of_requests} per second * (60 seconds in a minute * 60 minutes in an hour * 730 hours in a month) = {number_of_requests * (60 * 60 * 730)} per month"
             )
-            return number_of_requests * (60 * 60 * 730)
+            return int(number_of_requests * (60 * 60 * 730))
         case "per minute":
-            return number_of_requests * (60 * 730)
             logger.debug(
-                f"Number of requests: {number_of_requests} per minute * (60 minutes in an hour * 730 hours in a month) = {number_of_requests * (60 * 730)} per month"
+                f"Number of requests: {number_of_requests} per minute * (60 minutes in an hour * 730 hours in a month) = {int(number_of_requests * (60 * 730))} per month"
             )
+            return int(number_of_requests * (60 * 730))
         case "per hour":
-            return number_of_requests * (730)
             logger.debug(
-                f"Number of requests: {number_of_requests} per hour * (730 hours in a month) = {number_of_requests * 730} per month"
+                f"Number of requests: {number_of_requests} per hour * (730 hours in a month) = {int(number_of_requests * 730)} per month"
             )
+            return int(number_of_requests * (730))
         case "per day":
-            return number_of_requests * (730 / 24)
             logger.debug(
-                f"Number of requests: {number_of_requests} per day * (730 hours in a month / 24 hours in a day) = {number_of_requests * (730 / 24)} per month"
+                f"Number of requests: {number_of_requests} per day * (730 hours in a month / 24 hours in a day) = {int(number_of_requests * (730 / 24))} per month"
             )
+            return int(number_of_requests * (730 / 24))
         case "per month":
-            return number_of_requests
+            return int(number_of_requests)
         case "million per month":
-            return number_of_requests * 1000000
             logger.debug(
-                f"Number of requests: {number_of_requests} million per month * 1,000,000 multiplier = {number_of_requests * 1000000} per month"
+                f"Number of requests: {number_of_requests} million per month * 1,000,000 multiplier = {int(number_of_requests * 1000000)} per month"
             )
+            return int(number_of_requests * 1000000)
         case _:
             raise ValueError(f"Unknown request unit: {request_unit}")
 
@@ -112,7 +112,7 @@ def calculate_tiered_cost(total_compute_gb_sec: float, tier_cost_factor: dict) -
     )
 
     total_cost = 0.0
-    previous_threshold = 0
+    previous_threshold = 0.0
     tier_units: float
     for threshold, rate in tiers:
         # Determine units in this tier
@@ -215,24 +215,23 @@ def calculate(
     memory_unit: str = "MB",
     ephemeral_storage: int = 128,
     storage_unit: str = "MB",
-    duration_ms: int = 1,
 ) -> float:
     """Calculate the total cost of execution."""
 
     logger.info("Starting cost calculation...")
 
     # Step 2
-    cost_factors = open_json_file(region)
+    cost_factors: dict = open_json_file(region)
 
     # Step 3
-    requests_cost_factor = float(cost_factors.get("Requests"))
-    ephemeral_storage_cost_factor = float(cost_factors.get("EphemeralStorage"))
-    arch_config = cost_factors.get(architecture)
+    requests_cost_factor = float(cost_factors.get("Requests", 0.0))
+    ephemeral_storage_cost_factor = float(cost_factors.get("EphemeralStorage", 0.0))
+    arch_config: dict = cost_factors.get(architecture, {})
     if arch_config is None:
         raise ValueError(f"Unknown architecture: {architecture}")
 
     # memory_cost_factor = arch_config.get("Memory")
-    tier_cost_factor = arch_config.get("Tier")
+    tier_cost_factor: dict = arch_config.get("Tier", {})
 
     # Step 4
     requests_per_month = unit_convertion_requests(number_of_requests, request_unit)

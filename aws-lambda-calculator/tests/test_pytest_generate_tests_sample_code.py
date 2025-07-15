@@ -14,7 +14,6 @@ test_data = [
             "memory_unit": "MB",
             "ephemeral_storage": 1024,
             "storage_unit": "MB",
-            "duration_ms": 1,
         },
         81_827.82,
     ),
@@ -29,7 +28,6 @@ test_data = [
             "memory_unit": "MB",
             "ephemeral_storage": 1280,
             "storage_unit": "MB",
-            "duration_ms": 1,
         },
         104.50,
     ),
@@ -44,7 +42,6 @@ test_data = [
             "memory_unit": "MB",
             "ephemeral_storage": 4096,
             "storage_unit": "MB",
-            "duration_ms": 1,
         },
         25.51,
     ),
@@ -59,7 +56,6 @@ test_data = [
             "memory_unit": "MB",
             "ephemeral_storage": 3900,
             "storage_unit": "MB",
-            "duration_ms": 1,
         },
         2_072.06,
     ),
@@ -73,6 +69,6 @@ def pytest_generate_tests(metafunc):
 
 def test_calculate_dynamic(params, expected_cost):
     result = calculate(**params)
-    assert result == approx(expected_cost, abs=0.1), (
-        f"Expected {expected_cost}, got {result}"
-    )
+    assert result == approx(
+        expected_cost, abs=0.1
+    ), f"Expected {expected_cost}, got {result}"

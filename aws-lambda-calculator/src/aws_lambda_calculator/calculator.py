@@ -30,8 +30,8 @@ def unit_convertion_requests(number_of_requests: int, request_unit: str) -> floa
     """
     match request_unit:
         case "per second":
-            return number_of_requests * (60 * 60 * 730)
             logger.debug(f"Number of requests: {number_of_requests} per second * (60 seconds in a minute * 60 minutes in an hour * 730 hours in a month) = {number_of_requests * (60 * 60 * 730)} per month")
+            return number_of_requests * (60 * 60 * 730)
         case "per minute":
             return number_of_requests * (60 * 730)
             logger.debug(f"Number of requests: {number_of_requests} per minute * (60 minutes in an hour * 730 hours in a month) = {number_of_requests * (60 * 730)} per month")

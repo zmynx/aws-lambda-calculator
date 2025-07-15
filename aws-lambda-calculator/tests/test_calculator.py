@@ -3,28 +3,56 @@ from aws_lambda_calculator.calculator import calculate
 
 
 @pytest.mark.parametrize(
-    "duration, requests_millions, concurrency, ram, expected_cost",
+    (
+        "region",
+        "architecture",
+        "number_of_requests",
+        "request_unit",
+        "duration_of_each_request_in_ms",
+        "memory",
+        "memory_unit",
+        "ephemeral_storage",
+        "storage_unit",
+        "duration_ms",
+        "expected_cost",
+    ),
     [
-        # Free-tier test (should be zero cost)
-        (100, 1, 1, 1.0, 0.0),
-        # Below free-tier but non-zero (should be zero cost)
-        (200, 0.5, 2, 2.0, 0.0),
-        # Small cost case
-        (500, 2, 10, 1.5, 18.53337),
-        # Large request volume
-        (1000, 50, 5, 2.0, 1669.80332),
-        # Edge case: zero duration (no cost)
-        (0, 10, 3, 1.0, 1.8),
-        # Edge case: zero requests (no cost)
-        (100, 0, 1, 1.0, 0.0),
-        # High RAM, low requests (should be low cost)
-        (100, 1, 1, 8.0, 6.66668),
-        # High concurrency (doesn't affect cost directly)
-        (300, 5, 50, 2.0, 44.13342),
+        # Free-tier test
+        ("us-east-1", "x86", 1_000_000, "total", 100, 1024, "MB", 128, "MB", 1, 0.0),
+        ("us-east-1", "x86", 500_000, "total", 200, 2048, "MB", 128, "MB", 1, 0.0),
+        ("us-east-1", "x86", 2_000_000, "total", 500, 1536, "MB", 128, "MB", 1, 18.53337),
+        ("us-east-1", "x86", 50_000_000, "total", 1000, 2048, "MB", 128, "MB", 1, 1669.80332),
+        ("us-east-1", "x86", 10_000_000, "total", 0, 1024, "MB", 128, "MB", 1, 1.8),
+        ("us-east-1", "x86", 0, "total", 100, 1024, "MB", 128, "MB", 1, 0.0),
+        ("us-east-1", "x86", 1_000_000, "total", 100, 8192, "MB", 128, "MB", 1, 6.66668),
+        ("us-east-1", "x86", 5_000_000, "total", 300, 2048, "MB", 128, "MB", 1, 44.13342),
     ],
 )
-def test_calculate(duration, requests_millions, concurrency, ram, expected_cost):
-    cost = calculate(duration, requests_millions, concurrency, ram)
+def test_calculate(
+    region,
+    architecture,
+    number_of_requests,
+    request_unit,
+    duration_of_each_request_in_ms,
+    memory,
+    memory_unit,
+    ephemeral_storage,
+    storage_unit,
+    duration_ms,
+    expected_cost,
+):
+    cost = calculate(
+        region=region,
+        architecture=architecture,
+        number_of_requests=number_of_requests,
+        request_unit=request_unit,
+        duration_of_each_request_in_ms=duration_of_each_request_in_ms,
+        memory=memory,
+        memory_unit=memory_unit,
+        ephemeral_storage=ephemeral_storage,
+        storage_unit=storage_unit,
+        duration_ms=duration_ms,
+    )
     assert round(cost, 5) == round(expected_cost, 5), (
         f"Expected {expected_cost}, got {cost}"
     )

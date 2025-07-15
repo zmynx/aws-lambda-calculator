@@ -1,24 +1,72 @@
-# sample code to explain how pytest_generate_tests work
-def add(a, b):
-    return a + b
+from aws_lambda_calculator.calculator import calculate
 
-
-# Define the data for test case generation
+# Define the test data as a list of dictionaries matching `calculate`'s parameter names
 test_data = [
-    ((1, 2), 3),  # Input: (1, 2) | Expected Output: 3
-    ((0, 0), 0),  # Input: (0, 0) | Expected Output: 0
-    ((-1, 1), 0),  # Input: (-1, 1) | Expected Output: 0
+    # Free-tier test
+    ({
+        "region": "us-east-1",
+        "architecture": "x86",
+        "number_of_requests": 1_000_000,
+        "request_unit": "total",
+        "duration_of_each_request_in_ms": 100,
+        "memory": 1024,
+        "memory_unit": "MB",
+        "ephemeral_storage": 128,
+        "storage_unit": "MB",
+        "duration_ms": 1,
+    }, 0.0),
+
+    # Non-zero under free tier
+    ({
+        "region": "us-east-1",
+        "architecture": "x86",
+        "number_of_requests": 500_000,
+        "request_unit": "total",
+        "duration_of_each_request_in_ms": 200,
+        "memory": 2048,
+        "memory_unit": "MB",
+        "ephemeral_storage": 128,
+        "storage_unit": "MB",
+        "duration_ms": 1,
+    }, 0.0),
+
+    # Paid case
+    ({
+        "region": "us-east-1",
+        "architecture": "x86",
+        "number_of_requests": 2_000_000,
+        "request_unit": "total",
+        "duration_of_each_request_in_ms": 500,
+        "memory": 1536,
+        "memory_unit": "MB",
+        "ephemeral_storage": 128,
+        "storage_unit": "MB",
+        "duration_ms": 1,
+    }, 18.53337),
+
+    # Edge case: zero duration
+    ({
+        "region": "us-east-1",
+        "architecture": "x86",
+        "number_of_requests": 10_000_000,
+        "request_unit": "total",
+        "duration_of_each_request_in_ms": 0,
+        "memory": 1024,
+        "memory_unit": "MB",
+        "ephemeral_storage": 128,
+        "storage_unit": "MB",
+        "duration_ms": 1,
+    }, 1.8),
 ]
 
 
-# Define the pytest_generate_tests hook to generate test cases
 def pytest_generate_tests(metafunc):
-    if "test_input" in metafunc.fixturenames:
-        # Generate test cases based on the test_data list
-        metafunc.parametrize("test_input,expected_output", test_data)
+    if "params" in metafunc.fixturenames:
+        metafunc.parametrize("params,expected_cost", test_data)
 
 
-# Define the actual test function
-def test_addition(test_input, expected_output):
-    result = add(*test_input)
-    assert result == expected_output, f"Expected {expected_output}, but got {result}"
+def test_calculate_dynamic(params, expected_cost):
+    result = calculate(**params)
+    assert round(result, 5) == round(expected_cost, 5), (
+        f"Expected {expected_cost}, got {result}"
+    )

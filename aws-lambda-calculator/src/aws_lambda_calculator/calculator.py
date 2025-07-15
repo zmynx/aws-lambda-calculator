@@ -6,17 +6,6 @@ import json
 # Load environment variables from .env file
 load_dotenv()
 
-# Load cost factors from environment variables (fallback to defaults)
-COST_FACTORS = {
-    "duration": float(os.getenv("DURATION_COST", 0.0000166667)),
-    "millions_requests": float(os.getenv("MILLIONS_REQUESTS_COST", 0.20)),
-    "concurrency": float(os.getenv("CONCURRENCY_COST", 0.000041667)),
-    "storage": float(os.getenv("STORAGE_COST", 0.000000)),
-    "free_tier_duration": int(os.getenv("FREE_TIER_DURATION", 400000)),
-    "free_tier_requests": int(os.getenv("FREE_TIER_REQUESTS", 1000000)),
-    "request_cost_per_unit": float(os.getenv("REQUEST_COST_PER_UNIT", 0.0000002)),
-}
-
 logger = logging.getLogger(__name__)
 
 def open_json_file(region: str) -> dict:
@@ -55,8 +44,8 @@ def unit_convertion_requests(number_of_requests: int, request_unit: str) -> floa
         case "per month":
             return number_of_requests
         case "million per month":
-            return number_of_requests * 1_000_000
-            logger.debug(f"Number of requests: {number_of_requests} million per month * 1,000,000 multiplier = {number_of_requests * 1_000_000} per month")
+            return number_of_requests * 1000000
+            logger.debug(f"Number of requests: {number_of_requests} million per month * 1,000,000 multiplier = {number_of_requests * 1000000} per month")
         case _:
             raise ValueError(f"Unknown request unit: {request_unit}")
 
@@ -95,73 +84,136 @@ def unit_convertion_ephemeral_storage(ephemeral_storage_mb: int, storage_unit: s
             raise ValueError(f"Unknown storage unit: {storage_unit}")
 
 
-def calculate_service_settings(architecture: str, number_of_requests: int, request_unit: str, duration_of_each_request_in_ms: int, memory: int, memory_unit: str, ephemeral_storage: int, storage_unit) -> int:
-    # Unit conversions
-    requests_per_month = unit_convertion_requests(number_of_requests, request_unit)
-    memory_in_gb = unit_convertion_memory(memory, memory_unit)
-    storage_in_gb = unit_convertion_ephemeral_storage(ephemeral_storage, storage_unit)
+def calculate_tiered_cost(total_compute_gb_sec: float) -> float:
+    """
+    Calculate the total cost for a given compute usage, based on tiered pricing.
+    """
+    # Convert string keys/values to sorted list of (int threshold, float rate)
+    tiers = sorted((int(thresh), float(rate)) for thresh, rate in tier_cost_factor.items())
 
-    # Pricing calculations
-    total_compute_sec = requests_per_month * 100 ms * 0.001
-    logger.debug(f"{requests_per_month} requests x 100 ms x 0.001 ms to sec conversion factor = 1,000,000,000.00 total compute (seconds)")
+    total_cost = 0.0
+    previous_threshold = 0
+
+    for threshold, rate in tiers:
+        # Determine units in this tier
+        if total_compute_gb_sec > threshold:
+            tier_units = threshold - previous_threshold
+        else:
+            tier_units = total_compute_gb_sec - previous_threshold
+
+        # Calculate and accumulate cost
+        if tier_units > 0:
+            total_cost += tier_units * rate
+            previous_threshold += tier_units
+
+        # Stop if we've billed all usage
+        if total_compute_gb_sec <= threshold:
+            break
+
+    return total_cost
+
+def calc_monthly_compute_charges(
+        requests_per_month: int,
+        duration_of_each_request_in_ms: int,
+        memory_in_gb: float
+    ) -> float:
+    """
+        @brief Calculate the monthly compute charges based on requests per month, duration of each request in ms, and memory in GB.
+        @param requests_per_month: The number of requests per month.
+        @param duration_of_each_request_in_ms: The duration of each request in milliseconds.
+        @param memory_in_gb: The amount of memory allocated in GB.
+        @return: The monthly compute charges.
+    """
+    total_compute_sec = requests_per_month * (duration_of_each_request_in_ms * 0.001)
+    logger.debug(f"{requests_per_month} requests x {duration_of_each_request_in_ms} ms x 0.001 ms to sec conversion factor = {total_compute_sec} total compute (seconds)")
+
     total_compute_gb_sec = memory_in_gb * total_compute_sec
-    logger.debug(f"{memory_in_gb} x {total_compute_sec} seconds = {memory_in_gb * total_compute_sec} total compute (GB-s)")
+    logger.debug(f"{memory_in_gb} GB x {total_compute_sec} seconds = {total_compute_gb_sec} total compute (GB-s)")
+
+    ## Tiered price for total compute GB-seconds
     logger.debug(f"Tiered price for: {total_compute_gb_sec} GB-s")
 
-    monthly_compute_charges = total_compute_gb_sec * 0.0000166667
-    logger.debug(f"{total_compute_gb_sec} GB-s x 0.0000166667 USD = {monthly_compute_charges} USD")
-    logger.debug(f"Total tier cost = {monthly_compute_charges} USD (monthly compute charges)")
+    monthly_compute_charges = calculate_tiered_cost(total_compute_gb_sec)
+    return monthly_compute_charges
 
-    monthly_request_charges = requests_per_month * 0.0000002
-    logger.debug(f"Monthly request charges: {requests_per_month} requests * 0.0000002 = {requests_per_month * 0.0000002}")
 
-    storage = storage_in_gb - 0.5  # Assuming 0.5 GB free tier for storage
-    total_storage_gb_sec = storage * total_duration_sec
-    monthly_ephemeral_storage_charges = total_storage_gb_sec * 0.0000000309
+def calc_monthly_request_charges(requests_per_month: int) -> float:
+    global requests_cost_factor
+    return requests_per_month * requests_cost_factor
 
-    lambda_cost_monthly = monthly_compute_charges + monthly_request_charges + monthly_ephemeral_storage_charges
-    return lambda_cost_monthly
 
-def calculate_duration_cost(duration_ms: int, ram_gb: float) -> float:
-    """Calculate the cost based on duration and RAM usage."""
-    duration_sec = duration_ms * 0.001
-    compute_cost = duration_sec * ram_gb * COST_FACTORS["duration"]
-    logger.debug(
-        f"Duration (sec): {duration_sec}, RAM (GB): {ram_gb}, Compute Cost: {compute_cost}"
-    )
-    return compute_cost
+def calc_monthly_ephemeral_storage_charges(storage_in_gb: int) -> float:
+    global ephemeral_storage_cost_factor
+    return requests_per_month * ephemeral_storage_cost_factor
 
+# Flow:
+#
+# 1. Detect the correct region
+# 2. Open the corresponding config file for region from step 1
+# 3. Extract the cost factores (pricing) from the config file:
+#   3.1 architecture (x86, arm)
+#   3.2 memory
+#   3.3 ephemeral storage
+# 4. Run unit convertions on the user's input:
+#   4.1 unit_convertion_requests on @number of requests, @request unit to convert it to requests per month.
+#   4.2 unit_convertion_memory on @memory, @memory unit to convert it to memory in GB.
+#   4.3 unit_convertion_ephemeral_storage on @ephemeral storage, @storage unit to convert it to ephemeral storage in GB.
+# 5. Pricing calculations:
+#
+#   ## Monthly Compute Charges
+#   5.1 Calculate total compute seconds based on requests per month and duration of each request in ms.
+#   5.2 Calculate total compute GB-seconds based on memory in GB and total compute seconds.
+#   5.3 Calculate tiered price for total compute GB-seconds using the cost factor from the config file.
+#   5.4 Calculate monthly compute charges based step 5.3.
+#
+#   ## Monthly Request Charges
+#   5.5 Calculate monthly request charges based on requests per month and the cost factor from the config file.
+#
+#  ## Monthly Ephemeral Storage Charges
+#   5.6 Calculate total storage GB-seconds based on ephemeral storage in GB and total duration seconds.
+#
+# 6. Calculate the total monthly cost by summing up the monthly compute charges, monthly request charges, and monthly ephemeral storage charges.
 def calculate(
-    architecture: str = "x86", number_of_requests: int, request_unit: str = "per day", duration_of_each_request_in_ms: int, memory_mb: int = 128, ephemeral_storage_mb: int = 128, duration_ms: int, requests_millions: int, concurrency: int, ram_gb: float
-) -> float:
+        region: str = "us-east-1",
+        architecture: str = "x86",
+        number_of_requests: int = 1000000,
+        request_unit: str = "per day",
+        duration_of_each_request_in_ms: int = 1500,
+        memory: int = 128,
+        memory_unit: str = "MB",
+        ephemeral_storage: int = 128,
+        storage_unit: str = "MB",
+        duration_ms: int = 1,
+    ) -> float:
     """Calculate the total cost of execution."""
 
-    total_requests = requests_millions * 1_000_000
-    total_compute_sec = total_requests * duration_ms * 0.001
-    total_compute_gb_sec = ram_gb * total_compute_sec
+    logger.info("Starting cost calculation...")
 
-    logger.debug(
-        f"Requests: {total_requests}, Compute (sec): {total_compute_sec}, Compute (GB-s): {total_compute_gb_sec}"
-    )
+    # Step 2
+    cost_factors = open_json_file(region)
+    if not cost_factors:
+        raise ValueError(f"Cost factors for region '{region}' not found or invalid.")
 
-    # Deduct free tier
-    billable_compute_gb_sec = max(
-        total_compute_gb_sec - COST_FACTORS["free_tier_duration"], 0
-    )
-    compute_cost = billable_compute_gb_sec * COST_FACTORS["duration"]
+    # Step 3
+    global requests_cost_factor
+    global ephemeral_storage_cost_factor
+    global memory_cost_factor
+    global tier_cost_factor
+    requests_cost_factor             = cost_factors.get('Requests')
+    ephemeral_storage_cost_factor    = cost_factors.get('EphemeralStorage')
+    memory_cost_factor               = cost_factors.get(architecture).get('Memory')
+    tier_cost_factor                 = cost_factors.get(architecture).get('Tier')
 
-    logger.debug(
-        f"Billable Compute (GB-s): {billable_compute_gb_sec}, Compute Cost: {compute_cost}"
-    )
+    # Step 4
+    requests_per_month  = unit_convertion_requests(number_of_requests, request_unit)
+    memory_in_gb        = unit_convertion_memory(memory, memory_unit)
+    storage_in_gb       = unit_convertion_ephemeral_storage(ephemeral_storage, storage_unit)
 
-    # Requests cost
-    billable_requests = max(total_requests - COST_FACTORS["free_tier_requests"], 0)
-    request_cost = billable_requests * COST_FACTORS["request_cost_per_unit"]
+    # Step 5
+    monthly_compute_charges             = calc_monthly_compute_charges(requests_per_month, duration_of_each_request_in_ms, memory_in_gb)
+    monthly_request_charges             = calc_monthly_request_charges(requests_per_month)
+    monthly_ephemeral_storage_charges   = calc_monthly_ephemeral_storage_charges(storage_in_gb)
 
-    logger.debug(
-        f"Billable Requests: {billable_requests}, Request Cost: {request_cost}"
-    )
-
-    total_cost = compute_cost + request_cost
-    logger.info(f"Total monthly cost: {total_cost:.6f} USD")
-    return total_cost
+    # Step 6
+    total = monthly_compute_charges + monthly_request_charges + monthly_ephemeral_storage_charges
+    return total

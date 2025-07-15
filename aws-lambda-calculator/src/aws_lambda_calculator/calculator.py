@@ -144,7 +144,7 @@ def calc_monthly_request_charges(requests_per_month: int) -> float:
 
 def calc_monthly_ephemeral_storage_charges(storage_in_gb: int) -> float:
     global ephemeral_storage_cost_factor
-    return requests_per_month * ephemeral_storage_cost_factor
+    return storage_in_gb * ephemeral_storage_cost_factor
 
 # Flow:
 #

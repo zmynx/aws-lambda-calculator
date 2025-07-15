@@ -136,7 +136,7 @@ def calc_monthly_compute_charges(
     requests_per_month: int,
     duration_of_each_request_in_ms: int,
     memory_in_gb: float,
-    tier_cost_factor: dict
+    tier_cost_factor: dict,
 ) -> float:
     """
     @brief Calculate the monthly compute charges based on requests per month, duration of each request in ms, and memory in GB.
@@ -158,15 +158,21 @@ def calc_monthly_compute_charges(
     ## Tiered price for total compute GB-seconds
     logger.debug(f"Tiered price for: {total_compute_gb_sec} GB-s")
 
-    monthly_compute_charges = calculate_tiered_cost(total_compute_gb_sec, tier_cost_factor)
+    monthly_compute_charges = calculate_tiered_cost(
+        total_compute_gb_sec, tier_cost_factor
+    )
     return monthly_compute_charges
 
 
-def calc_monthly_request_charges(requests_per_month: int, requests_cost_factor: float) -> float:
+def calc_monthly_request_charges(
+    requests_per_month: int, requests_cost_factor: float
+) -> float:
     return requests_per_month * requests_cost_factor
 
 
-def calc_monthly_ephemeral_storage_charges(storage_in_gb: int, ephemeral_storage_cost_factor: float) -> float:
+def calc_monthly_ephemeral_storage_charges(
+    storage_in_gb: int, ephemeral_storage_cost_factor: float
+) -> float:
     return storage_in_gb * ephemeral_storage_cost_factor
 
 
@@ -219,8 +225,12 @@ def calculate(
     # Step 3
     requests_cost_factor = cost_factors.get("Requests")
     ephemeral_storage_cost_factor = cost_factors.get("EphemeralStorage")
-    memory_cost_factor = cost_factors.get(architecture).get("Memory")
-    tier_cost_factor = cost_factors.get(architecture).get("Tier")
+    arch_config = cost_factors.get(architecture)
+    if arch_config is None:
+        raise ValueError(f"Unknown architecture: {architecture}")
+
+    memory_cost_factor = arch_config.get("Memory")
+    tier_cost_factor = arch_config.get("Tier")
 
     # Step 4
     requests_per_month = unit_convertion_requests(number_of_requests, request_unit)
@@ -229,9 +239,14 @@ def calculate(
 
     # Step 5
     monthly_compute_charges = calc_monthly_compute_charges(
-        requests_per_month, duration_of_each_request_in_ms, memory_in_gb, tier_cost_factor
+        requests_per_month,
+        duration_of_each_request_in_ms,
+        memory_in_gb,
+        tier_cost_factor,
     )
-    monthly_request_charges = calc_monthly_request_charges(requests_per_month, requests_cost_factor)
+    monthly_request_charges = calc_monthly_request_charges(
+        requests_per_month, requests_cost_factor
+    )
     monthly_ephemeral_storage_charges = calc_monthly_ephemeral_storage_charges(
         storage_in_gb, ephemeral_storage_cost_factor
     )

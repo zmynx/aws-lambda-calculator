@@ -82,7 +82,7 @@ def unit_convertion_memory(memory: int, memory_unit: str) -> float:
 
 
 def unit_convertion_ephemeral_storage(
-    ephemeral_storage_mb: int, storage_unit: str
+    ephemeral_storage_mb: float, storage_unit: str
 ) -> float:
     """
     @brief Convert ephemeral storage based on the unit provided.
@@ -166,15 +166,15 @@ def calc_monthly_compute_charges(
 
 
 def calc_monthly_request_charges(
-    requests_per_month: int, requests_cost_factor: float
+    requests_per_month: float, requests_cost_factor: float
 ) -> float:
-    return requests_per_month * requests_cost_factor
+    return float(requests_per_month) * float(requests_cost_factor)
 
 
 def calc_monthly_ephemeral_storage_charges(
-    storage_in_gb: int, ephemeral_storage_cost_factor: float
+    storage_in_gb: float, ephemeral_storage_cost_factor: float
 ) -> float:
-    return storage_in_gb * ephemeral_storage_cost_factor
+    return float(storage_in_gb) * float(ephemeral_storage_cost_factor)
 
 
 # Flow:

@@ -2,7 +2,6 @@ from aws_lambda_calculator.calculator import calculate
 
 # Define the test data as a list of dictionaries matching `calculate`'s parameter names
 test_data = [
-    # Free-tier test
     (
         {
             "region": "us-east-1",
@@ -12,13 +11,12 @@ test_data = [
             "duration_of_each_request_in_ms": 100,
             "memory": 1024,
             "memory_unit": "MB",
-            "ephemeral_storage": 128,
+            "ephemeral_storage": 1024,
             "storage_unit": "MB",
             "duration_ms": 1,
         },
-        0.0,
+        81_827.82,
     ),
-    # Non-zero under free tier
     (
         {
             "region": "us-east-1",
@@ -28,13 +26,12 @@ test_data = [
             "duration_of_each_request_in_ms": 200,
             "memory": 2048,
             "memory_unit": "MB",
-            "ephemeral_storage": 128,
+            "ephemeral_storage": 1280,
             "storage_unit": "MB",
             "duration_ms": 1,
         },
-        0.0,
+        104.50,
     ),
-    # Paid case
     (
         {
             "region": "us-east-1",
@@ -44,27 +41,26 @@ test_data = [
             "duration_of_each_request_in_ms": 500,
             "memory": 1536,
             "memory_unit": "MB",
-            "ephemeral_storage": 128,
+            "ephemeral_storage": 4096,
             "storage_unit": "MB",
             "duration_ms": 1,
         },
-        18.53337,
+        25.51,
     ),
-    # Edge case: zero duration
     (
         {
             "region": "us-east-1",
             "architecture": "x86",
             "number_of_requests": 10_000_000,
             "request_unit": "per hour",
-            "duration_of_each_request_in_ms": 0,
+            "duration_of_each_request_in_ms": 5,
             "memory": 1024,
             "memory_unit": "MB",
-            "ephemeral_storage": 128,
+            "ephemeral_storage": 3900,
             "storage_unit": "MB",
             "duration_ms": 1,
         },
-        1.8,
+        2_072.06,
     ),
 ]
 

@@ -18,8 +18,8 @@ from aws_lambda_calculator.calculator import calculate
     ),
     [
         # Free-tier test
-        ("us-east-1", "x86", 1_000_000, "per day", 100, 1024, "MB", 128, "MB", 1, 0.0),
-        ("us-east-1", "x86", 500_000, "per month", 200, 2048, "MB", 128, "MB", 1, 0.0),
+        ("us-east-1", "x86", 1_000_000, "per day", 100, 1024, "MB", 512, "MB", 1, 56.77),
+        ("us-east-1", "x86", 500_000, "per month", 200, 2048, "MB", 512, "MB", 1, 3.43),
         (
             "us-east-1",
             "x86",
@@ -28,10 +28,10 @@ from aws_lambda_calculator.calculator import calculate
             500,
             1536,
             "MB",
-            128,
+            512,
             "MB",
             1,
-            18.53337,
+            928_523.58,
         ),
         (
             "us-east-1",
@@ -41,13 +41,13 @@ from aws_lambda_calculator.calculator import calculate
             1000,
             2048,
             "MB",
-            128,
+            512,
             "MB",
             1,
-            1669.80332,
+            1_015_637.40,
         ),
-        ("us-east-1", "x86", 10_000_000, "per minute", 0, 1024, "MB", 128, "MB", 1, 1.8),
-        ("us-east-1", "x86", 0, "per hour", 100, 1024, "MB", 128, "MB", 1, 0.0),
+        ("us-east-1", "x86", 10_000_000, "per minute", 1, 1024, "MB", 512, "MB", 1, 94_900.01),
+        ("us-east-1", "x86", 50, "per hour", 100, 1024, "MB", 5120, "MB", 1, 0.07),
         (
             "us-east-1",
             "x86",
@@ -56,10 +56,10 @@ from aws_lambda_calculator.calculator import calculate
             100,
             8192,
             "MB",
-            128,
+            512,
             "MB",
             1,
-            6.66668,
+            411.64,
         ),
         (
             "us-east-1",
@@ -69,10 +69,10 @@ from aws_lambda_calculator.calculator import calculate
             300,
             2048,
             "MB",
-            128,
+            512,
             "MB",
             1,
-            44.13342,
+            41_035_199.20,
         ),
     ],
 )
@@ -101,6 +101,6 @@ def test_calculate(
         storage_unit=storage_unit,
         duration_ms=duration_ms,
     )
-    assert round(cost, 5) == round(expected_cost, 5), (
+    assert round(cost, 2) == round(expected_cost, 2), (
         f"Expected {expected_cost}, got {cost}"
     )

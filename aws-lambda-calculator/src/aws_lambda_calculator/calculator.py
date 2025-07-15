@@ -101,12 +101,11 @@ def unit_convertion_ephemeral_storage(
             raise ValueError(f"Unknown storage unit: {storage_unit}")
 
 
-def calculate_tiered_cost(total_compute_gb_sec: float) -> float:
+def calculate_tiered_cost(total_compute_gb_sec: float, tier_cost_factor: dict) -> float:
     """
     Calculate the total cost for a given compute usage, based on tiered pricing.
     """
     # Convert string keys/values to sorted list of (int threshold, float rate)
-    global tier_cost_factor
     tiers = sorted(
         (int(thresh), float(rate)) for thresh, rate in tier_cost_factor.items()
     )
@@ -134,7 +133,10 @@ def calculate_tiered_cost(total_compute_gb_sec: float) -> float:
 
 
 def calc_monthly_compute_charges(
-    requests_per_month: int, duration_of_each_request_in_ms: int, memory_in_gb: float
+    requests_per_month: int,
+    duration_of_each_request_in_ms: int,
+    memory_in_gb: float,
+    tier_cost_factor: dict
 ) -> float:
     """
     @brief Calculate the monthly compute charges based on requests per month, duration of each request in ms, and memory in GB.
@@ -156,17 +158,15 @@ def calc_monthly_compute_charges(
     ## Tiered price for total compute GB-seconds
     logger.debug(f"Tiered price for: {total_compute_gb_sec} GB-s")
 
-    monthly_compute_charges = calculate_tiered_cost(total_compute_gb_sec)
+    monthly_compute_charges = calculate_tiered_cost(total_compute_gb_sec, tier_cost_factor)
     return monthly_compute_charges
 
 
-def calc_monthly_request_charges(requests_per_month: int) -> float:
-    global requests_cost_factor
+def calc_monthly_request_charges(requests_per_month: int, requests_cost_factor: float) -> float:
     return requests_per_month * requests_cost_factor
 
 
-def calc_monthly_ephemeral_storage_charges(storage_in_gb: int) -> float:
-    global ephemeral_storage_cost_factor
+def calc_monthly_ephemeral_storage_charges(storage_in_gb: int, ephemeral_storage_cost_factor: float) -> float:
     return storage_in_gb * ephemeral_storage_cost_factor
 
 
@@ -215,14 +215,8 @@ def calculate(
 
     # Step 2
     cost_factors = open_json_file(region)
-    if not cost_factors:
-        raise ValueError(f"Cost factors for region '{region}' not found or invalid.")
 
     # Step 3
-    global requests_cost_factor
-    global ephemeral_storage_cost_factor
-    global memory_cost_factor
-    global tier_cost_factor
     requests_cost_factor = cost_factors.get("Requests")
     ephemeral_storage_cost_factor = cost_factors.get("EphemeralStorage")
     memory_cost_factor = cost_factors.get(architecture).get("Memory")
@@ -235,11 +229,11 @@ def calculate(
 
     # Step 5
     monthly_compute_charges = calc_monthly_compute_charges(
-        requests_per_month, duration_of_each_request_in_ms, memory_in_gb
+        requests_per_month, duration_of_each_request_in_ms, memory_in_gb, tier_cost_factor
     )
-    monthly_request_charges = calc_monthly_request_charges(requests_per_month)
+    monthly_request_charges = calc_monthly_request_charges(requests_per_month, requests_cost_factor)
     monthly_ephemeral_storage_charges = calc_monthly_ephemeral_storage_charges(
-        storage_in_gb
+        storage_in_gb, ephemeral_storage_cost_factor
     )
 
     # Step 6

@@ -118,6 +118,6 @@ def test_calculate(
         ephemeral_storage=ephemeral_storage,
         storage_unit=storage_unit,
     )
-    assert cost == approx(
-        expected_cost, abs=0.01
-    ), f"Expected {expected_cost}, got {cost}"
+    assert cost == approx(expected_cost, abs=0.01), (
+        f"Expected {expected_cost}, got {cost}"
+    )

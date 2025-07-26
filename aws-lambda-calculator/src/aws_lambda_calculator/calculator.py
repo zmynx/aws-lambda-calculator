@@ -8,6 +8,7 @@ load_dotenv()
 
 logger = logging.getLogger(__name__)
 
+
 def open_json_file(region: str) -> dict:
     """Open a JSON file containing cost factors for a specific region."""
     base_dir = os.path.dirname(__file__)
@@ -101,9 +102,11 @@ def unit_convertion_ephemeral_storage(
             raise ValueError(f"Unknown storage unit: {storage_unit}")
 
 
-def calculate_tiered_cost(total_compute_gb_sec: float,
-                          tier_cost_factor: dict[str, float],
-                          overflow_rate: float) -> float:
+def calculate_tiered_cost(
+    total_compute_gb_sec: float,
+    tier_cost_factor: dict[str, float],
+    overflow_rate: float,
+) -> float:
     """
     total_compute_gb_sec: total usage in GB‑seconds
     tier_cost_factor: maps breakpoint (as string) → rate
@@ -111,8 +114,7 @@ def calculate_tiered_cost(total_compute_gb_sec: float,
     """
     # 1) parse & sort tiers by threshold (ascending)
     tiers = sorted(
-        (int(thresh), float(rate))
-        for thresh, rate in tier_cost_factor.items()
+        (int(thresh), float(rate)) for thresh, rate in tier_cost_factor.items()
     )
 
     total_cost = 0.0
@@ -143,7 +145,7 @@ def calc_monthly_compute_charges(
     duration_of_each_request_in_ms: int,
     memory_in_gb: float,
     tier_cost_factor: dict,
-) -> float:
+    ):
     """
     @brief Calculate the monthly compute charges based on requests per month, duration of each request in ms, and memory in GB.
     @param requests_per_month: The number of requests per month.
@@ -169,7 +171,7 @@ def calc_monthly_compute_charges(
     monthly_compute_charges = calculate_tiered_cost(
         total_compute_gb_sec, tier_cost_factor, overflow_rate
     )
-    return monthly_compute_charges
+    return total_compute_gb_sec, monthly_compute_charges
 
 
 def calc_monthly_request_charges(
@@ -179,10 +181,14 @@ def calc_monthly_request_charges(
 
 
 def calc_monthly_ephemeral_storage_charges(
-    storage_in_gb: float, ephemeral_storage_cost_factor: float
+    storage_in_gb: float,
+    ephemeral_storage_cost_factor: float,
+    total_compute_gb_sec: float,
 ) -> float:
     billable_storage = max(0.0, float(storage_in_gb) - 0.5)
-    return billable_storage * float(ephemeral_storage_cost_factor)
+    return (
+        billable_storage * float(ephemeral_storage_cost_factor) * total_compute_gb_sec
+    )
 
 
 # Flow:
@@ -246,7 +252,7 @@ def calculate(
     storage_in_gb = unit_convertion_ephemeral_storage(ephemeral_storage, storage_unit)
 
     # Step 5
-    monthly_compute_charges = calc_monthly_compute_charges(
+    total_compute_gb_sec, monthly_compute_charges = calc_monthly_compute_charges(
         requests_per_month,
         duration_of_each_request_in_ms,
         memory_in_gb,
@@ -256,7 +262,7 @@ def calculate(
         requests_per_month, requests_cost_factor
     )
     monthly_ephemeral_storage_charges = calc_monthly_ephemeral_storage_charges(
-       storage_in_gb, ephemeral_storage_cost_factor
+        storage_in_gb, ephemeral_storage_cost_factor, total_compute_gb_sec
     )
 
     # Step 6

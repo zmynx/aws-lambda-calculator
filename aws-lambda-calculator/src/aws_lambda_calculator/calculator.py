@@ -145,7 +145,7 @@ def calc_monthly_compute_charges(
     duration_of_each_request_in_ms: int,
     memory_in_gb: float,
     tier_cost_factor: dict,
-    ):
+):
     """
     @brief Calculate the monthly compute charges based on requests per month, duration of each request in ms, and memory in GB.
     @param requests_per_month: The number of requests per month.

@@ -7,7 +7,7 @@ import json
 load_dotenv()
 
 logger = logging.getLogger(__name__)
-
+logger.setLevel(logging.DEBUG)
 
 def open_json_file(region: str) -> dict:
     """Open a JSON file containing cost factors for a specific region."""
@@ -102,33 +102,39 @@ def unit_convertion_ephemeral_storage(
             raise ValueError(f"Unknown storage unit: {storage_unit}")
 
 
-def calculate_tiered_cost(total_compute_gb_sec: float, tier_cost_factor: dict) -> float:
+def calculate_tiered_cost(total_compute_gb_sec: float,
+                          tier_cost_factor: dict[str, float],
+                          overflow_rate: float) -> float:
     """
-    Calculate the total cost for a given compute usage, based on tiered pricing.
+    total_compute_gb_sec: total usage in GB‑seconds
+    tier_cost_factor: maps breakpoint (as string) → rate
+    overflow_rate: per‑GB‑sec rate for usage beyond the highest breakpoint
     """
-    # Convert string keys/values to sorted list of (int threshold, float rate)
+    # 1) parse & sort tiers by threshold (ascending)
     tiers = sorted(
-        (int(thresh), float(rate)) for thresh, rate in tier_cost_factor.items()
+        (int(thresh), rate)
+        for thresh, rate in tier_cost_factor.items()
     )
 
     total_cost = 0.0
-    previous_threshold = 0.0
-    tier_units: float
+    prev_threshold = 0
+
+    # 2) bill each tier up to its cap
     for threshold, rate in tiers:
-        # Determine units in this tier
-        if total_compute_gb_sec > threshold:
-            tier_units = threshold - previous_threshold
-        else:
-            tier_units = total_compute_gb_sec - previous_threshold
+        # how much usage falls into this slice?
+        usage_in_tier = min(total_compute_gb_sec, threshold) - prev_threshold
+        if usage_in_tier > 0:
+            total_cost += usage_in_tier * rate
+            prev_threshold += usage_in_tier
 
-        # Calculate and accumulate cost
-        if tier_units > 0:
-            total_cost += tier_units * rate
-            previous_threshold += tier_units
-
-        # Stop if we've billed all usage
+        # once we've billed all the usage, early exit
         if total_compute_gb_sec <= threshold:
-            break
+            return total_cost
+
+    # 3) bill any remaining usage above the highest threshold
+    remaining = total_compute_gb_sec - prev_threshold
+    if remaining > 0:
+        total_cost += remaining * overflow_rate
 
     return total_cost
 
@@ -159,8 +165,10 @@ def calc_monthly_compute_charges(
     ## Tiered price for total compute GB-seconds
     logger.debug(f"Tiered price for: {total_compute_gb_sec} GB-s")
 
+    # anything above 15 B GB‑sec
+    overflow_rate = 0.0000133334
     monthly_compute_charges = calculate_tiered_cost(
-        total_compute_gb_sec, tier_cost_factor
+        total_compute_gb_sec, tier_cost_factor, overflow_rate
     )
     return monthly_compute_charges
 
@@ -259,3 +267,45 @@ def calculate(
         + monthly_ephemeral_storage_charges
     )
     return total
+
+def test_calculate(
+    region,
+    architecture,
+    number_of_requests,
+    request_unit,
+    duration_of_each_request_in_ms,
+    memory,
+    memory_unit,
+    ephemeral_storage,
+    storage_unit,
+    expected_cost,
+):
+    from pytest import approx
+    cost = calculate(
+        region=region,
+        architecture=architecture,
+        number_of_requests=number_of_requests,
+        request_unit=request_unit,
+        duration_of_each_request_in_ms=duration_of_each_request_in_ms,
+        memory=memory,
+        memory_unit=memory_unit,
+        ephemeral_storage=ephemeral_storage,
+        storage_unit=storage_unit,
+    )
+    assert cost == approx(expected_cost, abs=0.01), (
+        f"Expected {expected_cost}, got {cost}"
+    )
+
+if __name__ == "__main__":
+    test_calculate(
+        region="us-east-1",
+        architecture="x86",
+        number_of_requests=5000000,
+        request_unit="million per month",
+        duration_of_each_request_in_ms=300,
+        memory=2048,
+        memory_unit="MB",
+        ephemeral_storage=512,
+        storage_unit="MB",
+        expected_cost=41035199.20,
+    )

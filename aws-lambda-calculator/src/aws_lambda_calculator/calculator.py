@@ -256,7 +256,7 @@ def calculate(
         requests_per_month, requests_cost_factor
     )
     monthly_ephemeral_storage_charges = calc_monthly_ephemeral_storage_charges(
-        storage_in_gb, ephemeral_storage_cost_factor
+       storage_in_gb, ephemeral_storage_cost_factor
     )
 
     # Step 6

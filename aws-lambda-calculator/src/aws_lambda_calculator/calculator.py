@@ -112,7 +112,7 @@ def calculate_tiered_cost(total_compute_gb_sec: float,
     """
     # 1) parse & sort tiers by threshold (ascending)
     tiers = sorted(
-        (int(thresh), rate)
+        (int(thresh), float(rate))
         for thresh, rate in tier_cost_factor.items()
     )
 

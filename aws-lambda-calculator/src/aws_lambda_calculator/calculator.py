@@ -7,7 +7,6 @@ import json
 load_dotenv()
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
 
 def open_json_file(region: str) -> dict:
     """Open a JSON file containing cost factors for a specific region."""
@@ -267,45 +266,3 @@ def calculate(
         + monthly_ephemeral_storage_charges
     )
     return total
-
-def test_calculate(
-    region,
-    architecture,
-    number_of_requests,
-    request_unit,
-    duration_of_each_request_in_ms,
-    memory,
-    memory_unit,
-    ephemeral_storage,
-    storage_unit,
-    expected_cost,
-):
-    from pytest import approx
-    cost = calculate(
-        region=region,
-        architecture=architecture,
-        number_of_requests=number_of_requests,
-        request_unit=request_unit,
-        duration_of_each_request_in_ms=duration_of_each_request_in_ms,
-        memory=memory,
-        memory_unit=memory_unit,
-        ephemeral_storage=ephemeral_storage,
-        storage_unit=storage_unit,
-    )
-    assert cost == approx(expected_cost, abs=0.01), (
-        f"Expected {expected_cost}, got {cost}"
-    )
-
-if __name__ == "__main__":
-    test_calculate(
-        region="us-east-1",
-        architecture="x86",
-        number_of_requests=5000000,
-        request_unit="million per month",
-        duration_of_each_request_in_ms=300,
-        memory=2048,
-        memory_unit="MB",
-        ephemeral_storage=512,
-        storage_unit="MB",
-        expected_cost=41035199.20,
-    )

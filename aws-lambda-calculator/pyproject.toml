@@ -48,6 +48,7 @@ ruff = "^0.9.7"
 pytest = "^8.3.4"
 mypy = "^1.15.0"
 pytest-cov = "^6.1.0"
+playwright = "^1.52.0"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]

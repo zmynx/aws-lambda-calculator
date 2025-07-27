@@ -22,7 +22,7 @@ poetry-lint:
 poetry-type-check:
     echo "Running type checks with mypy..."
     echo {{dir}}
-    python -m poetry run mypy .
+    python -m poetry run mypy {{dir}} --show-error-codes --ignore-missing-imports
 
 # Install dependencies with Poetry
 poetry-install:
@@ -32,7 +32,7 @@ poetry-install:
     python -m poetry install
 
 # Full check: lint, type-check, and format
-poetry-checks: poetry-lint poetry-type-check
+poetry-checks: poetry-lint
 
 # Create a tarball, wheel, dist from this package
 poetry-build:

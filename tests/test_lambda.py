@@ -7,7 +7,7 @@ def test_lambda_success():
         "region": "us-east-1",
         "architecture": "x86",
         "number_of_requests": 1000000,  # 1 million requests,
-        "request_units": "per day",
+        "request_unit": "per day",
         "duration_of_each_request": 100,  # 100 ms per request
         "memory": 512,  # 512 MB
         "memory_unit": "MB",
@@ -26,7 +26,7 @@ def test_lambda_missing_duration():
         "region": "us-east-1",
         "architecture": "x86",
         "number_of_requests": 1000000,  # 1 million requests
-        "request_units": "per day",
+        "request_unit": "per day",
         # Missing "duration_of_each_request"
         "memory": 512,  # 512 MB
         "memory_unit": "MB",
@@ -45,7 +45,7 @@ def test_lambda_default_values():
         "region": "us-east-1",
         "architecture": "x86",
         "number_of_requests": 1000000,  # 1 million requests
-        "request_units": "per day",
+        "request_unit": "per day",
         # Missing "duration_of_each_request"
         "memory": 512,  # 512 MB
         "memory_unit": "MB",

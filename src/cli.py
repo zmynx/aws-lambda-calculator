@@ -69,7 +69,7 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "-nu",
-        "--request-units",
+        "--request-unit",
         type=int,
         required=True,
         choices=[
@@ -80,7 +80,7 @@ def parse_args() -> argparse.Namespace:
             "per month",
             "millions per month",
         ],
-        help="Request units",
+        help="Request unit",
     )
     parser.add_argument(
         "-d",
@@ -141,7 +141,7 @@ def run() -> None:
             region=args.region,
             architecture=args.architecture,
             number_of_requests=args.number_of_requests,
-            request_units=args.request_units,
+            request_unit=args.request_unit,
             duration_of_each_request=args.duration_of_each_request,
             memory=args.memory,
             memory_unit=args.memory_unit,

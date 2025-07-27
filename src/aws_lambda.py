@@ -22,7 +22,7 @@ def handler(event: dict, context: object) -> dict:
         architecture = event.get("architecture")
         number_of_requests = event.get("number_of_requests")
         request_unit = event.get("request_unit")
-        duration_of_each_request = event.get("duration_of_each_request")
+        duration_of_each_request_in_ms = event.get("duration_of_each_request_in_ms")
         memory = event.get("memory")
         memory_unit = event.get("memory_unit")
         ephemeral_storage = event.get("ephemeral_storage")
@@ -34,7 +34,7 @@ def handler(event: dict, context: object) -> dict:
             architecture=architecture,
             number_of_requests=number_of_requests,
             request_unit=request_unit,
-            duration_of_each_request=duration_of_each_request,
+            duration_of_each_request_in_ms=duration_of_each_request_in_ms,
             memory=memory,
             memory_unit=memory_unit,
             ephemeral_storage=ephemeral_storage,

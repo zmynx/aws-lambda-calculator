@@ -70,7 +70,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "-nu",
         "--request-unit",
-        type=int,
+        type=str,
         required=True,
         choices=[
             "per second",

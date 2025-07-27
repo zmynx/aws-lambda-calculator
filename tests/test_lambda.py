@@ -8,7 +8,7 @@ def test_lambda_success():
         "architecture": "x86",
         "number_of_requests": 1000000,  # 1 million requests,
         "request_unit": "per day",
-        "duration_of_each_request": 100,  # 100 ms per request
+        "duration_of_each_request_in_ms": 100,  # 100 ms per request
         "memory": 512,  # 512 MB
         "memory_unit": "MB",
         "ephemeral_storage": 10,  # 10 GB of ephemeral storage
@@ -27,7 +27,7 @@ def test_lambda_missing_duration():
         "architecture": "x86",
         "number_of_requests": 1000000,  # 1 million requests
         "request_unit": "per day",
-        # Missing "duration_of_each_request"
+        # Missing "duration_of_each_request_in_ms"
         "memory": 512,  # 512 MB
         "memory_unit": "MB",
         "ephemeral_storage": 10,  # 10 GB of ephemeral storage
@@ -46,7 +46,7 @@ def test_lambda_default_values():
         "architecture": "x86",
         "number_of_requests": 1000000,  # 1 million requests
         "request_unit": "per day",
-        # Missing "duration_of_each_request"
+        # Missing "duration_of_each_request_in_ms"
         "memory": 512,  # 512 MB
         "memory_unit": "MB",
         "ephemeral_storage": 10,  # 10 GB of ephemeral storage
@@ -55,4 +55,4 @@ def test_lambda_default_values():
     response = handler(event, None)
 
     assert response["status"] == "error"
-    assert "Missing required field: 'requests_millions'" in response["message"]
+    assert "Missing required field: 'storage_unit'" in response["message"]

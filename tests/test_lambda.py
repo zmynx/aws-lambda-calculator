@@ -1,4 +1,7 @@
 from aws_lambda import handler
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def test_lambda_success():
@@ -16,6 +19,7 @@ def test_lambda_success():
     }
     response = handler(event, None)
 
+    logger.debug(f"Response: {response}")
     assert response["status"] == "success"
     assert isinstance(response["cost"], float)
 
@@ -35,6 +39,7 @@ def test_lambda_missing_duration():
     }
     response = handler(event, None)
 
+    logger.debug(f"Response: {response}")
     assert response["status"] == "error"
     assert "Missing required field: 'duration_ms'" in response["message"]
 
@@ -54,5 +59,6 @@ def test_lambda_default_values():
     }
     response = handler(event, None)
 
+    logger.debug(f"Response: {response}")
     assert response["status"] == "error"
     assert "Missing required field: 'storage_unit'" in response["message"]

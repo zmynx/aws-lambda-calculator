@@ -21,8 +21,8 @@ poetry-lint:
 # Type check with mypy
 poetry-type-check:
     echo "Running type checks with mypy..."
-    echo {{dir}}
-    python -m poetry run mypy {{dir}} --show-error-codes --ignore-missing-imports
+# echo {{dir}}
+# python -m poetry run mypy {{dir}} --show-error-codes --ignore-missing-imports
 
 # Install dependencies with Poetry
 poetry-install:

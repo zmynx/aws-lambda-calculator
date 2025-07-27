@@ -1,4 +1,7 @@
 import subprocess
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def run_cli(*args):
@@ -32,6 +35,8 @@ def test_cli_success():
         "GB",
     )
 
+    logger.info(f"CLI output: {stdout}")
+    logger.debug(f"exit code: {exit_code}, stdout: {stdout}")
     assert exit_code == 0
     assert "Total cost:" in stdout
 
@@ -59,6 +64,8 @@ def test_cli_invalid_region():
         "GB",
     )
 
+    logger.info(f"CLI output: {stdout}")
+    logger.debug(f"exit code: {exit_code}, stdout: {stdout}")
     assert exit_code != 0
     assert "Invalid region" in stderr or "error" in stderr.lower()
 
@@ -86,6 +93,8 @@ def test_cli_short_flags_success():
         "GB",
     )
 
+    logger.info(f"CLI output: {stdout}")
+    logger.debug(f"exit code: {exit_code}, stdout: {stdout}")
     assert exit_code == 0
     assert "Total cost:" in stdout
 
@@ -110,6 +119,8 @@ def test_cli_missing_argument():
         # Missing ephemeral storage and storage unit
     )
 
+    logger.info(f"CLI output: {stdout}")
+    logger.debug(f"exit code: {exit_code}, stdout: {stdout}")
     assert exit_code != 0  # Should fail
     assert "the following arguments are required" in stderr
     assert "--ephemeral-storage" in stderr or "--storage-unit" in stderr
@@ -139,5 +150,7 @@ def test_cli_verbose_mode():
         "--verbose",  # Enable verbose mode
     )
 
+    logger.info(f"CLI output: {stdout}")
+    logger.debug(f"exit code: {exit_code}, stdout: {stdout}")
     assert exit_code == 0
     assert "DEBUG" in stdout or "DEBUG" in stderr  # Debug logs should appear

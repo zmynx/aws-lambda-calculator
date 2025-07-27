@@ -21,7 +21,7 @@ def handler(event: dict, context: object) -> dict:
         region = event.get("region")
         architecture = event.get("architecture")
         number_of_requests = event.get("number_of_requests")
-        request_units = event.get("request_units")
+        request_unit = event.get("request_unit")
         duration_of_each_request = event.get("duration_of_each_request")
         memory = event.get("memory")
         memory_unit = event.get("memory_unit")
@@ -33,7 +33,7 @@ def handler(event: dict, context: object) -> dict:
             region=region,
             architecture=architecture,
             number_of_requests=number_of_requests,
-            request_units=request_units,
+            request_unit=request_unit,
             duration_of_each_request=duration_of_each_request,
             memory=memory,
             memory_unit=memory_unit,

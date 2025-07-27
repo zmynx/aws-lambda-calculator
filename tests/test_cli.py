@@ -18,7 +18,7 @@ def test_cli_success():
         "x86",
         "--number-of-requests",
         "1000000",  # 1 million requests
-        "--request-units",
+        "--request-unit",
         "per day",
         "--duration-of-each-request",
         "100",  # 100 ms per request
@@ -45,7 +45,7 @@ def test_cli_invalid_region():
         "x86",
         "--number-of-requests",
         "1000000",  # 1 million requests
-        "--request-units",
+        "--request-unit",
         "per day",
         "--duration-of-each-request",
         "100",  # 100 ms per request
@@ -99,7 +99,7 @@ def test_cli_missing_argument():
         "x86",
         "--number-of-requests",
         "1000000",  # 1 million requests
-        "--request-units",
+        "--request-unit",
         "per day",
         "--duration-of-each-request",
         "100",  # 100 ms per request
@@ -124,7 +124,7 @@ def test_cli_verbose_mode():
         "x86",
         "--number-of-requests",
         "1000000",  # 1 million requests
-        "--request-units",
+        "--request-unit",
         "per day",
         "--duration-of-each-request",
         "100",  # 100 ms per request

@@ -18,17 +18,27 @@ def handler(event: dict, context: object) -> dict:
     logger.debug(f"Received event: {json.dumps(event, indent=2)}")
 
     try:
-        duration_ms = event["duration_ms"]
-        requests_millions = event["requests_millions"]
-        concurrency = event["concurrency"]
-        ram_gb = event["ram_gb"]
+        region = event.get("region")
+        architecture = event.get("architecture")
+        number_of_requests = event.get("number_of_requests")
+        request_units = event.get("request_units")
+        duration_of_each_request = event.get("duration_of_each_request")
+        memory = event.get("memory")
+        memory_unit = event.get("memory_unit")
+        ephemeral_storage = event.get("ephemeral_storage")
+        storage_unit = event.get("storage_unit")
 
         logger.info("Calculating cost...")
         cost = calculate(
-            duration_ms=duration_ms,
-            requests_millions=requests_millions,
-            concurrency=concurrency,
-            ram_gb=ram_gb,
+            region=region,
+            architecture=architecture,
+            number_of_requests=number_of_requests,
+            request_units=request_units,
+            duration_of_each_request=duration_of_each_request,
+            memory=memory,
+            memory_unit=memory_unit,
+            ephemeral_storage=ephemeral_storage,
+            storage_unit=storage_unit,
         )
 
         return {

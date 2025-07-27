@@ -13,19 +13,108 @@ def parse_args() -> argparse.Namespace:
 
     # Required arguments
     parser.add_argument(
-        "-d", "--duration-ms", type=int, required=True, help="Duration in milliseconds"
+        "-r",
+        "--region",
+        type=str,
+        required=True,
+        choices=[
+            "af-sout-1",
+            "ap-east-1",
+            "ap-east-2",
+            "ap-northeast-1",
+            "ap-northeast-2",
+            "ap-northeast-3",
+            "ap-south-1",
+            "ap-south-2",
+            "ap-southeast-1",
+            "ap-southeast-2",
+            "ap-southeast-3",
+            "ap-southeast-4",
+            "ap-southeast-5",
+            "ap-southeast-7",
+            "ca-central-1",
+            "ca-west-1",
+            "eu-central-1",
+            "eu-central-2",
+            "eu-north-1",
+            "eu-south-1",
+            "eu-south-2",
+            "eu-west-1",
+            "eu-west-2",
+            "eu-west-3",
+            "il-central-1",
+            "me-central-1",
+            "me-south-1",
+            "mx-central-1",
+            "sa-east-1",
+            "us-east-1",
+            "us-east-2",
+            "us-gov-east-1",
+            "us-gov-west-1",
+            "us-west-1",
+            "us-west-2",
+        ],
+        help="AWS region code",
     )
     parser.add_argument(
-        "-r",
-        "--requests-millions",
+        "-a",
+        "--architecture",
+        type=str,
+        required=True,
+        choices=["x86", "arm64"],
+        help="Architecture (x86 or arm64)",
+    )
+    parser.add_argument(
+        "-n", "--number-of-requests", type=int, required=True, help="Number of requests"
+    )
+    parser.add_argument(
+        "-nu",
+        "--request-units",
         type=int,
         required=True,
-        help="Requests in millions",
+        choices=[
+            "per second",
+            "per minute",
+            "per hour",
+            "per day",
+            "per month",
+            "millions per month",
+        ],
+        help="Request units",
     )
     parser.add_argument(
-        "-c", "--concurrency", type=int, required=True, help="Concurrency level"
+        "-d",
+        "--duration-of-each-request",
+        type=int,
+        required=True,
+        help="Duration of each request in milliseconds",
     )
-    parser.add_argument("-m", "--ram-gb", type=float, required=True, help="RAM in GB")
+    parser.add_argument(
+        "-m", "--memory", type=float, required=True, help="Amount of memory"
+    )
+    parser.add_argument(
+        "-mu",
+        "--memory-unit",
+        type=str,
+        required=True,
+        choices=["GB", "MB"],
+        help="Memory unit (GB or MB)",
+    )
+    parser.add_argument(
+        "-es",
+        "--ephemeral-storage",
+        type=float,
+        required=True,
+        help="Amount of ephemeral storage",
+    )
+    parser.add_argument(
+        "-esu",
+        "--storage-unit",
+        type=str,
+        required=True,
+        choices=["GB", "MB"],
+        help="Storage unit (GB or MB)",
+    )
 
     # Optional verbose flag
     parser.add_argument(
@@ -49,13 +138,17 @@ def run() -> None:
 
         # Call the calculate function with parsed values
         total_cost = calculate(
-            duration_ms=args.duration_ms,
-            requests_millions=args.requests_millions,
-            concurrency=args.concurrency,
-            ram_gb=args.ram_gb,
+            region=args.region,
+            architecture=args.architecture,
+            number_of_requests=args.number_of_requests,
+            request_units=args.request_units,
+            duration_of_each_request=args.duration_of_each_request,
+            memory=args.memory,
+            memory_unit=args.memory_unit,
+            ephemeral_storage=args.ephemeral_storage,
+            storage_unit=args.storage_unit,
         )
 
-        print(f"Total cost: {total_cost:.6f} USD")
         logger.info(f"Total cost: {total_cost:.6f} USD")
         logger.info("Execution completed successfully.")
 

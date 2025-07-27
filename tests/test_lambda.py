@@ -4,10 +4,15 @@ from aws_lambda import handler
 def test_lambda_success():
     """Test Lambda handler with valid input."""
     event = {
-        "duration_ms": 100,
-        "requests_millions": 2,
-        "concurrency": 5,
-        "ram_gb": 0.5,
+        "region": "us-east-1",
+        "architecture": "x86",
+        "number_of_requests": 1000000,  # 1 million requests,
+        "request_units": "per day",
+        "duration_of_each_request": 100,  # 100 ms per request
+        "memory": 512,  # 512 MB
+        "memory_unit": "MB",
+        "ephemeral_storage": 10,  # 10 GB of ephemeral storage
+        "storage_unit": "GB",
     }
     response = handler(event, None)
 
@@ -18,10 +23,15 @@ def test_lambda_success():
 def test_lambda_missing_duration():
     """Test Lambda handler when required field is missing."""
     event = {
-        # Missing "duration_ms"
-        "requests_millions": 2,
-        "concurrency": 5,
-        "ram_gb": 0.5,
+        "region": "us-east-1",
+        "architecture": "x86",
+        "number_of_requests": 1000000,  # 1 million requests
+        "request_units": "per day",
+        # Missing "duration_of_each_request"
+        "memory": 512,  # 512 MB
+        "memory_unit": "MB",
+        "ephemeral_storage": 10,  # 10 GB of ephemeral storage
+        "storage_unit": "GB",
     }
     response = handler(event, None)
 
@@ -32,10 +42,15 @@ def test_lambda_missing_duration():
 def test_lambda_default_values():
     """Test Lambda handler with missing optional field (simulate error)."""
     event = {
-        "duration_ms": 100,
-        # Missing "requests_millions"
-        "concurrency": 5,
-        "ram_gb": 0.5,
+        "region": "us-east-1",
+        "architecture": "x86",
+        "number_of_requests": 1000000,  # 1 million requests
+        "request_units": "per day",
+        # Missing "duration_of_each_request"
+        "memory": 512,  # 512 MB
+        "memory_unit": "MB",
+        "ephemeral_storage": 10,  # 10 GB of ephemeral storage
+        # Missing "storage_unit"
     }
     response = handler(event, None)
 

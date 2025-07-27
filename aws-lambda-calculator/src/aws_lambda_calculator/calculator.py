@@ -118,7 +118,7 @@ def calculate_tiered_cost(
     )
 
     total_cost = 0.0
-    prev_threshold = 0
+    prev_threshold = 0.0
 
     # 2) bill each tier up to its cap
     for threshold, rate in tiers:

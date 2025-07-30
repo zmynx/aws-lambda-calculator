@@ -23,7 +23,7 @@ def test_cli_success():
         "1000000",  # 1 million requests
         "--request-unit",
         "per day",
-        "--duration-of-each-request",
+        "--duration_of_each_request_in_ms",
         "100",  # 100 ms per request
         "--memory",
         "512",  # 512 MB
@@ -37,6 +37,8 @@ def test_cli_success():
 
     logger.info(f"CLI output: {stdout}")
     logger.debug(f"exit code: {exit_code}, stdout: {stdout}")
+    print(f"CLI output: {stdout}")
+    print(f"exit code: {exit_code}, stderr: {stderr}")
     assert exit_code == 0
     assert "Total cost:" in stdout
 
@@ -68,9 +70,7 @@ def test_cli_invalid_region():
     print(f"CLI output: {stdout}")
     print(f"exit code: {exit_code}, stderr: {stderr}")
     assert exit_code != 0
-    assert (
-        "argument -r/--region: invalid choice:" in stderr or "error" in stderr.lower()
-    )
+    assert "invalid choice:" in stderr
 
 
 def test_cli_short_flags_success():

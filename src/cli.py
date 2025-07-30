@@ -84,7 +84,7 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "-d",
-        "--duration-of-each-request",
+        "--duration-of-each-request-in-ms",
         type=int,
         required=True,
         help="Duration of each request in milliseconds",
@@ -142,7 +142,7 @@ def run() -> None:
             architecture=args.architecture,
             number_of_requests=args.number_of_requests,
             request_unit=args.request_unit,
-            duration_of_each_request=args.duration_of_each_request,
+            duration_of_each_request_in_ms=args.duration_of_each_request_in_ms,
             memory=args.memory,
             memory_unit=args.memory_unit,
             ephemeral_storage=args.ephemeral_storage,

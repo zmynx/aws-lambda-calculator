@@ -18,7 +18,7 @@ def parse_args() -> argparse.Namespace:
         type=str,
         required=True,
         choices=[
-            "af-sout-1",
+            "af-south-1",
             "ap-east-1",
             "ap-east-2",
             "ap-northeast-1",

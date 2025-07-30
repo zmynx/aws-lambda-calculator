@@ -431,7 +431,7 @@ def get_memory_dict(region_code: str, arch: str) -> dict[str, str]:
                 "8192": "0.0000001067",
                 "9216": "0.0000001200",
                 "10240": "0.0000001333",
-            }
+            },
         },
         "ap-southeast-3": {
             "x86": {
@@ -463,7 +463,7 @@ def get_memory_dict(region_code: str, arch: str) -> dict[str, str]:
                 "8192": "0.0000001067",
                 "9216": "0.0000001200",
                 "10240": "0.0000001333",
-            }
+            },
         },
         "ap-southeast-4": {
             "x86": {
@@ -495,7 +495,7 @@ def get_memory_dict(region_code: str, arch: str) -> dict[str, str]:
                 "8192": "0.0000001067",
                 "9216": "0.0000001200",
                 "10240": "0.0000001333",
-            }
+            },
         },
         "ap-southeast-5": {
             "x86": {
@@ -527,7 +527,7 @@ def get_memory_dict(region_code: str, arch: str) -> dict[str, str]:
                 "8192": "0.0000001067",
                 "9216": "0.0000001200",
                 "10240": "0.0000001333",
-            }
+            },
         },
         "ap-south-1": {
             "x86": {
@@ -559,7 +559,7 @@ def get_memory_dict(region_code: str, arch: str) -> dict[str, str]:
                 "8192": "0.0000001067",
                 "9216": "0.0000001200",
                 "10240": "0.0000001333",
-            }
+            },
         },
         "ap-northeast-3": {
             "x86": {
@@ -591,7 +591,7 @@ def get_memory_dict(region_code: str, arch: str) -> dict[str, str]:
                 "8192": "0.0000001067",
                 "9216": "0.0000001200",
                 "10240": "0.0000001333",
-            }
+            },
         },
         "ap-northeast-2": {
             "x86": {
@@ -623,7 +623,7 @@ def get_memory_dict(region_code: str, arch: str) -> dict[str, str]:
                 "8192": "0.0000001067",
                 "9216": "0.0000001200",
                 "10240": "0.0000001333",
-            }
+            },
         },
         "ap-southeast-1": {
             "x86": {
@@ -655,7 +655,7 @@ def get_memory_dict(region_code: str, arch: str) -> dict[str, str]:
                 "8192": "0.0000001067",
                 "9216": "0.0000001200",
                 "10240": "0.0000001333",
-            }
+            },
         },
         "ap-east-2": {
             "x86": {
@@ -687,7 +687,7 @@ def get_memory_dict(region_code: str, arch: str) -> dict[str, str]:
                 "8192": "0.0000001067",
                 "9216": "0.0000001200",
                 "10240": "0.0000001333",
-            }
+            },
         },
         "ap-southeast-2": {
             "x86": {
@@ -719,7 +719,7 @@ def get_memory_dict(region_code: str, arch: str) -> dict[str, str]:
                 "8192": "0.0000001067",
                 "9216": "0.0000001200",
                 "10240": "0.0000001333",
-            }
+            },
         },
         "ap-southeast-7": {
             "x86": {
@@ -751,7 +751,7 @@ def get_memory_dict(region_code: str, arch: str) -> dict[str, str]:
                 "8192": "0.0000001067",
                 "9216": "0.0000001200",
                 "10240": "0.0000001333",
-            }
+            },
         },
         "ap-northeast-1": {
             "x86": {
@@ -783,7 +783,7 @@ def get_memory_dict(region_code: str, arch: str) -> dict[str, str]:
                 "8192": "0.0000001067",
                 "9216": "0.0000001200",
                 "10240": "0.0000001333",
-            }
+            },
         },
         "eu-central-1": {
             "x86": {
@@ -815,7 +815,7 @@ def get_memory_dict(region_code: str, arch: str) -> dict[str, str]:
                 "8192": "0.0000001067",
                 "9216": "0.0000001200",
                 "10240": "0.0000001333",
-            }
+            },
         },
         "eu-west-1": {
             "x86": {
@@ -847,7 +847,7 @@ def get_memory_dict(region_code: str, arch: str) -> dict[str, str]:
                 "8192": "0.0000001067",
                 "9216": "0.0000001200",
                 "10240": "0.0000001333",
-            }
+            },
         },
         "eu-west-2": {
             "x86": {
@@ -879,7 +879,7 @@ def get_memory_dict(region_code: str, arch: str) -> dict[str, str]:
                 "8192": "0.0000001067",
                 "9216": "0.0000001200",
                 "10240": "0.0000001333",
-            }
+            },
         },
         "eu-south-1": {
             "x86": {
@@ -911,7 +911,7 @@ def get_memory_dict(region_code: str, arch: str) -> dict[str, str]:
                 "8192": "0.0000001067",
                 "9216": "0.0000001200",
                 "10240": "0.0000001333",
-            }
+            },
         },
         "eu-west-3": {
             "x86": {
@@ -943,7 +943,7 @@ def get_memory_dict(region_code: str, arch: str) -> dict[str, str]:
                 "8192": "0.0000001067",
                 "9216": "0.0000001200",
                 "10240": "0.0000001333",
-            }
+            },
         },
         "eu-south-2": {
             "x86": {
@@ -975,7 +975,7 @@ def get_memory_dict(region_code: str, arch: str) -> dict[str, str]:
                 "8192": "0.0000001067",
                 "9216": "0.0000001200",
                 "10240": "0.0000001333",
-            }
+            },
         },
         "eu-north-1": {
             "x86": {
@@ -1007,7 +1007,7 @@ def get_memory_dict(region_code: str, arch: str) -> dict[str, str]:
                 "8192": "0.0000001067",
                 "9216": "0.0000001200",
                 "10240": "0.0000001333",
-            }
+            },
         },
         "eu-central-2": {
             "x86": {
@@ -1039,7 +1039,7 @@ def get_memory_dict(region_code: str, arch: str) -> dict[str, str]:
                 "8192": "0.0000001067",
                 "9216": "0.0000001200",
                 "10240": "0.0000001333",
-            }
+            },
         },
         "il-central-1": {
             "x86": {
@@ -1071,7 +1071,7 @@ def get_memory_dict(region_code: str, arch: str) -> dict[str, str]:
                 "8192": "0.0000001067",
                 "9216": "0.0000001200",
                 "10240": "0.0000001333",
-            }
+            },
         },
         "me-south-1": {
             "x86": {
@@ -1103,7 +1103,7 @@ def get_memory_dict(region_code: str, arch: str) -> dict[str, str]:
                 "8192": "0.0000001067",
                 "9216": "0.0000001200",
                 "10240": "0.0000001333",
-            }
+            },
         },
         "me-central-1": {
             "x86": {
@@ -1135,7 +1135,7 @@ def get_memory_dict(region_code: str, arch: str) -> dict[str, str]:
                 "8192": "0.0000001067",
                 "9216": "0.0000001200",
                 "10240": "0.0000001333",
-            }
+            },
         },
         "sa-east-1": {
             "x86": {
@@ -1167,7 +1167,7 @@ def get_memory_dict(region_code: str, arch: str) -> dict[str, str]:
                 "8192": "0.0000001067",
                 "9216": "0.0000001200",
                 "10240": "0.0000001333",
-            }
+            },
         },
     }
     region_memory_prices = memory_prices.get(region_code, {})

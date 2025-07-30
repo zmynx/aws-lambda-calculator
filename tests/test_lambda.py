@@ -54,7 +54,7 @@ def test_lambda_missing_storage_unit():
         "architecture": "x86",
         "number_of_requests": 1000000,  # 1 million requests
         "request_unit": "per day",
-        # Missing "duration_of_each_request_in_ms"
+        "duration_of_each_request_in_ms": 100,  # 100 ms per request
         "memory": 512,  # 512 MB
         "memory_unit": "MB",
         "ephemeral_storage": 10,  # 10 GB of ephemeral storage

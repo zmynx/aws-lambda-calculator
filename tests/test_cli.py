@@ -69,7 +69,9 @@ def test_cli_invalid_region():
     print(f"CLI output: {stdout}")
     print(f"exit code: {exit_code}, stderr: {stderr}")
     assert exit_code != 0
-    assert "Invalid region" in stderr or "error" in stderr.lower()
+    assert (
+        "argument -r/--region: invalid choice:" in stderr or "error" in stderr.lower()
+    )
 
 
 def test_cli_short_flags_success():
@@ -91,8 +93,9 @@ def test_cli_short_flags_success():
         "MB",
         "-es",
         "10",  # 10 GB of ephemeral storage
-        "-su",
+        "-esu",
         "GB",
+        "-v",  # Enable verbose mode
     )
 
     logger.info(f"CLI output: {stdout}")
@@ -128,8 +131,10 @@ def test_cli_missing_argument():
     print(f"CLI output: {stdout}")
     print(f"exit code: {exit_code}, stderr: {stderr}")
     assert exit_code != 0  # Should fail
-    assert "the following arguments are required" in stderr
-    assert "--ephemeral-storage" in stderr or "--storage-unit" in stderr
+    assert (
+        "the following arguments are required: -es/--ephemeral-storage, -esu/--storage-unit"
+        in stderr
+    )
 
 
 def test_cli_verbose_mode():

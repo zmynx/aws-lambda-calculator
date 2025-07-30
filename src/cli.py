@@ -151,6 +151,7 @@ def run() -> None:
 
         logger.info(f"Total cost: {total_cost:.6f} USD")
         logger.info("Execution completed successfully.")
+        print(f"Total cost: {total_cost:.6f} USD")
 
     except Exception as e:
         logger.error(f"An error occurred: {e}")

@@ -44,12 +44,14 @@ jobs:
         run: python -m poetry run pytest -svv tests/
 
       - name: Get Cover
+        if: ${{ github.event_name != 'merge_group' }}
         uses: orgoro/coverage@v3.2
         with:
             coverageFile: coverage.xml
             token: ${{ github.token }}
 
       - name: Coverage comment
+        if: ${{ github.event_name != 'merge_group' }}
         id: coverage_comment
         uses: py-cov-action/python-coverage-comment-action@v3
         with:
@@ -57,7 +59,7 @@ jobs:
 
       - name: Store Pull Request comment to be posted
         uses: actions/upload-artifact@v4
-        if: steps.coverage_comment.outputs.COMMENT_FILE_WRITTEN == 'true'
+        if: ${{ github.event_name != 'merge_group' && steps.coverage_comment.outputs.COMMENT_FILE_WRITTEN == 'true' }}
         with:
           # If you use a different name, update COMMENT_ARTIFACT_NAME accordingly
           name: python-coverage-comment-action

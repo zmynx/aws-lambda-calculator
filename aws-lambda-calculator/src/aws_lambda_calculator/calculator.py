@@ -23,7 +23,7 @@ def open_json_file(region: str) -> dict:
         return data
 
 
-def unit_convertion_requests(number_of_requests: int, request_unit: str) -> int:
+def unit_conversion_requests(number_of_requests: int, request_unit: str) -> int:
     """
     @brief Convert number of requests based on the unit provided. Assuming 730 hours in a month (30 days). Assuming 24 hours in a day.
     @param number_of_requests: The number of requests to convert.
@@ -62,7 +62,7 @@ def unit_convertion_requests(number_of_requests: int, request_unit: str) -> int:
             raise ValueError(f"Unknown request unit: {request_unit}")
 
 
-def unit_convertion_memory(memory: int, memory_unit: str) -> float:
+def unit_conversion_memory(memory: int, memory_unit: str) -> float:
     """
     @brief Convert memory based on the unit provided.
     @param memory: amount of memory.
@@ -81,7 +81,7 @@ def unit_convertion_memory(memory: int, memory_unit: str) -> float:
             raise ValueError(f"Unknown memory unit: {memory_unit}")
 
 
-def unit_convertion_ephemeral_storage(
+def unit_conversion_ephemeral_storage(
     ephemeral_storage_mb: float, storage_unit: str
 ) -> float:
     """
@@ -199,10 +199,10 @@ def calc_monthly_ephemeral_storage_charges(
 #   3.1 architecture (x86, arm)
 #   3.2 memory
 #   3.3 ephemeral storage
-# 4. Run unit convertions on the user's input:
-#   4.1 unit_convertion_requests on @number of requests, @request unit to convert it to requests per month.
-#   4.2 unit_convertion_memory on @memory, @memory unit to convert it to memory in GB.
-#   4.3 unit_convertion_ephemeral_storage on @ephemeral storage, @storage unit to convert it to ephemeral storage in GB.
+# 4. Run unit conversions on the user's input:
+#   4.1 unit_conversion_requests on @number of requests, @request unit to convert it to requests per month.
+#   4.2 unit_conversion_memory on @memory, @memory unit to convert it to memory in GB.
+#   4.3 unit_conversion_ephemeral_storage on @ephemeral storage, @storage unit to convert it to ephemeral storage in GB.
 # 5. Pricing calculations:
 #
 #   ## Monthly Compute Charges
@@ -247,9 +247,9 @@ def calculate(
     tier_cost_factor: dict = arch_config.get("Tier", {})
 
     # Step 4
-    requests_per_month = unit_convertion_requests(number_of_requests, request_unit)
-    memory_in_gb = unit_convertion_memory(memory, memory_unit)
-    storage_in_gb = unit_convertion_ephemeral_storage(ephemeral_storage, storage_unit)
+    requests_per_month = unit_conversion_requests(number_of_requests, request_unit)
+    memory_in_gb = unit_conversion_memory(memory, memory_unit)
+    storage_in_gb = unit_conversion_ephemeral_storage(ephemeral_storage, storage_unit)
 
     # Step 5
     total_compute_gb_sec, monthly_compute_charges = calc_monthly_compute_charges(

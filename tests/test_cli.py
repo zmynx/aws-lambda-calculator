@@ -66,6 +66,8 @@ def test_cli_invalid_region():
 
     logger.info(f"CLI output: {stdout}")
     logger.debug(f"exit code: {exit_code}, stdout: {stdout}")
+    print(f"CLI output: {stdout}")
+    print(f"exit code: {exit_code}, stderr: {stderr}")
     assert exit_code != 0
     assert "Invalid region" in stderr or "error" in stderr.lower()
 
@@ -95,6 +97,8 @@ def test_cli_short_flags_success():
 
     logger.info(f"CLI output: {stdout}")
     logger.debug(f"exit code: {exit_code}, stdout: {stdout}")
+    print(f"CLI output: {stdout}")
+    print(f"exit code: {exit_code}, stderr: {stderr}")
     assert exit_code == 0
     assert "Total cost:" in stdout
 
@@ -121,6 +125,8 @@ def test_cli_missing_argument():
 
     logger.info(f"CLI output: {stdout}")
     logger.debug(f"exit code: {exit_code}, stdout: {stdout}")
+    print(f"CLI output: {stdout}")
+    print(f"exit code: {exit_code}, stderr: {stderr}")
     assert exit_code != 0  # Should fail
     assert "the following arguments are required" in stderr
     assert "--ephemeral-storage" in stderr or "--storage-unit" in stderr
@@ -152,5 +158,7 @@ def test_cli_verbose_mode():
 
     logger.info(f"CLI output: {stdout}")
     logger.debug(f"exit code: {exit_code}, stdout: {stdout}")
+    print(f"CLI output: {stdout}")
+    print(f"exit code: {exit_code}, stderr: {stderr}")
     assert exit_code == 0
     assert "DEBUG" in stdout or "DEBUG" in stderr  # Debug logs should appear

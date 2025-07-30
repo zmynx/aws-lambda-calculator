@@ -41,10 +41,13 @@ def test_lambda_missing_duration():
 
     logger.debug(f"Response: {response}")
     assert response["status"] == "error"
-    assert "Missing required field: 'duration_ms'" in response["message"]
+    assert (
+        "Missing required field: 'duration_of_each_request_in_ms'"
+        in response["message"]
+    )
 
 
-def test_lambda_default_values():
+def test_lambda_missing_storage_unit():
     """Test Lambda handler with missing optional field (simulate error)."""
     event = {
         "region": "us-east-1",

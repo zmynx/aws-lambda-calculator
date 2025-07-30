@@ -28,6 +28,22 @@ def handler(event: dict, context: object) -> dict:
         ephemeral_storage = event.get("ephemeral_storage")
         storage_unit = event.get("storage_unit")
 
+        required_params = {
+            "region": region,
+            "architecture": architecture,
+            "number_of_requests": number_of_requests,
+            "request_unit": request_unit,
+            "duration_of_each_request_in_ms": duration_of_each_request_in_ms,
+            "memory": memory,
+            "memory_unit": memory_unit,
+            "ephemeral_storage": ephemeral_storage,
+            "storage_unit": storage_unit,
+        }
+
+        for name, value in required_params.items():
+            if value is None:
+                raise KeyError(name)
+
         logger.info("Calculating cost...")
         cost = calculate(
             region=region,

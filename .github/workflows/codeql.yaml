@@ -5,6 +5,7 @@ on:
     branches: [main, protected]
   pull_request:
     branches: [main]
+    types: [opened, synchronize, reopened]
   merge_group:
   schedule:
     - cron: '0 0 * * 0'  # every Sunday at midnight UTC

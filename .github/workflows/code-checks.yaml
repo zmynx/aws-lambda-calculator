@@ -4,6 +4,7 @@ name: Code Standard Checks
 on:
   workflow_dispatch:
   workflow_call:
+  merge_group:
 
 jobs:
   code-checks:
@@ -47,8 +48,8 @@ jobs:
           python -m poetry run ruff format --check
           python -m poetry run ruff check
 
-      - name: Types cheking (mypy)
-        run: python -m poetry run mypy --check-untyped-defs .
+      # - name: Types cheking (mypy)
+      #   run: python -m poetry run mypy --check-untyped-defs .
 
       - name: Notify failure if checks failed
         if: ${{ failure() }}

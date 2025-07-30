@@ -52,8 +52,7 @@ def test_cli_invalid_region():
         "1000000",  # 1 million requests
         "--request-unit",
         "per day",
-        "--duration-of-each-request",
-        "100",  # 100 ms per request
+        "--duration_of_each_request_in_ms" "100",  # 100 ms per request
         "--memory",
         "512",  # 512 MB
         "--memory-unit",
@@ -117,7 +116,7 @@ def test_cli_missing_argument():
         "1000000",  # 1 million requests
         "--request-unit",
         "per day",
-        "--duration-of-each-request",
+        "--duration_of_each_request_in_ms",
         "100",  # 100 ms per request
         "--memory",
         "512",  # 512 MB
@@ -148,7 +147,7 @@ def test_cli_verbose_mode():
         "1000000",  # 1 million requests
         "--request-unit",
         "per day",
-        "--duration-of-each-request",
+        "--duration_of_each_request_in_ms",
         "100",  # 100 ms per request
         "--memory",
         "512",  # 512 MB

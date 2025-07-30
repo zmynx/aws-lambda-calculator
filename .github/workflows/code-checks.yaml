@@ -4,6 +4,7 @@ name: Code Standard Checks
 on:
   workflow_dispatch:
   workflow_call:
+  merge_group:
 
 jobs:
   code-checks:

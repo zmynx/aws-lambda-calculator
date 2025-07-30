@@ -4,6 +4,7 @@ name: Integration Tests
 on:
   workflow_dispatch:
   workflow_call:
+  merge_group:
 
 jobs:
   integration-tests:

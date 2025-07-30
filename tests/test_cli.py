@@ -23,7 +23,8 @@ def test_cli_success():
         "1000000",  # 1 million requests
         "--request-unit",
         "per day",
-        "--duration-of-each-request-in-ms" "100",  # 100 ms per request
+        "--duration-of-each-request-in-ms",
+        "100",  # 100 ms per request
         "--memory",
         "512",  # 512 MB
         "--memory-unit",

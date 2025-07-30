@@ -45,12 +45,14 @@ jobs:
         run: python -m poetry run pytest -svv tests/
 
       - name: Get Cover
+        if: ${{ github.event_name != 'merge_group' }}
         uses: orgoro/coverage@v3.2
         with:
             coverageFile: ./aws-lambda-calculator/coverage.xml
             token: ${{ github.token }}
 
       - name: Coverage comment
+        if: ${{ github.event_name != 'merge_group' }}
         id: coverage_comment
         uses: py-cov-action/python-coverage-comment-action@v3
         with:
@@ -58,6 +60,7 @@ jobs:
           COVERAGE_PATH: ./aws-lambda-calculator
 
       - name: Store Pull Request comment to be posted
+        if: ${{ github.event_name != 'merge_group' }}
         uses: actions/upload-artifact@v4
         if: steps.coverage_comment.outputs.COMMENT_FILE_WRITTEN == 'true'
         with:

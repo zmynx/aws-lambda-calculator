@@ -33,6 +33,7 @@ on:
     branches: [ main, protected ]
   pull_request:
     branches: [ main ]
+    types: [opened, synchronize, reopened]
   merge_group:
   workflow_dispatch:
 
@@ -47,8 +48,8 @@ jobs:
           # Disabling shallow clones is recommended for improving the relevancy of reporting
           fetch-depth: 0
 
-      - name: Analyze with SonarCloud
-        uses: SonarSource/sonarcloud-github-action@4006f663ecaf1f8093e8e4abb9227f6041f52216
+      - name: Official SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v5.3.0
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:

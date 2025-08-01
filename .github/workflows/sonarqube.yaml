@@ -30,10 +30,15 @@ name: SonarQube (Cloud) analysis
 
 on:
   push:
-    branches: [ main, protected ]
+    branches:
+      - main
   pull_request:
-    branches: [ main ]
     types: [opened, synchronize, reopened]
+  # push:
+  #   branches: [ main, protected ]
+  # pull_request:
+  #   branches: [ main ]
+  #   types: [opened, synchronize, reopened]
   merge_group:
   workflow_dispatch:
 

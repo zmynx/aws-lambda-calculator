@@ -30,15 +30,10 @@ name: SonarQube (Cloud) analysis
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main, protected ]
   pull_request:
+    branches: [ main ]
     types: [opened, synchronize, reopened]
-  # push:
-  #   branches: [ main, protected ]
-  # pull_request:
-  #   branches: [ main ]
-  #   types: [opened, synchronize, reopened]
   merge_group:
   workflow_dispatch:
 
@@ -46,7 +41,7 @@ jobs:
   sonarqube:
     name: SonarQube
     runs-on: ubuntu-latest
-    # permissions:
+    permissions: write-all # allows SonarCloud to write code scanning alerts
     #   pull-requests: read # allows SonarCloud to decorate PRs with analysis results
     steps:
       - uses: actions/checkout@v4

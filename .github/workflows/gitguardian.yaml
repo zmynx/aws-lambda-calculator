@@ -1,11 +1,13 @@
 name: GitGuardian scan
 
-on: 
-  #pull_request:
-  #  branches: [main]
-  #  types: [opened]
+on:
   push:
-    branches: [main]
+    branches: [main, protected]
+  pull_request:
+   branches: [main]
+   types: [opened, synchronize, reopened]
+  merge_group:
+  workflow_dispatch:
 
 jobs:
   scanning:
@@ -20,7 +22,7 @@ jobs:
           fetch-depth: 0 # fetch all history so multiple commits can be scanned
 
       - name: GitGuardian scan
-        uses: GitGuardian/ggshield-action@v1
+        uses: GitGuardian/ggshield-action@v1.42.0
         with:
           args: --all-secrets --with-incident-details -v --ignore-known-secrets # TBD: Sarif report --format sarif
         env:

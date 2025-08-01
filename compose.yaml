@@ -3,8 +3,8 @@ services:
     platform: linux/amd64
     build:
       context: .
-      target: distroless
-      # target: lambda_runtime
+      # target: distroless
+      target: lambda_runtime
       dockerfile: Containerfile
       tags:
         - ghcr.io/zmynx/aws-lambda-calculator:latest
@@ -16,6 +16,7 @@ services:
         - type=gha
       args:
         VERSION: 2.0.7
+        PYTHON_VERSION: 3.13
       labels:
         project: aws-lambda-calculator
         org: zmynx
@@ -29,10 +30,11 @@ services:
       #   - linux/arm64
       privileged: false
     # image: zmynx/aws-lambda-calculator
-    entrypoint: ["sh"]
-    tty: true
+    # Test the cli locally
     # entrypoint: ["/usr/bin/python"]
     # command: ["cli.py", "--help"]
-    environment:
-      - PYTHON_VERSION=3.13.0
+    # Test the lambda function locally:
+    # curl -X POST http://localhost:9000/2015-03-31/functions/function/invocations -d '{"key": "value"}'
+    ports:
+      - "9000:8080"
     restart: unless-stopped

@@ -3,18 +3,19 @@ services:
     platform: linux/amd64
     build:
       context: .
-      #target: prod
-      dockerfile: Containerfile 
+      target: distroless
+      # target: lambda_runtime
+      dockerfile: Containerfile
       tags:
         - ghcr.io/zmynx/aws-lambda-calculator:latest
         - ghcr.io/zmynx/aws-lambda-calculator:1.0.4
         - ghcr.io/zmynx/aws-lambda-calculator:123456789010
-      # cache_from:
-      #   - zMynx/aws-lambda-calculator
-      #   - type=local,src=./.podman-cache
-      #   - type=gha
+      cache_from:
+        - zMynx/aws-lambda-calculator
+        # - type=local,src=./.podman-cache
+        - type=gha
       args:
-        - GIT_COMMIT=cdc3b19
+        VERSION: 2.0.7
       labels:
         project: aws-lambda-calculator
         org: zmynx
@@ -26,8 +27,12 @@ services:
       # platforms:
       #   - linux/amd64
       #   - linux/arm64
-      privileged: false 
+      privileged: false
     # image: zmynx/aws-lambda-calculator
+    entrypoint: ["sh"]
+    tty: true
+    # entrypoint: ["/usr/bin/python"]
+    # command: ["cli.py", "--help"]
     environment:
       - PYTHON_VERSION=3.13.0
     restart: unless-stopped

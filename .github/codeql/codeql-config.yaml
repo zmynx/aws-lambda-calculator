@@ -10,6 +10,24 @@ queries:
   - uses: security-extended
   - uses: security-and-quality
 
+  # Actions queries
+  - uses: actions/artifact-poisoning/critical
+  - uses: actions/cache-poisoning/code-injection
+  - uses: actions/cache-poisoning/direct-cache
+  - uses: actions/cache-poisoning/poisonable-step
+  - uses: actions/code-injection/critical
+  - uses: actions/envpath-injection/critical
+  - uses: actions/envvar-injection/critical
+  - uses: actions/excessive-secrets-exposure
+  - uses: actions/improper-access-control
+  - uses: actions/missing-workflow-permissions
+  - uses: actions/secrets-in-artifacts
+  - uses: actions/unmasked-secret-exposure
+  - uses: actions/untrusted-checkout-toctou/critical
+  - uses: actions/untrusted-checkout-toctou/high
+  - uses: actions/untrusted-checkout/critical
+  - uses: actions/untrusted-checkout/high
+  - uses: actions/vulnerable-action
 paths:
   - '**/src/**'
   - '**/lib/**'

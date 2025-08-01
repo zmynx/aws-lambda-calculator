@@ -1,1 +1,1 @@
-colorama==0.4.6 ; (platform_system == "Windows" or sys_platform == "win32") and python_version >= "3.13"
+colorama==0.4.6 ;

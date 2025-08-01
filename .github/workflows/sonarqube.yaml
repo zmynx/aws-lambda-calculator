@@ -26,7 +26,7 @@
 # Feel free to take a look at our documentation (https://docs.sonarcloud.io/getting-started/github/)
 # or reach out to our community forum if you need some help (https://community.sonarsource.com/c/help/sc/9)
 
-name: SonarCloud analysis
+name: SonarQube (Cloud) analysis
 
 on:
   push:
@@ -38,10 +38,11 @@ on:
   workflow_dispatch:
 
 jobs:
-  Analysis:
+  sonarqube:
+    name: SonarQube
     runs-on: ubuntu-latest
-    permissions:
-      pull-requests: read # allows SonarCloud to decorate PRs with analysis results
+    # permissions:
+    #   pull-requests: read # allows SonarCloud to decorate PRs with analysis results
     steps:
       - uses: actions/checkout@v4
         with:

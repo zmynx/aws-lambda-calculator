@@ -2,6 +2,10 @@ import json
 from utils.logger import logger
 from aws_lambda_calculator import calculate
 
+# Extracting the version from the package metadata
+from importlib import metadata
+__version__ = metadata.version("aws_lambda_calculator")
+
 
 def handler(event: dict, context: object) -> dict:
     """

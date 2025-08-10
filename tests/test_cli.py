@@ -179,7 +179,7 @@ def test_cli_help():
     print(f"exit code: {exit_code}, stderr: {stderr}")
     assert exit_code == 0
     assert "usage:" in stdout
-    assert "optional arguments:" in stdout
+    assert "options:" in stdout
 
 
 def test_cli_version():

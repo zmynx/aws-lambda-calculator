@@ -10,7 +10,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         prog=f"aws_lambda_calculator {__version__}",
         usage="%(prog)s [options]",
-        description="CLI tool for my application",
+        description="CLI tool to calculate AWS Lambda costs based on various parameters.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
         epilog='Thanks for using the CLI tool! For more information, visit the project repository.',
         add_help=True,

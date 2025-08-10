@@ -167,3 +167,28 @@ def test_cli_verbose_mode():
     print(f"exit code: {exit_code}, stderr: {stderr}")
     assert exit_code == 0
     assert "DEBUG" in stdout or "DEBUG" in stderr  # Debug logs should appear
+
+
+def test_cli_help():
+    """Test CLI help output."""
+    stdout, stderr, exit_code = run_cli("--help")
+
+    logger.info(f"CLI help output: {stdout}")
+    logger.debug(f"exit code: {exit_code}, stdout: {stdout}")
+    print(f"CLI help output: {stdout}")
+    print(f"exit code: {exit_code}, stderr: {stderr}")
+    assert exit_code == 0
+    assert "usage:" in stdout
+    assert "optional arguments:" in stdout
+
+
+def test_cli_version():
+    """Test CLI version output."""
+    stdout, stderr, exit_code = run_cli("--version")
+
+    logger.info(f"CLI version output: {stdout}")
+    logger.debug(f"exit code: {exit_code}, stdout: {stdout}")
+    print(f"CLI version output: {stdout}")
+    print(f"exit code: {exit_code}, stderr: {stderr}")
+    assert exit_code == 0
+    assert "aws_lambda_calculator" in stdout  # Check if version is printed

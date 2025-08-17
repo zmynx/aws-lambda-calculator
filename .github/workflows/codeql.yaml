@@ -30,9 +30,9 @@ jobs:
       with:
         repository: zmynx/security-team-codeql-config
         ref: main
-        sparse-checkout: |
-          zmynx/security-team-codeql-config/codeql/codeql-config.yml
+        sparse-checkout: codeql/codeql-config.yml
         token: ${{ secrets.ACCESS_TOKEN }}
+        path: zmynx/security-team-codeql-config/codeql
 
     - run: ls -la zmynx/security-team-codeql-config/codeql
       shell: bash

@@ -28,26 +28,26 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    - name: Fetch CodeQL config from security team
-      uses: actions/checkout@v4
-      with:
-        repository: zmynx/security-team-codeql-config
-        ref: main
-        sparse-checkout: codeql/codeql-config.yml
-        token: ${{ secrets.ACCESS_TOKEN }}
-        path: zmynx/security-team-codeql-config
-
-    - run: ls -la zmynx/security-team-codeql-config/codeql
-      shell: bash
-      # working-directory: zmynx/security-team-codeql-config/codeql
-
+    # - name: Fetch CodeQL config from security team
+    #   uses: actions/checkout@v4
+    #   with:
+    #     repository: zmynx/security-team-codeql-config
+    #     ref: main
+    #     sparse-checkout: codeql/codeql-config.yml
+    #     token: ${{ secrets.ACCESS_TOKEN }}
+    #     path: zmynx/security-team-codeql-config
+    #
+    # - run: ls -la zmynx/security-team-codeql-config/codeql
+    #   shell: bash
+    #   # working-directory: zmynx/security-team-codeql-config/codeql
+    #
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v3
       with:
         # config-file: ./.github/codeql/codeql-config.yaml
         languages: ${{ matrix.language }}
-        config-file: zmynx/security-team-codeql-config/codeql/codeql-config.yml
-        # external-repository-token: ${{ secrets.ACCESS_TOKEN }}
+        config-file: zmynx/security-team-codeql-config/codeql/codeql-config.yml@main
+        external-repository-token: ${{ secrets.ACCESS_TOKEN }}
 
     - name: Autobuild
       uses: github/codeql-action/autobuild@v3

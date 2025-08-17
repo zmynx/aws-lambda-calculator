@@ -22,7 +22,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: [ 'javascript', 'typescript', 'python', 'actions' ]
+        language: [ 'javascript', 'python', 'actions' ]
 
     steps:
     - name: Checkout repository
@@ -31,8 +31,9 @@ jobs:
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v3
       with:
-        config-file: ./.github/codeql/codeql-config.yaml
         languages: ${{ matrix.language }}
+        config-file: zmynx/security-team-codeql-config/codeql/codeql-config.yml@main
+        external-repository-token: ${{ secrets.ACCESS_TOKEN }}
 
     - name: Autobuild
       uses: github/codeql-action/autobuild@v3

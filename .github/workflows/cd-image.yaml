@@ -76,7 +76,7 @@ jobs:
           context: .
           file: Containerfile
           platforms: linux/amd64,linux/arm64
-          build-args: VERSION='${{ steps.release-version.outputs.release_version }}'
+          build-args: VERSION=${{ steps.release-version.outputs.release_version }}
           target: distroless
           labels: |
             project='aws-lambda-calculator'

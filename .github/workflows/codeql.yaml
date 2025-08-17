@@ -27,6 +27,9 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
+
+    - name: Fetch CodeQL config from security team
+      uses: actions/checkout@v4
       with:
         repository: zmynx/security-team-codeql-config
         ref: main
@@ -45,9 +48,6 @@ jobs:
         languages: ${{ matrix.language }}
         config-file: zmynx/security-team-codeql-config/codeql/codeql-config.yml
         # external-repository-token: ${{ secrets.ACCESS_TOKEN }}
-
-    - name: Checkout repository
-      uses: actions/checkout@v4
 
     - name: Autobuild
       uses: github/codeql-action/autobuild@v3

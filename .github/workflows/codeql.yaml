@@ -32,7 +32,7 @@ jobs:
         ref: main
         sparse-checkout: codeql/codeql-config.yml
         token: ${{ secrets.ACCESS_TOKEN }}
-        path: zmynx/security-team-codeql-config/codeql
+        path: zmynx/security-team-codeql-config
 
     - run: ls -la zmynx/security-team-codeql-config/codeql
       shell: bash

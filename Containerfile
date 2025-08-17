@@ -28,9 +28,8 @@ RUN python -m pip install --upgrade pip && \
 
 ARG VERSION=main
 ENV VERSION=${VERSION}
-# RUN git config --global http.sslverify false
-# RUN python -m pip install --prefix=/install --no-build-isolation --no-cache-dir aws-lambda-calculator@git+https://github.com/zmynx/aws-lambda-calculator#egg=aws-lambda-calculator&subdirectory=aws-lambda-calculator@"${VERSION}"
-RUN python -m pip install https://github.com/zmynx/aws-lambda-calculator/releases/download/"${VERSION}"/aws_lambda_calculator-"${VERSION}"-py3-none-any.whl
+
+RUN python -m pip install https://github.com/zmynx/aws-lambda-calculator/releases/download/${VERSION}/aws_lambda_calculator-${VERSION}-py3-none-any.whl
 
 # Add the source code into the container.
 COPY src/ .

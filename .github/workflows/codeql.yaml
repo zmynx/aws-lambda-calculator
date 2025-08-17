@@ -31,8 +31,10 @@ jobs:
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v3
       with:
-        config-file: ./.github/codeql/codeql-config.yaml
+        # config-file: ./.github/codeql/codeql-config.yaml
         languages: ${{ matrix.language }}
+        config-file: zmynxx/security-team-codeql-config/codeql/codeql-config.yml
+        external-repository-token: ${{ secrets.ACCESS_TOKEN }}
 
     - name: Autobuild
       uses: github/codeql-action/autobuild@v3

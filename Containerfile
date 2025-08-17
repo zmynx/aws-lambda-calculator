@@ -28,7 +28,7 @@ RUN python -m pip install --upgrade pip && \
 ARG VERSION=main
 ENV VERSION=${VERSION}
 
-RUN python -m pip install https://github.com/zmynx/aws-lambda-calculator/releases/download/${VERSION}/aws_lambda_calculator-${VERSION}-py3-none-any.whl
+RUN python -m pip install "https://github.com/zmynx/aws-lambda-calculator/releases/download/${VERSION}/aws_lambda_calculator-${VERSION}-py3-none-any.whl"
 
 # Add the source code into the container.
 COPY src/ .

@@ -38,11 +38,6 @@ jobs:
       shell: bash
       # working-directory: zmynx/security-team-codeql-config/codeql
 
-    - name: Checkout repository
-      uses: actions/checkout@v4
-      with:
-        clean: false
-
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v3
       with:
@@ -50,6 +45,10 @@ jobs:
         languages: ${{ matrix.language }}
         config-file: zmynx/security-team-codeql-config/codeql/codeql-config.yml
         # external-repository-token: ${{ secrets.ACCESS_TOKEN }}
+
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
 
     - name: Autobuild
       uses: github/codeql-action/autobuild@v3

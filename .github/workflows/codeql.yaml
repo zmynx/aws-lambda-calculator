@@ -33,7 +33,7 @@ jobs:
       with:
         # config-file: ./.github/codeql/codeql-config.yaml
         languages: ${{ matrix.language }}
-        config-file: zmynxx/security-team-codeql-config/codeql/codeql-config.yml
+        config-file: zmynx/security-team-codeql-config/codeql/codeql-config.yml
         external-repository-token: ${{ secrets.ACCESS_TOKEN }}
 
     - name: Autobuild

@@ -34,8 +34,14 @@ jobs:
           zmynx/security-team-codeql-config/codeql/codeql-config.yml
         token: ${{ secrets.ACCESS_TOKEN }}
 
+    - run: ls -la zmynx/security-team-codeql-config/codeql
+      shell: bash
+      # working-directory: zmynx/security-team-codeql-config/codeql
+
     - name: Checkout repository
       uses: actions/checkout@v4
+      with:
+        clean: false
 
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v3

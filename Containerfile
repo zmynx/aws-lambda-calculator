@@ -17,9 +17,8 @@ ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
-# Update system, install git
-RUN apt-get update --yes &&\
-	apt-get install git --yes
+# Update system
+RUN apt-get update --yes
 
 # Install dependencies
 COPY requirements.txt .

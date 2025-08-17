@@ -27,6 +27,15 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
+      with:
+        repository: zmynx/security-team-codeql-config
+        ref: main
+        sparse-checkout: |
+          zmynx/security-team-codeql-config/codeql/codeql-config.yml
+        token: ${{ secrets.ACCESS_TOKEN }}
+
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v3
@@ -34,7 +43,7 @@ jobs:
         # config-file: ./.github/codeql/codeql-config.yaml
         languages: ${{ matrix.language }}
         config-file: zmynx/security-team-codeql-config/codeql/codeql-config.yml
-        external-repository-token: ${{ secrets.ACCESS_TOKEN }}
+        # external-repository-token: ${{ secrets.ACCESS_TOKEN }}
 
     - name: Autobuild
       uses: github/codeql-action/autobuild@v3

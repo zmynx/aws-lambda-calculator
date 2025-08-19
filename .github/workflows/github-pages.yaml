@@ -8,10 +8,10 @@ jobs:
   deploy:
     name: Deploy to GitHub Pages
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pages: write
-      id-token: write
+    permissions: write-all
+      # contents: read
+      # pages: write
+      # id-token: write
 
     # Allow only one concurrent deployment
     concurrency:

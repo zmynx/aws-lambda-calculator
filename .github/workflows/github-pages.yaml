@@ -1,35 +1,57 @@
 name: GitHub Pages
+
 on:
   push:
     branches: [main]
+
 jobs:
   deploy:
     name: Deploy to GitHub Pages
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
+      pages: write
+      id-token: write
+
+    # Allow only one concurrent deployment
+    concurrency:
+      group: "pages"
+      cancel-in-progress: false
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     defaults:
       run:
         shell: bash
     steps:
+
       - name: Checkout
-        uses: actions/checkout@v4.2.2
-      - name: Configure Git Credentials
-        run: |
-          git config user.name github-actions[bot]
-          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-      - uses: actions/setup-python@v5.4.0
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          python-version: 3.x
-      - name: Cache
-        run: echo "cache_id=$(date --utc '+%V')" >> $GITHUB_ENV
-      - uses: actions/cache@v4
-        with:
-          key: mkdocs-material-${{ env.cache_id }}
-          path: .cache
-          restore-keys: |
-            mkdocs-material-
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: static-website/package-lock.json
+
       - name: Install dependencies
-        run: python -m pip install mkdocs mkdocs-material
-      - name: Deploy
-        run: python -m mkdocs gh-deploy --force
+        working-directory: static-website
+        run: npm install
+
+      - name: Build React App
+        working-directory: static-website
+        run: npm run build
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: static-website/build/client
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

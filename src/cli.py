@@ -2,13 +2,20 @@ import argparse
 import sys
 from utils.logger import logger
 from aws_lambda_calculator import calculate
-
+from importlib import metadata
+__version__ = metadata.version("aws_lambda_calculator")
 
 def parse_args() -> argparse.Namespace:
     """Parses command-line arguments."""
     parser = argparse.ArgumentParser(
-        description="CLI tool for my application",
+        prog=f"aws_lambda_calculator {__version__}",
+        usage="%(prog)s [options]",
+        description="CLI tool to calculate AWS Lambda costs based on various parameters.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        epilog='Thanks for using the CLI tool! For more information, visit the project repository.',
+        add_help=True,
+        allow_abbrev=True,
+        exit_on_error=True,
     )
 
     # Required arguments
@@ -121,6 +128,14 @@ def parse_args() -> argparse.Namespace:
         "-v", "--verbose", action="store_true", help="Enable verbose logging"
     )
 
+    # Version argument
+    parser.add_argument(
+        "-V",
+        "--version",
+        action="version",
+        version=f"%(prog)s {__version__}",
+        help="Show the version of the CLI tool",
+    )
     return parser.parse_args()
 
 

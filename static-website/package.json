@@ -2,7 +2,7 @@
   "name": "static-website",
   "private": true,
   "type": "module",
-  "homepage": "https://yourusername.github.io/static-website",
+  "homepage": "https://zmynx.github.io/static-website",
   "scripts": {
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build/client",

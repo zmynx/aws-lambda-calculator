@@ -1,4 +1,5 @@
 from aws_lambda import handler
+import json
 import logging
 
 logger = logging.getLogger(__name__)
@@ -6,7 +7,7 @@ logger = logging.getLogger(__name__)
 
 def test_lambda_success():
     """Test Lambda handler with valid input."""
-    event = {
+    payload = {
         "region": "us-east-1",
         "architecture": "x86",
         "number_of_requests": 1000000,  # 1 million requests,
@@ -17,16 +18,18 @@ def test_lambda_success():
         "ephemeral_storage": 10,  # 10 GB of ephemeral storage
         "storage_unit": "GB",
     }
+    event = {"body": json.dumps(payload)}
     response = handler(event, None)
+    body = json.loads(response["body"])
 
     logger.debug(f"Response: {response}")
-    assert response["status"] == "success"
-    assert isinstance(response["cost"], float)
+    assert body["status"] == "success"
+    assert isinstance(body["cost"], float)
 
 
 def test_lambda_missing_duration():
     """Test Lambda handler when required field is missing."""
-    event = {
+    payload = {
         "region": "us-east-1",
         "architecture": "x86",
         "number_of_requests": 1000000,  # 1 million requests
@@ -37,19 +40,21 @@ def test_lambda_missing_duration():
         "ephemeral_storage": 10,  # 10 GB of ephemeral storage
         "storage_unit": "GB",
     }
+    event = {"body": json.dumps(payload)}
     response = handler(event, None)
+    body = json.loads(response["body"])
 
     logger.debug(f"Response: {response}")
-    assert response["status"] == "error"
+    assert body["status"] == "error"
     assert (
         "Missing required field: 'duration_of_each_request_in_ms'"
-        in response["message"]
+        in body["message"]
     )
 
 
 def test_lambda_missing_storage_unit():
     """Test Lambda handler with missing optional field (simulate error)."""
-    event = {
+    payload = {
         "region": "us-east-1",
         "architecture": "x86",
         "number_of_requests": 1000000,  # 1 million requests
@@ -60,8 +65,10 @@ def test_lambda_missing_storage_unit():
         "ephemeral_storage": 10,  # 10 GB of ephemeral storage
         # Missing "storage_unit"
     }
+    event = {"body": json.dumps(payload)}
     response = handler(event, None)
+    body = json.loads(response["body"])
 
     logger.debug(f"Response: {response}")
-    assert response["status"] == "error"
-    assert "Missing required field: 'storage_unit'" in response["message"]
+    assert body["status"] == "error"
+    assert "Missing required field: 'storage_unit'" in body["message"]

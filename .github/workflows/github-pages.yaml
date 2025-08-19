@@ -1,13 +1,26 @@
 name: GitHub Pages
+
 on:
   push:
     branches: [main]
+
 jobs:
   deploy:
     name: Deploy to GitHub Pages
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
+      pages: write
+      id-token: write
+
+    # Allow only one concurrent deployment
+    concurrency:
+      group: "pages"
+      cancel-in-progress: false
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     defaults:
       run:
         shell: bash
@@ -31,14 +44,14 @@ jobs:
         working-directory: static-website
         run: npm run build
 
-      # - name: Deploy to GitHub Pages
-        # working-directory: static-website
-        # run: npm run deploy
-        # env:
-        #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
 
-      - name: GitHub Pages action
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }} 
-          publish_dir: static-website/dist
+          path: static-website/build/client
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

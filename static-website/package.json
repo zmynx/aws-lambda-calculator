@@ -5,7 +5,7 @@
   "homepage": "https://zmynx.github.io/aws-lambda-calculator",
   "scripts": {
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build/client",
+    "deploy": "gh-pages -d build",
     "build": "react-router build",
     "dev": "react-router dev",
     "start": "react-router-serve ./build/server/index.js",

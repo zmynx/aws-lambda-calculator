@@ -17,7 +17,7 @@ export default function Introduction() {
           <h2 className="text-3xl font-semibold mb-4 text-gray-900 dark:text-gray-100">📖 Back story</h2>
           <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg transition-colors duration-300">
             <p className="text-gray-700 dark:text-gray-300 mb-4 leading-relaxed">
-              This project is the fruits of a hackaton idea I had about a year ago:
+              This project is the fruits of a hackathon idea I had about a year ago:
             </p>
             <p className="text-gray-700 dark:text-gray-300 mb-4 leading-relaxed">
               The original idea was to provide users with a system to decide whether to go with the lambda serverless solution, 

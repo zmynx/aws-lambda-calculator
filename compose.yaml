@@ -38,3 +38,37 @@ services:
     ports:
       - "9000:8080"
     restart: unless-stopped
+
+  # frontend:
+  #   platform: linux/amd64
+  #   build:
+  #     context: static-website
+  #     # target: distroless
+  #     target: development-dependencies-env
+  #     dockerfile: Dockerfile 
+  #     labels:
+  #       project: aws-lambda-calculator
+  #       org: zmynx
+  #       commit-sha: 123456789010
+  #       version: 1.0
+  #       org.opencontainers.image.source: https://github.com/zmynx/aws-lambda-calculator
+  #       org.opencontainers.image.description: AWS Lambda Calculator is the only extensive and thorough cost estimation tool for the AWS Lambda product. It's based on a simple API that produces a cost estimation based on different Lambda configuration variables and parameters such as CPU, RAM, concurrency, invocations, free tier, and much more. This can be helpful for any FinOps fields or tools in the future.
+  #       org.opencontainers.image.licenses: Apache-2.0
+  #     # platforms:
+  #     #   - linux/amd64
+  #     #   - linux/arm64
+  #     privileged: false
+  #   # image: zmynx/aws-lambda-calculator
+  #   # Test the cli locally
+  #   # entrypoint: ["/usr/bin/python"]
+  #   # command: ["cli.py", "--help"]
+  #   # Test the lambda function locally:
+  #   # curl -X POST http://localhost:9000/2015-03-31/functions/function/invocations -d '{"key": "value"}'
+  #   entrypoint: ["npm", "run", "dev"]
+  #   volumes:
+  #   - ./static-website:/app
+  #   ports:
+  #   - "5173:5173"
+  #   restart: unless-stopped
+  #   depends_on:
+  #   - api 

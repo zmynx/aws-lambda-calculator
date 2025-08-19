@@ -1,0 +1,16 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Lambda API Gateway simulation with Docker
+
+Resources:
+  CalculatorFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      PackageType: Image
+      ImageUri: ghcr.io/zmynx/aws-lambda-calculator:latest
+      Events:
+        CalculateApi:
+          Type: Api
+          Properties:
+            Path: /api
+            Method: post

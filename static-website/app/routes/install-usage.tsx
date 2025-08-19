@@ -66,7 +66,7 @@ export default function InstallUsage() {
             </div>
             
             <p className="text-gray-700 mb-4">
-              Install the package using pip (@<version> is optional, main is latest, use a version tag for a specific version):
+              Install the package using pip (@&lt;version&gt; is optional, main is latest, use a version tag for a specific version):
             </p>
             
             <CodeBlock 

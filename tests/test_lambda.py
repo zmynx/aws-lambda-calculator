@@ -20,9 +20,8 @@ def test_lambda_success():
     }
     event = {"body": json.dumps(payload)}
     response = handler(event, None)
+    logger.debug(f"response: {response}")
     body = json.loads(response["body"])
-
-    logger.debug(f"Response: {response}")
     assert body["status"] == "success"
     assert isinstance(body["cost"], float)
 
@@ -42,9 +41,8 @@ def test_lambda_missing_duration():
     }
     event = {"body": json.dumps(payload)}
     response = handler(event, None)
+    logger.debug(f"response: {response}")
     body = json.loads(response["body"])
-
-    logger.debug(f"Response: {response}")
     assert body["status"] == "error"
     assert (
         "Missing required field: 'duration_of_each_request_in_ms'"
@@ -67,8 +65,7 @@ def test_lambda_missing_storage_unit():
     }
     event = {"body": json.dumps(payload)}
     response = handler(event, None)
+    logger.debug(f"response: {response}")
     body = json.loads(response["body"])
-
-    logger.debug(f"Response: {response}")
     assert body["status"] == "error"
     assert "Missing required field: 'storage_unit'" in body["message"]

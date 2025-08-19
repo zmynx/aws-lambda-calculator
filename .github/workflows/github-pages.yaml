@@ -31,8 +31,14 @@ jobs:
         working-directory: static-website
         run: npm run build
 
-      - name: Deploy to GitHub Pages
-        working-directory: static-website
-        run: npm run deploy
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # - name: Deploy to GitHub Pages
+        # working-directory: static-website
+        # run: npm run deploy
+        # env:
+        #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: GitHub Pages action
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }} 
+          publish_dir: static-website/dist

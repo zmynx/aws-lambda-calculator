@@ -5,5 +5,8 @@ import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
   plugins: [reactRouter(), tailwindcss(), tsconfigPaths()],
+<<<<<<< HEAD
   base: "/aws-lambda-calculator/",
+=======
+>>>>>>> main
 });

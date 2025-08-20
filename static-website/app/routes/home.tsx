@@ -58,7 +58,7 @@ export default function Home() {
       <div className="text-center mb-8">
         <div className="mb-6">
           <img
-            src="/assets/IMG_0416.PNG"
+            src="https://zmynx.github.io/aws-lambda-calculator/assets/IMG_0416.PNG"
             alt="AWS Lambda Calculator"
             className="mx-auto rounded-lg shadow-lg"
             style={{ height: '400px', width: '400px', border: '3px solid #e5e7eb' }}
@@ -180,7 +180,7 @@ export default function Home() {
           </a>
           <div className="text-center">
             <img
-              src="/assets/bmc_qr.png"
+              src="https://zmynx.github.io/aws-lambda-calculator/assets/bmc_qr.png"
               alt="Buy me a coffee QR code"
               className="mx-auto mb-2 rounded-lg"
               style={{ width: '80px', height: '80px' }}

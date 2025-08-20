@@ -50,10 +50,13 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
     setTheme(prevTheme => prevTheme === 'light' ? 'dark' : 'light');
   };
 
-  const isDark = theme === 'dark';
+  // Prevent hydration mismatch by using consistent values until mounted
+  const contextValue = mounted 
+    ? { theme, toggleTheme, isDark: theme === 'dark' }
+    : { theme: 'light' as Theme, toggleTheme, isDark: false };
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme, isDark }}>
+    <ThemeContext.Provider value={contextValue}>
       {children}
     </ThemeContext.Provider>
   );

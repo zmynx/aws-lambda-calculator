@@ -15,7 +15,7 @@ jobs:
 
     # Allow only one concurrent deployment
     concurrency:
-      group: "pages"
+      group: pages
       cancel-in-progress: false
 
     environment:
@@ -24,6 +24,7 @@ jobs:
     defaults:
       run:
         shell: bash
+        working-directory: site
     steps:
 
       - name: Checkout
@@ -34,31 +35,16 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-          cache-dependency-path: test/package-lock.json
+          cache-dependency-path: package-lock.json
 
       - name: Install dependencies
-        working-directory: test
         run: npm install
 
       - name: Build React App
-        working-directory: test 
         run: npm run build
 
-
-      # Deploy to github pages
       - name: Deploy to github pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: test/dist
-      # - name: Setup Pages
-      #   uses: actions/configure-pages@v5
-
-      # - name: Upload artifact
-      #   uses: actions/upload-pages-artifact@v3
-      #   with:
-      #     path: static-website/build/client
-
-      # - name: Deploy to GitHub Pages
-      #   id: deployment
-      #   uses: actions/deploy-pages@v4
+          publish_dir: dist

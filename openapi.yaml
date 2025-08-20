@@ -1,0 +1,246 @@
+openapi: 3.0.0
+info:
+  title: AWS Lambda Calculator API
+  description: API for calculating AWS Lambda costs based on various parameters
+  version: 1.0.0
+  contact:
+    name: Lior Dux
+    email: lior.dux@develeap.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+
+servers:
+  - url: /Prod
+    description: Production server
+
+paths:
+  /api:
+    post:
+      summary: Calculate AWS Lambda costs
+      description: Calculate the cost of running AWS Lambda functions based on the provided parameters
+      operationId: calculateLambdaCost
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CalculationRequest'
+            examples:
+              basic_calculation:
+                summary: Basic Lambda calculation
+                value:
+                  region: "us-east-1"
+                  architecture: "x86_64"
+                  number_of_requests: 1000000
+                  request_unit: "requests"
+                  duration_of_each_request_in_ms: 200
+                  memory: 128
+                  memory_unit: "MB"
+                  ephemeral_storage: 512
+                  storage_unit: "MB"
+      responses:
+        '200':
+          description: Successful calculation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              examples:
+                success:
+                  value:
+                    status: "success"
+                    cost: 0.000417
+        '400':
+          description: Bad request - missing required field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                missing_field:
+                  value:
+                    status: "error"
+                    message: "Missing required field: region"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                server_error:
+                  value:
+                    status: "error"
+                    message: "An internal error occurred"
+      x-amazon-apigateway-integration:
+        uri:
+          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${CalculatorFunction.Arn}/invocations
+        passthroughBehavior: when_no_match
+        httpMethod: POST
+        type: aws_proxy
+    options:
+      summary: CORS preflight
+      description: Handle CORS preflight requests
+      responses:
+        '200':
+          description: CORS headers
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+              description: Allowed origins
+            Access-Control-Allow-Methods:
+              schema:
+                type: string
+              description: Allowed methods
+            Access-Control-Allow-Headers:
+              schema:
+                type: string
+              description: Allowed headers
+      x-amazon-apigateway-integration:
+        type: mock
+        requestTemplates:
+          application/json: '{"statusCode": 200}'
+        responses:
+          default:
+            statusCode: 200
+            responseParameters:
+              method.response.header.Access-Control-Allow-Headers: "'*'"
+              method.response.header.Access-Control-Allow-Methods: "'GET,POST,OPTIONS'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+
+components:
+  schemas:
+    CalculationRequest:
+      type: object
+      required:
+        - region
+        - architecture
+        - number_of_requests
+        - request_unit
+        - duration_of_each_request_in_ms
+        - memory
+        - memory_unit
+        - ephemeral_storage
+        - storage_unit
+      properties:
+        region:
+          type: string
+          description: AWS region where the Lambda function runs
+          example: "us-east-1"
+          enum:
+            - "af-south-1"
+            - "ap-east-1"
+            - "ap-northeast-1"
+            - "ap-northeast-2"
+            - "ap-northeast-3"
+            - "ap-south-1"
+            - "ap-south-2"
+            - "ap-southeast-1"
+            - "ap-southeast-2"
+            - "ap-southeast-3"
+            - "ap-southeast-4"
+            - "ca-central-1"
+            - "eu-central-1"
+            - "eu-central-2"
+            - "eu-north-1"
+            - "eu-south-1"
+            - "eu-south-2"
+            - "eu-west-1"
+            - "eu-west-2"
+            - "eu-west-3"
+            - "il-central-1"
+            - "me-central-1"
+            - "me-south-1"
+            - "sa-east-1"
+            - "us-east-1"
+            - "us-east-2"
+            - "us-gov-east-1"
+            - "us-gov-west-1"
+            - "us-west-1"
+            - "us-west-2"
+        architecture:
+          type: string
+          description: Lambda function architecture
+          example: "x86_64"
+          enum:
+            - "x86_64"
+            - "arm64"
+        number_of_requests:
+          type: integer
+          minimum: 1
+          description: Total number of requests
+          example: 1000000
+        request_unit:
+          type: string
+          description: Unit for the number of requests
+          example: "requests"
+          enum:
+            - "requests"
+        duration_of_each_request_in_ms:
+          type: integer
+          minimum: 1
+          maximum: 900000
+          description: Duration of each request in milliseconds
+          example: 200
+        memory:
+          type: integer
+          minimum: 128
+          maximum: 10240
+          description: Memory allocated to the Lambda function
+          example: 128
+        memory_unit:
+          type: string
+          description: Unit for memory measurement
+          example: "MB"
+          enum:
+            - "MB"
+        ephemeral_storage:
+          type: integer
+          minimum: 512
+          maximum: 10240
+          description: Ephemeral storage allocated to the Lambda function
+          example: 512
+        storage_unit:
+          type: string
+          description: Unit for storage measurement
+          example: "MB"
+          enum:
+            - "MB"
+    
+    SuccessResponse:
+      type: object
+      required:
+        - status
+        - cost
+      properties:
+        status:
+          type: string
+          enum:
+            - "success"
+          description: Response status
+          example: "success"
+        cost:
+          type: number
+          format: double
+          minimum: 0
+          description: Calculated cost in USD
+          example: 0.000417
+    
+    ErrorResponse:
+      type: object
+      required:
+        - status
+        - message
+      properties:
+        status:
+          type: string
+          enum:
+            - "error"
+          description: Response status
+          example: "error"
+        message:
+          type: string
+          description: Error message
+          example: "Missing required field: region"

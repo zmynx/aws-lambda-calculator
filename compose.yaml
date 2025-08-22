@@ -44,7 +44,7 @@ services:
 
   kong:
     container_name: kong
-    image: kong:latest
+    image: kong@sha256:94e6f008be9828a729b1e2e88e26718a15e3752a2f8634dbfb42d66dc6bf8dbc
     platform: linux/amd64
     environment:
       KONG_DATABASE: off

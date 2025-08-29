@@ -20,7 +20,7 @@ jobs:
     steps:
       - name: Download a Build Artifact
         id: download-artifact
-        uses: actions/download-artifact@v4.1.8
+        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
         with:
           name: aws_lambda_calculator
           github-token: ${{ github.token }}
@@ -36,7 +36,7 @@ jobs:
           echo "Discovered release version: $release_version"
           echo release_version=$release_version >> $GITHUB_OUTPUT
 
-      - uses: sigstore/gh-action-sigstore-python@v3.0.0
+      - uses: sigstore/gh-action-sigstore-python@4d8073002085140f3b62750c0328507ac4fb6a54 # v3.0.1
         with:
           inputs: |
             ${{ steps.download-artifact.outputs.download-path }}/aws_lambda_calculator-*-py3-none-any.whl
@@ -47,7 +47,7 @@ jobs:
           verify-oidc-issuer: https://token.actions.githubusercontent.com
 
       - name: GH Release
-        uses: softprops/action-gh-release@v2.2.1
+        uses: softprops/action-gh-release@fbadcc90e88ecface60a0a0d123795b784ceb239 # v2.3.2
         with:
           name: ${{ steps.release-version.outputs.release_version }}
           tag_name: ${{ steps.release-version.outputs.release_version }}

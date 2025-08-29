@@ -17,19 +17,19 @@ jobs:
         working-directory: aws-lambda-calculator
         shell: bash
     steps:
-      - uses: step-security/harden-runner@446798f8213ac2e75931c1b0769676d927801858  # v2.10.3
+      - uses: step-security/harden-runner@ec9f2d5744a09debf3a187a3f4f675c53b671911 # v2.13.0
         with:
           egress-policy: audit
           disable-sudo: true
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493 # v5.0.0
 
       - name: Install poetry
         run: pipx install poetry==2.1.1
 
       - name: Setup Python
-        uses: actions/setup-python@v5.4.0
+        uses: actions/setup-python@3d1e2d2ca0a067f27da6fec484fce7f5256def85 # v5.6.0
         with:
           python-version-file: pyproject.toml
           cache: poetry

@@ -10,10 +10,10 @@ jobs:
       pull-requests: write
     steps:
       - name: 'Checkout Repository'
-        uses: actions/checkout@v4
+        uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493 # v5.0.0
 
       - name: Dependency Review
-        uses: actions/dependency-review-action@v4
+        uses: actions/dependency-review-action@6fad41793215e16e31faa120c584d320a07b88de # v4.7.3
         with:
           config-file: zmynx/security-team-codeql-config/dependency-review/dependency-review-config.yml@main
           external-repo-token: ${{ secrets.ACCESS_TOKEN }}

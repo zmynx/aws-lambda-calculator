@@ -100,6 +100,7 @@ def unit_conversion_ephemeral_storage(
             return ephemeral_storage_mb
         case _:
             raise ValueError(f"Unknown storage unit: {storage_unit}")
+    return None
 
 
 def calculate_tiered_cost(

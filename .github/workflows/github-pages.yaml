@@ -28,10 +28,10 @@ jobs:
     steps:
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493 # v5.0.0
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@d7a11313b581b306c961b506cfc8971208bb03f6 # v4.4.0
         with:
           node-version: '20'
           cache: npm
@@ -44,7 +44,7 @@ jobs:
         run: npm run build
 
       - name: Deploy to github pages
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@4b09552702d0b65573696410d4707c765da2630b # v4.0.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: site/dist

@@ -36,7 +36,7 @@ jobs:
       release_version: ${{ steps.release-version.outputs.release_version }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493 # v5.0.0
         with:
           fetch-depth: 0
           persist-credentials: false
@@ -45,7 +45,7 @@ jobs:
         run: pipx install poetry==2.1.1
 
       - name: Setup Python
-        uses: actions/setup-python@v5.4.0
+        uses: actions/setup-python@3d1e2d2ca0a067f27da6fec484fce7f5256def85 # v5.6.0
         with:
           python-version-file: pyproject.toml
           cache: poetry
@@ -82,7 +82,7 @@ jobs:
 
       - name: Upload a Build Artifact
         id: upload
-        uses: actions/upload-artifact@v4.6.1
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: aws_lambda_calculator
           path: |
@@ -93,7 +93,7 @@ jobs:
           overwrite: true
           include-hidden-files: false
 
-      - uses: actions/attest-build-provenance@v2
+      - uses: actions/attest-build-provenance@0b6e9809265278d02c58acf52849a95818a5a306 # v3.0.0
         with:
           subject-name: aws_lambda_calculator
           subject-digest: sha256:${{ steps.upload.outputs.artifact-digest }}
@@ -110,7 +110,7 @@ jobs:
         shell: bash
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493 # v5.0.0
         with:
           fetch-depth: 0
 

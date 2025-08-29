@@ -1,5 +1,5 @@
 {
-  "name": "static-website",
+  "name": "site",
   "private": true,
   "type": "module",
   "homepage": "https://zmynx.github.io/aws-lambda-calculator",

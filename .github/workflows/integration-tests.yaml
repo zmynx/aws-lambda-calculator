@@ -18,12 +18,12 @@ jobs:
         shell: bash
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493 # v5.0.0
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
 
       - name: Setup Python
-        uses: actions/setup-python@v5.4.0
+        uses: actions/setup-python@3d1e2d2ca0a067f27da6fec484fce7f5256def85 # v5.6.0
         with:
           python-version-file: pyproject.toml
 
@@ -49,12 +49,12 @@ jobs:
       - name: Coverage comment
         if: ${{ github.event_name != 'merge_group' }}
         id: coverage_comment
-        uses: py-cov-action/python-coverage-comment-action@v3
+        uses: py-cov-action/python-coverage-comment-action@8f5a99bf83032a2d3f85ff1db1ebc26eb4dd3199 # v3.37
         with:
           GITHUB_TOKEN: ${{ github.token }}
 
       - name: Store Pull Request comment to be posted
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: ${{ github.event_name != 'merge_group' && steps.coverage_comment.outputs.COMMENT_FILE_WRITTEN == 'true' }}
         with:
           # If you use a different name, update COMMENT_ARTIFACT_NAME accordingly
@@ -63,6 +63,6 @@ jobs:
           path: python-coverage-comment-action.txt
 
       - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v5.1.0
+        uses: SonarSource/sonarqube-scan-action@1a6d90ebcb0e6a6b1d87e37ba693fe453195ae25 # v5.3.0
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

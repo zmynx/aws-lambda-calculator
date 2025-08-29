@@ -44,7 +44,7 @@ jobs:
     permissions:
       pull-requests: read # allows SonarCloud to decorate PRs with analysis results
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493 # v5.0.0
         with:
           # Disabling shallow clones is recommended for improving the relevancy of reporting
           fetch-depth: 0

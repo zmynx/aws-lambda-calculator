@@ -71,10 +71,10 @@ def unit_conversion_memory(memory: int, memory_unit: str) -> float:
     """
     match memory_unit:
         case "MB":
-            return memory * 0.0009765625
             logger.debug(
                 f"Amount of memory allocated: {memory} MB * 0.0009765625 GB in MB = {memory * 0.0009765625} GB"
             )
+            return memory * 0.0009765625
         case "GB":
             return memory
         case _:

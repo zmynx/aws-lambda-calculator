@@ -1,11 +1,6 @@
 import json
 import requests
-import asyncio
-from typing import Dict, Any, Optional
 from os import path as os_path
-import playwright
-import pytesseract
-from PIL import Image
 from screenshotter import scrape_memory_prices as get_memory_prices
 
 URL = "https://pricing.us-east-1.amazonaws.com/offers/v1.0/aws/AWSLambda/current/index.json"

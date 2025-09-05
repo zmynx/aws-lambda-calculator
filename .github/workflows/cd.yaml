@@ -5,8 +5,6 @@ on:
   pull_request:
     branches: [main]
     types: [closed]
-  schedule:
-    - cron: 0 0 * * *
 
 permissions:
   contents: read
@@ -62,9 +60,6 @@ jobs:
       - name: Install dependencies
         run: python -m poetry install
 
-      - name: Install playwright headless browser
-        run: python -m poetry run playwright install
-
       - name: Fetch the latest version
         run: |
           echo "Fetching the latest version..."
@@ -82,9 +77,6 @@ jobs:
           python -m poetry version --short
           cat pyproject.toml | grep version
           echo "release_version=$release_version" >> $GITHUB_OUTPUT
-
-      - name: Generate JSON pricing data
-        run: python -m poetry run python src/aws_lambda_calculator/pricing_scraper.py
 
       - name: Create a package
         run: python -m poetry build

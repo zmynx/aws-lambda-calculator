@@ -48,8 +48,9 @@ def scrape_memory_prices(region_code: str, region_name: str) -> dict:
                 "--disable-audio-output",  # Disable audio to prevent ALSA errors
                 "--disable-web-security",  # May help with CORS issues
                 "--disable-features=VizDisplayCompositor",  # Reduce GPU usage
-                "--single-process",  # Run in single process mode for CI
                 "--no-zygote",  # Disable zygote process
+                "--disable-font-subpixel-positioning",  # Fix font issues in CI
+                "--disable-lcd-text",  # Fix font rendering issues
             ],
         )
         print(f"[DEBUG] Browser launched successfully for {region_code}")

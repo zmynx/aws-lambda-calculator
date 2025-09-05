@@ -154,8 +154,10 @@ if __name__ == "__main__":
     print("[DEBUG] Starting pricing scraper...")
     # Get regions
     regions = get_aws_regions()
-    print(f"[DEBUG] Found {len(regions)} regions.")
+    int counter, total = 1, len(regions)
+    print(f"[DEBUG] Found {total} regions.")
 
     for region_code, region_name in regions.items():
-        print(f"Processing region: {region_name} ({region_code})")
+        print(f"[DEBUG] [{counter}/{total}] Processing region: {region_name} ({region_code})")
+        counter += 1
         build_region_dict(region_name, region_code)

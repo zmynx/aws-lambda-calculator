@@ -5,6 +5,7 @@ def scrape_memory_prices(region_code: str, region_name: str) -> dict:
     import re
     from playwright.sync_api import sync_playwright
 
+    print(f"[DEBUG] Starting scrape for {region_code} - {region_name}")
     target = region_name + " " + region_code
     # screenshots_dir = './screenshots/'
 
@@ -53,17 +54,16 @@ def scrape_memory_prices(region_code: str, region_name: str) -> dict:
                 "--disable-lcd-text",  # Fix font rendering issues
             ],
         )
-        print(f"[DEBUG] Browser launched successfully for {region_code}")
         context = browser.new_context(
             viewport={"width": 1920, "height": 1080},
             user_agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
         )
         page = context.new_page()
-        page.set_default_timeout(30000)  # Increase timeout
-        page.goto(URL, wait_until="networkidle")
+        page.set_default_timeout(15000)  # Shorter timeout to identify hanging operations
+        page.goto(URL, wait_until="domcontentloaded")  # Use faster load strategy
 
         # Wait for page to fully load and dismiss any overlays
-        page.wait_for_timeout(3000)
+        page.wait_for_timeout(2000)
 
         # Try to dismiss any modal/overlay that might be present
         try:

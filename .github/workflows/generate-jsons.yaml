@@ -1,14 +1,13 @@
 # .github/workflows/generate-jsons.yaml
 ---
-name: Generate JSONs
+name: Generate JSONs nightly
 on:
-  workflow_dispatch:
-  workflow_call:
-  merge_group:
+  schedule:
+    - cron: 0 0 * * *
 
 jobs:
   generate-jsons:
-    timeout-minutes: 5
+    timeout-minutes: 15
     name: generate-jsons
     runs-on: ubuntu-latest
     permissions:

@@ -38,6 +38,9 @@ jobs:
       - name: Install dependencies
         run: python -m poetry install
 
+      - name: Install playwright headless browser
+        run: python -m poetry run playwright install
+
       - name: Generate JSON pricing data
         run: python -m poetry run python src/aws_lambda_calculator/pricing_scraper.py
 

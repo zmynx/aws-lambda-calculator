@@ -62,6 +62,9 @@ jobs:
       - name: Install dependencies
         run: python -m poetry install
 
+      - name: Install playwright headless browser
+        run: python -m poetry run playwright install
+
       - name: Fetch the latest version
         run: |
           echo "Fetching the latest version..."

@@ -21,7 +21,6 @@ jobs:
       run:
         shell: bash
     steps:
-
       - name: Download a Build Artifact
         id: download-artifact
         uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
@@ -88,12 +87,14 @@ jobs:
             org.opencontainers.image.licenses='Apache-2.0'
           tags: |
             ${{ steps.docker_meta.outputs.tags }}
+            ghcr.io/${{ github.repository }}:cache
             ghcr.io/${{ github.repository }}:${{ github.sha }}
             ghcr.io/${{ github.repository }}:${{ steps.release-version.outputs.release_version }}
             ghcr.io/${{ github.repository }}:latest
           provenance: true
           sbom: true
           cache-from: |
+            ghcr.io/${{ github.repository }}:cache
             ghcr.io/${{ github.repository }}:${{ github.sha }}
             ghcr.io/${{ github.repository }}:${{ steps.release-version.outputs.release_version }}
             ghcr.io/${{ github.repository }}:latest
@@ -170,52 +171,52 @@ jobs:
       #     severity: 'CRITICAL,HIGH'
 
 # spbom:
-  #   needs:
-  #   name: Generate SPBOM
-  #   runs-on: ubuntu-latest
-  #   permissions:
-  #     contents: write
-  #   defaults:
-  #     run:
-  #       shell: bash
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v4.2.2
-  #
-  #     - name: Run Trivy in GitHub SBOM mode and submit results to Dependency Graph
-  #       uses: aquasecurity/trivy-action@0.28.0
-  #       with:
-  #         scan-type: fs
-  #         format: github
-  #         output: dependency-results.sbom.json
-  #         image-ref: .
-  #         github-pat: ${{ github.token }}
-  #
-  # scan:
-  #   name: Scan Image
-  #   runs-on: ubuntu-latest
-  #   permissions:
-  #     contents: read
-  #     packages: write
-  #     id-token: write
-  #     security-events: write
-  #   defaults:
-  #     run:
-  #       shell: bash
-  #   steps:
-  #
-  #     - name: Checkout
-  #       uses: actions/checkout@v4.2.2
-  #
-  #     - name: Run Trivy vulnerability scanner
-  #       uses: aquasecurity/trivy-action@0.29.0
-  #       with:
-  #         image-ref: ${{ env.TAGGED_IMAGE }}
-  #         format: 'sarif'
-  #         output: 'trivy-results.sarif'
-  #
-  #     - name: Upload Trivy scan results to GitHub Security tab
-  #       uses: github/codeql-action/upload-sarif@v1
-  #       with:
-  #         sarif_file: 'trivy-results.sarif'
-  #
+#   needs:
+#   name: Generate SPBOM
+#   runs-on: ubuntu-latest
+#   permissions:
+#     contents: write
+#   defaults:
+#     run:
+#       shell: bash
+#   steps:
+#     - name: Checkout code
+#       uses: actions/checkout@v4.2.2
+#
+#     - name: Run Trivy in GitHub SBOM mode and submit results to Dependency Graph
+#       uses: aquasecurity/trivy-action@0.28.0
+#       with:
+#         scan-type: fs
+#         format: github
+#         output: dependency-results.sbom.json
+#         image-ref: .
+#         github-pat: ${{ github.token }}
+#
+# scan:
+#   name: Scan Image
+#   runs-on: ubuntu-latest
+#   permissions:
+#     contents: read
+#     packages: write
+#     id-token: write
+#     security-events: write
+#   defaults:
+#     run:
+#       shell: bash
+#   steps:
+#
+#     - name: Checkout
+#       uses: actions/checkout@v4.2.2
+#
+#     - name: Run Trivy vulnerability scanner
+#       uses: aquasecurity/trivy-action@0.29.0
+#       with:
+#         image-ref: ${{ env.TAGGED_IMAGE }}
+#         format: 'sarif'
+#         output: 'trivy-results.sarif'
+#
+#     - name: Upload Trivy scan results to GitHub Security tab
+#       uses: github/codeql-action/upload-sarif@v1
+#       with:
+#         sarif_file: 'trivy-results.sarif'
+#

@@ -43,4 +43,6 @@ jobs:
         run: python -m poetry run playwright install --with-deps
 
       - name: Generate JSON pricing data
+        env:
+          DEBUG: "pw:browser"
         run: python -m poetry run python src/aws_lambda_calculator/pricing_scraper.py

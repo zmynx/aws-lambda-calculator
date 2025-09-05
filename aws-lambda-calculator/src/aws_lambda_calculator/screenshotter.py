@@ -59,7 +59,9 @@ def scrape_memory_prices(region_code: str, region_name: str) -> dict:
             user_agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
         )
         page = context.new_page()
-        page.set_default_timeout(15000)  # Shorter timeout to identify hanging operations
+        page.set_default_timeout(
+            15000
+        )  # Shorter timeout to identify hanging operations
         page.goto(URL, wait_until="domcontentloaded")  # Use faster load strategy
 
         # Wait for page to fully load and dismiss any overlays

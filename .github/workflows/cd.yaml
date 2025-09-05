@@ -80,7 +80,7 @@ jobs:
           cat pyproject.toml | grep version
           echo "release_version=$release_version" >> $GITHUB_OUTPUT
 
-      - name: Run the pricing scraper to generate json data
+      - name: Generate JSON pricing data
         run: python -m poetry run python src/aws_lambda_calculator/pricing_scraper.py
 
       - name: Create a package

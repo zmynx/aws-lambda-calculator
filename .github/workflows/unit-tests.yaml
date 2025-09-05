@@ -21,7 +21,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493 # v5.0.0
         with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+          fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
 
       - name: Setup Python
         uses: actions/setup-python@3d1e2d2ca0a067f27da6fec484fce7f5256def85 # v5.6.0
@@ -38,6 +38,9 @@ jobs:
       - name: Install dependencies
         run: python -m poetry install
 
+      - name: Generate JSON pricing data
+        run: python -m poetry run python src/aws_lambda_calculator/pricing_scraper.py
+
       - name: Test the new package
         run: python -m poetry run pytest -svv tests/
 
@@ -45,8 +48,8 @@ jobs:
         if: ${{ github.event_name != 'merge_group' }}
         uses: orgoro/coverage@v3.2
         with:
-            coverageFile: ./aws-lambda-calculator/coverage.xml
-            token: ${{ github.token }}
+          coverageFile: ./aws-lambda-calculator/coverage.xml
+          token: ${{ github.token }}
 
       - name: Coverage comment
         if: ${{ github.event_name != 'merge_group' }}

@@ -12,6 +12,7 @@ URL = "https://pricing.us-east-1.amazonaws.com/offers/v1.0/aws/AWSLambda/current
 
 ###################################################################################################################
 
+
 def get_aws_regions() -> dict[str, str]:
     """
     Fetch the list of AWS regions from the pricing API.
@@ -50,7 +51,6 @@ def get_region_data(region_code: str) -> dict:
     return {"products": prods, "terms": terms}
 
 
-
 def get_tier_and_overflow(region_data: dict, arch: str) -> tuple[dict, str]:
     """
     Build the Tier map { nextThreshold: price } and OverflowRate for x86 or arm64.
@@ -59,9 +59,9 @@ def get_tier_and_overflow(region_data: dict, arch: str) -> tuple[dict, str]:
     dims = []
     for sku, prod in region_data["products"].items():
         # tier SKUs have the same usagetype but NO memorySize attr
-        if prod["attributes"].get("usagetype").endswith(usg) and not prod["attributes"].get(
-            "memorySize"
-        ):
+        if prod["attributes"].get("usagetype").endswith(usg) and not prod[
+            "attributes"
+        ].get("memorySize"):
             for term in region_data["terms"].get(sku, {}).values():
                 for dim in term["priceDimensions"].values():
                     if dim.get("beginRange") is not None:
@@ -105,22 +105,29 @@ def build_region_dict(region_name: str, region_code: str) -> None:
     # Special case: if region_name starts with "EU", replace with "Europe"
     scraped_prices = get_memory_prices(
         region_code,
-        region_name if not region_name.startswith("EU") else region_name.replace("EU", "Europe")
+        region_name
+        if not region_name.startswith("EU")
+        else region_name.replace("EU", "Europe"),
     )
 
     for arch in ("x86", "arm64"):
         region_dict[arch]["Memory"] = scraped_prices.get(arch, {})
         if not region_dict[arch]["Memory"]:
-            raise RuntimeError(f"No memory pricing data scraped for {arch} architecture in {region_code}")
+            raise RuntimeError(
+                f"No memory pricing data scraped for {arch} architecture in {region_code}"
+            )
 
     # Fill Tier/OverflowRate for each arch
     for arch in ("x86", "arm64"):
-
         tier_map, overflow_rate = get_tier_and_overflow(region_data, arch)
         if not tier_map:
-            raise RuntimeError(f"No tier pricing data found for {arch} architecture in {region_code}")
+            raise RuntimeError(
+                f"No tier pricing data found for {arch} architecture in {region_code}"
+            )
         if not overflow_rate:
-            raise RuntimeError(f"No overflow rate found for {arch} architecture in {region_code}")
+            raise RuntimeError(
+                f"No overflow rate found for {arch} architecture in {region_code}"
+            )
 
         region_dict[arch]["Tier"] = tier_map
         region_dict[arch]["OverflowRate"] = overflow_rate

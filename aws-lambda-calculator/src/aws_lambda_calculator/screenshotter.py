@@ -51,8 +51,32 @@ def scrape_memory_prices(region_code: str, region_name: str) -> dict:
             user_agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
         )
         page = context.new_page()
-        page.set_default_timeout(15000)
+        page.set_default_timeout(30000)  # Increase timeout
         page.goto(URL, wait_until="networkidle")
+        
+        # Wait for page to fully load and dismiss any overlays
+        page.wait_for_timeout(3000)
+        
+        # Try to dismiss any modal/overlay that might be present
+        try:
+            # Common overlay/modal close buttons
+            close_selectors = [
+                "[aria-label='Close']",
+                "button[aria-label='Close']",
+                ".modal-close",
+                ".overlay-close",
+                "[data-testid='close']",
+                "button:has-text('×')",
+                "button:has-text('Close')"
+            ]
+            for selector in close_selectors:
+                close_btn = page.query_selector(selector)
+                if close_btn and close_btn.is_visible():
+                    close_btn.click()
+                    page.wait_for_timeout(1000)
+                    break
+        except Exception:
+            pass  # Ignore if no overlay to close
 
         # Find x86 tab
         x86_tab = None
@@ -70,9 +94,17 @@ def scrape_memory_prices(region_code: str, region_name: str) -> dict:
 
         # for arch in ("x86", "arm64"):
         # Take a screenshot of the region x86 price section
-        x86_tab.click()
+        
+        # Wait for tab to be clickable and force click if needed
+        try:
+            page.wait_for_selector("button:has-text('x86 Price')", state="visible", timeout=10000)
+            x86_tab.click()
+        except Exception:
+            # Try force click if regular click fails
+            x86_tab.click(force=True)
+        
         page.wait_for_load_state("networkidle")
-        page.wait_for_timeout(1000)  # Additional wait for dynamic content
+        page.wait_for_timeout(2000)  # Additional wait for dynamic content
         page.get_by_label("x86 Price").get_by_role(
             "button", name="US East (Ohio)"
         ).click()
@@ -94,9 +126,15 @@ def scrape_memory_prices(region_code: str, region_name: str) -> dict:
                     region_pricing["x86"][memory] = price
 
         # Select the ARM tab
-        arm_tab.click()
+        try:
+            page.wait_for_selector("button:has-text('Arm Price')", state="visible", timeout=10000)
+            arm_tab.click()
+        except Exception:
+            # Try force click if regular click fails
+            arm_tab.click(force=True)
+        
         page.wait_for_load_state("networkidle")
-        page.wait_for_timeout(1000)  # Additional wait for dynamic content
+        page.wait_for_timeout(2000)  # Additional wait for dynamic content
         page.get_by_label("ARM Price").get_by_role(
             "button", name="US East (Ohio)"
         ).click()

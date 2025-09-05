@@ -13,6 +13,11 @@ jobs:
     permissions:
       contents: read
 
+  generate-jsons:
+    uses: ./github/workflows/generate-jsons.yaml
+    permissions:
+      contents: write
+
   unit-tests:
     uses: ./.github/workflows/unit-tests.yaml
     permissions:

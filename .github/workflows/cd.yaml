@@ -5,6 +5,8 @@ on:
   pull_request:
     branches: [main]
     types: [closed]
+  schedule:
+    - cron: 0 0 * * *
 
 permissions:
   contents: read
@@ -18,6 +20,7 @@ jobs:
         shell: bash
     steps:
       - name: check if PR is merged
+        if: ${{ github.event_name == 'pull_request' }}
         uses: zmynx/org-github-actions/.github/actions/git/check-merge@main
 
   package:

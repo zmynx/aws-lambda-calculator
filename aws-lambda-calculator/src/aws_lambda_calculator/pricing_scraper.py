@@ -151,8 +151,10 @@ def write_region_data(region_name: str, region_code: str, data: dict) -> None:
 #  2.4 Write the JSON file for that region
 #  2.5 Report success or failure
 if __name__ == "__main__":
+    print("[DEBUG] Starting pricing scraper...")
     # Get regions
     regions = get_aws_regions()
+    print(f"[DEBUG] Found {len(regions)} regions.")
 
     for region_code, region_name in regions.items():
         print(f"Processing region: {region_name} ({region_code})")

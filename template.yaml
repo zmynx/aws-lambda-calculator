@@ -2,7 +2,29 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: Lambda API Gateway simulation with Docker
 
+Globals:
+  Api:
+    OpenApiVersion: 3.0.0
+    Cors:
+      AllowMethods: "'GET,POST,OPTIONS'"
+      AllowHeaders: "'*'"
+      AllowOrigin: "'*'"
+
 Resources:
+  CalculatorApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      DefinitionBody:
+        'Fn::Transform':
+          Name: 'AWS::Include'
+          Parameters:
+            Location: ./openapi.yaml
+      Cors:
+        AllowMethods: "'GET,POST,OPTIONS'"
+        AllowHeaders: "'*'"
+        AllowOrigin: "'*'"
+
   CalculatorFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -12,5 +34,15 @@ Resources:
         CalculateApi:
           Type: Api
           Properties:
+            RestApiId: !Ref CalculatorApi
             Path: /api
             Method: post
+
+Outputs:
+  CalculatorApi:
+    Description: "API Gateway endpoint URL for Prod stage for Calculator function"
+    Value: !Sub "https://${CalculatorApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+  
+  SwaggerUI:
+    Description: "Swagger UI URL"
+    Value: !Sub "https://${CalculatorApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/swagger-ui"

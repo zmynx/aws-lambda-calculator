@@ -36,16 +36,16 @@ def scrape_memory_prices(region_code: str, region_name: str) -> dict:
         print(f"[DEBUG] Launching browser for {region_code}")
         browser = playwright.chromium.launch(
             headless=True,
-            args=[
-                "--no-sandbox",
-                "--disable-setuid-sandbox",
-                "--disable-dev-shm-usage",
-                "--disable-gpu",
-                "--no-first-run",
-                "--no-default-browser-check",
-                "--disable-default-apps",
-                "--disable-extensions",
-            ],
+        #     args=[
+        #         "--no-sandbox",
+        #         "--disable-setuid-sandbox",
+        #         "--disable-dev-shm-usage",
+        #         "--disable-gpu",
+        #         "--no-first-run",
+        #         "--no-default-browser-check",
+        #         "--disable-default-apps",
+        #         "--disable-extensions",
+        #     ],
         )
         print(f"[DEBUG] Browser launched successfully for {region_code}")
         context = browser.new_context(

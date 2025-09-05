@@ -33,6 +33,7 @@ def scrape_memory_prices(region_code: str, region_name: str) -> dict:
     ]
 
     with sync_playwright() as playwright:
+        print(f"[DEBUG] Launching browser for {region_code}")
         browser = playwright.chromium.launch(
             headless=True,
             args=[
@@ -46,6 +47,7 @@ def scrape_memory_prices(region_code: str, region_name: str) -> dict:
                 "--disable-extensions",
             ],
         )
+        print(f"[DEBUG] Browser launched successfully for {region_code}")
         context = browser.new_context(
             viewport={"width": 1920, "height": 1080},
             user_agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",

@@ -7,7 +7,7 @@ on:
 
 jobs:
   generate-jsons:
-    timeout-minutes: 15
+    timeout-minutes: 30
     name: generate-jsons
     runs-on: ubuntu-latest
     permissions:

@@ -1,13 +1,10 @@
 # .github/workflows/cd-serverless.yaml
 ---
-name: CD
+name: Continous Delivery
 on:
   workflow_run:
     workflows: [Release]
     types: [completed]
-
-env:
-  cdk-version: 2.137.0
 
 jobs:
   synth:
@@ -40,7 +37,7 @@ jobs:
         run: npm install
 
       - name: Install AWS CDK
-        run: npm install -g aws-cdk@'${{ env. cdk-version }}'
+        run: npm install -g aws-cdk@'${{ vars.cdk-version }}'
 
       - name: Synth
         run: cdk synth \
@@ -100,7 +97,7 @@ jobs:
         run: npm install
 
       - name: Install AWS CDK
-        run: npm install -g aws-cdk@'${{ env. cdk-version }}'
+        run: npm install -g aws-cdk@'${{ vars.cdk-version }}'
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v5.0.0
@@ -138,15 +135,16 @@ jobs:
           disable-retry: false
           retry-max-attempts: 3
           use-existing-credentials: false
-          allowed-account-ids:
+          allowed-account-ids: ${{ secrets.AWS_ACCOUNT_ID }}
           force-skip-oidc: false
           action-timeout-s: 60
 
       - name: Deploy
         run: cdk deploy \
+          --app dist \
           --notices false \
           --context env=prod \
           --ci \
           --debug \
           --verbose \
-          --output dist
+          --require-approval never

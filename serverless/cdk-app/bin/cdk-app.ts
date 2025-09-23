@@ -18,12 +18,12 @@ new CdkAppStack(app, `${env}-CdkAppStack`, {
 });
 
 Tags.of(app).add("owner", "lior.dux@develeap.com");
-Tags.of(app).add("stage", "test");
-Tags.of(app).add("project", "env0-aws-lambda-calculator");
-Tags.of(app).add("start_date", "18/03/2025");
-Tags.of(app).add("end_date", "27/03/2025");
-Tags.of(app).add("managed_by", "env0-cdk");
+Tags.of(app).add("stage", "prod");
+Tags.of(app).add("project", "aws-lambda-calculator");
+Tags.of(app).add("start_date", "23/09/2025");
+Tags.of(app).add("end_date", "23/09/2025");
+Tags.of(app).add("managed_by", "gha-cdk");
 Tags.of(app).add("email", "lior.dux@develeap.com");
-Tags.of(app).add("Objective", "env0");
-Tags.of(app).add("Expiration", "true");
+Tags.of(app).add("objective", "api");
+Tags.of(app).add("expiration", "false");
 

@@ -31,7 +31,7 @@ export class CdkAppStack extends cdk.Stack {
     // Lambda function
     const myLambda = new lambda.DockerImageFunction(this, "MyLambdaFunction", {
       // code: lambda.DockerImageCode.fromEcr(dockerAsset.repository),
-      code: lambda.DockerImageCode.fromImageUri(props?.imageUri:`${props.imageTag || "latest"}`),
+      code: lambda.DockerImageCode.fromImageUri(`${props?.imageUri}:${props?.imageTag || "latest"}`),
     });
 
     // API Gateway with logging and caching

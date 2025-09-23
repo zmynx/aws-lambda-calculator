@@ -52,5 +52,11 @@ export class CdkAppStack extends cdk.Stack {
     root.addMethod("GET", new apigateway.LambdaIntegration(myLambda), {
       methodResponses: [{ statusCode: "200" }],
     });
+
+    // Output the API Gateway URL
+    new cdk.CfnOutput(this, "ApiGatewayUri", {
+      value: api.url,
+      description: "API Gateway endpoint URL",
+    });
   }
 }

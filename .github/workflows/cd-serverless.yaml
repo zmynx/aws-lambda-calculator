@@ -106,18 +106,32 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v5.0.0
         with:
           aws-region: ${{ vars.AWS_REGION }}
-          role-to-assume: ${{ secrets.ROLE_TO_ASSUME }}
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
           audience: sts.amazonaws.com
           mask-aws-account-id: true
           role-duration-seconds: 1500
-          role-external-id: ${{ secrets.EXTERNAL_ID }}
+          role-external-id: ${{ secrets.AWS_ROLE_EXTERNAL_ID }}
           role-session-name: GitHubActions-CDK
-          inline-session-policy:
-            description: Define an inline session policy to use when assuming a role
-            required: false
-          managed-session-policies:
-            description: Define a list of managed session policies to use when assuming a role
-            required: false
+          inline-session-policy: >-
+            {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                "Sid":"AWSLambdaCalculatorDeployAPIGW"
+                "Effect":"Allow",
+                "Action":"api:*",
+                "Resource":"*"
+                },
+                {
+                "Sid":"AWSLambdaCalculatorDeployLambda",
+                "Effect":"Allow",
+                "Action":"api:*",
+                "Resource":"*"
+                }
+              ]
+            }
+          managed-session-policies: |
+            arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess
           output-credentials: false
           output-env-credentials: true
           unset-current-credentials: true

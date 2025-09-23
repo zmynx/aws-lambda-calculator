@@ -1,0 +1,58 @@
+# .github/workflows/generate-jsons.yaml
+---
+name: Generate JSONs nightly
+on:
+  schedule:
+    - cron: 0 0 * * *
+
+jobs:
+  generate-jsons:
+    timeout-minutes: 30
+    name: generate-jsons
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: write
+    defaults:
+      run:
+        shell: bash
+        working-directory: aws-lambda-calculator
+    steps:
+      - name: Checkout
+        uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493 # v5.0.0
+        with:
+          fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
+
+      - name: Setup Python
+        uses: actions/setup-python@3d1e2d2ca0a067f27da6fec484fce7f5256def85 # v5.6.0
+        with:
+          python-version-file: pyproject.toml
+          # cache: poetry
+
+      - name: Setup poetry
+        run: |
+          python --version
+          python -m pip install --upgrade pip
+          python -m pip install poetry==2.1.1
+
+      - name: Install dependencies
+        run: python -m poetry install
+
+      - name: Install playwright headless browser
+        run: python -m poetry run playwright install --with-deps
+
+      - name: Generate JSON pricing data
+        env:
+          DEBUG: "pw:browser"
+        run: python -m poetry run python src/aws_lambda_calculator/pricing_scraper.py
+
+      - name: Push changes to
+        uses: zmynx/git-auto-commit-action@master
+        with:
+          git_tag_only: false
+          commit_message: Nightly JSON pricing generator
+          branch: main
+          repository: .
+          commit_user_name: github-actions[bot]
+          commit_user_email: github-actions[bot]@zmynx.users.noreply.github.com
+          commit_author: Author <actions@github.com> # defaults to "username <username@users.noreply.github.com>", where "username" belongs to the author of the commit that triggered the run

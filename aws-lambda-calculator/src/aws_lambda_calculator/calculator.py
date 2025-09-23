@@ -71,10 +71,10 @@ def unit_conversion_memory(memory: int, memory_unit: str) -> float:
     """
     match memory_unit:
         case "MB":
-            return memory * 0.0009765625
             logger.debug(
                 f"Amount of memory allocated: {memory} MB * 0.0009765625 GB in MB = {memory * 0.0009765625} GB"
             )
+            return memory * 0.0009765625
         case "GB":
             return memory
         case _:
@@ -92,14 +92,15 @@ def unit_conversion_ephemeral_storage(
     """
     match storage_unit:
         case "MB":
-            return ephemeral_storage_mb * 0.0009765625
             logger.debug(
                 f"Amount of ephemeral storage allocated: {ephemeral_storage_mb} MB * 0.0009765625 GB in MB = {ephemeral_storage_mb * 0.0009765625} GB"
             )
+            return ephemeral_storage_mb * 0.0009765625
         case "GB":
             return ephemeral_storage_mb
         case _:
             raise ValueError(f"Unknown storage unit: {storage_unit}")
+    return None
 
 
 def calculate_tiered_cost(

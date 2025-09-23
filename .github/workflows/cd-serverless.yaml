@@ -102,6 +102,32 @@ jobs:
       - name: Install AWS CDK
         run: npm install -g aws-cdk@'${{ env. cdk-version }}'
 
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v5.0.0
+        with:
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ secrets.ROLE_TO_ASSUME }}
+          audience: sts.amazonaws.com
+          mask-aws-account-id: true
+          role-duration-seconds: 1500
+          role-external-id: ${{ secrets.EXTERNAL_ID }}
+          role-session-name: GitHubActions-CDK
+          inline-session-policy:
+            description: Define an inline session policy to use when assuming a role
+            required: false
+          managed-session-policies:
+            description: Define a list of managed session policies to use when assuming a role
+            required: false
+          output-credentials: false
+          output-env-credentials: true
+          unset-current-credentials: true
+          disable-retry: false
+          retry-max-attempts: 3
+          use-existing-credentials: false
+          allowed-account-ids:
+          force-skip-oidc: false
+          action-timeout-s: 60
+
       - name: Deploy
         run: cdk deploy \
           --notices false \

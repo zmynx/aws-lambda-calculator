@@ -29,17 +29,17 @@ export class CdkAppStack extends cdk.Stack {
     // });
 
     // Lambda function
-    const myLambda = new lambda.DockerImageFunction(this, "MyLambdaFunction", {
+    const myLambda = new lambda.DockerImageFunction(this, "AwsLambdaCalculatorLambdaFunction", {
       // code: lambda.DockerImageCode.fromEcr(dockerAsset.repository),
       code: lambda.DockerImageCode.fromImageUri(`${props?.imageUri}:${props?.imageTag || "latest"}`),
     });
 
     // API Gateway with logging and caching
-    const logGroup = new logs.LogGroup(this, "ApiGatewayAccessLogs", {
+    const logGroup = new logs.LogGroup(this, "AwsLambdaCalculatorApiGatewayAccessLogs", {
       retention: logs.RetentionDays.ONE_MONTH,
       removalPolicy: cdk.RemovalPolicy.DESTROY,
     });
-    const api = new apigateway.RestApi(this, "MyApiGateway", {
+    const api = new apigateway.RestApi(this, "AwsLambdaCalculatorApiGateway", {
       deployOptions: {
         loggingLevel: apigateway.MethodLoggingLevel.INFO,
         dataTraceEnabled: true,

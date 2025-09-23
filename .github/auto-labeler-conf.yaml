@@ -1,22 +1,52 @@
-# Add 'Documentation' label to any change to .md files within the entire repository 
+# Add 'Documentation' label to any change to .md files within the entire repository
 documentation:
-- changed-files:
-  - any-glob-to-any-file: ['docs/**', 'guides/**', '**/*.md']
+  - changed-files:
+      - any-glob-to-any-file: ["docs/**", "guides/**", "**/*.md", "site/**"]
 
 # Add 'source' label to any change to src files within the source dir EXCEPT for the docs sub-folder
-development:
-- changed-files:
-  - any-glob-to-any-file: ['src/**', 'test/**', 'requirements.txt', 'pyproject.toml', 'poetry.lock', '.python-version']
+development-library:
+  - changed-files:
+      - any-glob-to-any-file:
+          [
+            "aws-lambda-calculator/src/**",
+            "aws-lambda-calculator/test/**",
+            "aws-lambda-calculator/requirements.txt",
+            "aws-lambda-calculator/pyproject.toml",
+            "aws-lambda-calculator/poetry.lock",
+            "aws-lambda-calculator/.python-version",
+          ]
+
+development-wrappers:
+  - changed-files:
+      - any-glob-to-any-file:
+          [
+            "src/**",
+            "test/**",
+            "requirements.txt",
+            "pyproject.toml",
+            "poetry.lock",
+            ".python-version",
+          ]
+
+github-pages:
+  - changed-files:
+      - any-glob-to-any-file: ["site/**"]
 
 ci-cd:
-- changed-files:
-  - any-glob-to-any-file: ['.github/**', '.justfile'] 
+  - changed-files:
+      - any-glob-to-any-file: [".github/**", "justfiles/*"]
 
+serverless:
+  - changed-files:
+      - any-glob-to-any-file: ["serverless/**"]
 
 # Add 'feature' label to any PR where the head branch name starts with `feature` or has a `feature` section in the name
 feature:
- - head-branch: ['^feature', 'feature', 'feat']
+  - head-branch: ["^feature", "feature", "feat"]
+
+fix:
+  - head-branch: ["^fix", "fix"]
 
 # Add 'release' label to any PR that is opened against the `main` branch
 release:
- - base-branch: 'main'
+  - base-branch: "main"

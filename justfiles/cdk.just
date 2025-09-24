@@ -6,12 +6,28 @@ cdk-bootstrap:
 # Synthesize the CDK application
 cdk-synth:
     echo "Synthesizing CDK..."
-    cdk synth --profile {{profile}}
+    cdk synth \
+      --notices false \
+      --context env=prod \
+      --ci \
+      --debug \
+      --verbose \
+      --output dist
 
 # Deploy the CDK application
 cdk-deploy:
     echo "Deploying CDK..."
-    cdk deploy --all --require-approval never --profile {{profile}}
+    cdk deploy \
+      --app dist \
+      --notices false \
+      --context env=prod \
+      --ci \
+      --rollback true \
+      --progress bar \
+      --debug \
+      --verbose \
+      --require-approval never \
+      --outputs-file outputs.json
 
 # Destroy the CDK application
 cdk-destroy:

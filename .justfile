@@ -7,10 +7,13 @@ set shell := ["/bin/bash", "-c"]
 set windows-powershell := true
 
 # set defaults
-bin	    := "./src/main.py"
-req_file    := "requirements.txt"
-org	    := "zmynx"
-repo	    := "aws-lambda-calculator"
+bin       := "./src/main.py"
+req_file  := "requirements.txt"
+org       := "zmynx"
+repo      := "aws-lambda-calculator"
+region    := "us-east-1"
+account_id:= "123456789012"
+profile   := "default"
 
 ####################################################################################################################################################################################
 ## General recipes
@@ -21,6 +24,7 @@ import 'justfiles/podman.just'
 import 'justfiles/poetry.just'
 import 'justfiles/trivy.just'
 import 'justfiles/superlinter.just'
+import 'justfiles/cdk.just'
 
 # Default recipe to display help information
 default:

@@ -9,7 +9,7 @@ const app = new App();
 const env = app.node.tryGetContext("env") as string;
 const context = loadConfig(env);
 
-new CdkAppStack(app, `${env}-CdkAppStack`, {
+const stack = new AwsLambdaCalculatorStack(app, `${env}-AwsLambdaCalculatorStack`, {
   env: {
     account: process.env.CDK_DEFAULT_ACCOUNT,
     region: process.env.CDK_DEFAULT_REGION,
@@ -27,3 +27,4 @@ Tags.of(app).add("email", "lior.dux@develeap.com");
 Tags.of(app).add("objective", "api");
 Tags.of(app).add("expiration", "false");
 
+app.Synth();

@@ -39,14 +39,18 @@ jobs:
       - name: Install AWS CDK
         run: npm install -g aws-cdk@'${{ vars.cdk-version }}'
 
+      - name: Bootstrap
+        run: cdk bootstrap
+
       - name: Synth
-        run: cdk synth \
-          --notices false \
-          --context env=prod \
-          --ci \
-          --debug \
-          --verbose \
-          --output dist
+        run: |
+          cdk synth \
+            --notices false \
+            --context env=prod \
+            --ci \
+            --debug \
+            --verbose \
+            --output dist
 
       - name: Upload a Build Artifact
         id: upload-artifact

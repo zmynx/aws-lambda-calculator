@@ -8,7 +8,6 @@ import * as logs from "aws-cdk-lib/aws-logs";
 
 export interface CdkAppStackProps extends cdk.StackProps {
   readonly env: string;
-  // readonly lambdaPythonVersion: string;
   readonly imageUri: string;
   readonly imageTag: string;
 }
@@ -17,24 +16,10 @@ export class CdkAppStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: CdkAppStackProps) {
     super(scope, id, props);
 
-    // Build local docker image or use a pre-existing image from GHCR
-    // const dockerImagePath = path.resolve(__dirname, "../../..");
-    // const dockerAsset = new ecrAssets.DockerImageAsset(this, "MyLambdaImage", {
-    //   directory: dockerImagePath,
-    //   file: "Containerfile",
-    //   target: "lambda_runtime",
-    //   buildArgs: {
-    //     LAMBDA_PYTHON_VERSION: props.pythonVersion,
-    //   },
-    // });
-
-    // Lambda function
     const myLambda = new lambda.DockerImageFunction(this, "AwsLambdaCalculatorLambdaFunction", {
-      // code: lambda.DockerImageCode.fromEcr(dockerAsset.repository),
       code: lambda.DockerImageCode.fromImageUri(`${props?.imageUri}:${props?.imageTag || "latest"}`),
     });
 
-    // API Gateway with logging and caching
     const logGroup = new logs.LogGroup(this, "AwsLambdaCalculatorApiGatewayAccessLogs", {
       retention: logs.RetentionDays.ONE_MONTH,
       removalPolicy: cdk.RemovalPolicy.DESTROY,
@@ -45,15 +30,15 @@ export class CdkAppStack extends cdk.Stack {
         dataTraceEnabled: true,
         metricsEnabled: true,
         accessLogDestination: new apigateway.LogGroupLogDestination(logGroup),
-        accessLogFormat: apigateway.AccessLogFormat.jsonWithStandardFields(), // Standard JSON log format
+        accessLogFormat: apigateway.AccessLogFormat.jsonWithStandardFields(),
       }
     });
+
     const root = api.root;
     root.addMethod("GET", new apigateway.LambdaIntegration(myLambda), {
       methodResponses: [{ statusCode: "200" }],
     });
 
-    // Output the API Gateway URL
     new cdk.CfnOutput(this, "ApiGatewayUri", {
       value: api.url,
       description: "API Gateway endpoint URL",

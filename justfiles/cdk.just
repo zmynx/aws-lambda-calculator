@@ -14,6 +14,7 @@ cdk-bootstrap:
 cdk-synth:
     echo "Synthesizing CDK..."
     cdk synth \
+      --profile {{profile}} \
       --notices false \
       --context env=prod \
       --ci \
@@ -26,9 +27,10 @@ cdk-synth:
 cdk-deploy:
     echo "Deploying CDK..."
     cdk deploy \
-      --app dist \
+      --profile {{profile}} \
       --notices false \
       --context env=prod \
+      --app dist \
       --ci \
       --rollback true \
       --progress bar \
@@ -41,7 +43,12 @@ cdk-deploy:
 [no-cd]
 cdk-destroy:
     echo "Destroying CDK..."
-    cdk destroy --all --force --profile {{profile}}
+    cdk destroy \
+      --profile {{profile}} \
+      --notices false \
+      --context env=prod \
+      --all \
+      --force
 
 # Use SAM local to start a local API Gateway and Lambda environment
 sam-local-start-all: sam-local-start-api sam-local-start-lambda

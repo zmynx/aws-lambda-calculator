@@ -37,7 +37,7 @@ jobs:
         run: npm install
 
       - name: Install AWS CDK
-        run: npm install -g aws-cdk@'${{ vars.cdk-version }}'
+        run: npm install -g aws-cdk@'${{ vars.cdk_version }}'
 
       - name: Bootstrap
         run: cdk bootstrap
@@ -101,7 +101,7 @@ jobs:
         run: npm install
 
       - name: Install AWS CDK
-        run: npm install -g aws-cdk@'${{ vars.cdk-version }}'
+        run: npm install -g aws-cdk@'${{ vars.cdk_version }}'
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v5.0.0

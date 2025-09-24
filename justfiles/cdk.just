@@ -1,9 +1,16 @@
 # Bootstrap the CDK environment
+[no-cd]
 cdk-bootstrap:
     echo "Boostrapping CDK..."
-    cdk bootstrap aws://{{account_id}}/{{region}} --profile {{profile}}
+    export CDK_DEFAULT_ACCOUNT={{account_id}}
+    export CDK_DEFAULT_REGION={{region}}
+    cdk bootstrap aws://{{account_id}}/{{region}} \
+      --profile {{profile}} \
+      --notices false \
+      --context env=prod
 
 # Synthesize the CDK application
+[no-cd]
 cdk-synth:
     echo "Synthesizing CDK..."
     cdk synth \
@@ -15,6 +22,7 @@ cdk-synth:
       --output dist
 
 # Deploy the CDK application
+[no-cd]
 cdk-deploy:
     echo "Deploying CDK..."
     cdk deploy \
@@ -30,6 +38,7 @@ cdk-deploy:
       --outputs-file outputs.json
 
 # Destroy the CDK application
+[no-cd]
 cdk-destroy:
     echo "Destroying CDK..."
     cdk destroy --all --force --profile {{profile}}

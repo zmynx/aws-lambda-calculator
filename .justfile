@@ -8,11 +8,11 @@ set windows-powershell := true
 
 # set defaults
 bin       := "./src/main.py"
-req_file  := "requirements.txt"
+req_file  := "./requirements.txt"
 org       := "zmynx"
 repo      := "aws-lambda-calculator"
 region    := "us-east-1"
-account_id:= "123456789012"
+account_id:= "012345678901"
 profile   := "default"
 
 ####################################################################################################################################################################################
@@ -27,6 +27,7 @@ import 'justfiles/superlinter.just'
 import 'justfiles/cdk.just'
 
 # Default recipe to display help information
+[no-cd]
 default:
 	@echo "-=== Easy Management Using Justfile ===-"
 	@sleep 0.1
@@ -36,5 +37,6 @@ default:
 	@just --choose --unsorted
 
 # Help command to display available tasks
+[no-cd]
 help:
     @just --list

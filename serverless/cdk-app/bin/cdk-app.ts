@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { App, Tags } from "aws-cdk-lib";
-import { CdkAppStack } from "../lib/cdk-app-stack";
+import { AwsLambdaCalculatorStack } from "../lib/cdk-app-stack";
 import { loadConfig } from "./utils";
 
 const app = new App();
@@ -27,4 +27,4 @@ Tags.of(app).add("email", "lior.dux@develeap.com");
 Tags.of(app).add("objective", "api");
 Tags.of(app).add("expiration", "false");
 
-app.Synth();
+app.synth();

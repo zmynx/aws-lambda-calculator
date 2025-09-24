@@ -1,11 +1,9 @@
 #!/usr/bin/env just --justfile --working-directory .
 
-# Set directory to current
-dir := "/Users/develeap/Desktop/Lior/aws-lambda-calculator/aws-lambda-calculator"
-
 import '../.justfile'
 
 # Default recipe to display help information
+[no-cd]
 dummy-default:
 	@echo "-=== Easy Management Using Justfile ===-"
 	@sleep 0.1

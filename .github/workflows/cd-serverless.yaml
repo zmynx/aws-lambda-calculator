@@ -1,0 +1,164 @@
+# .github/workflows/cd-serverless.yaml
+---
+name: Continous Delivery
+on:
+  workflow_run:
+    workflows: [Release]
+    types: [completed]
+
+jobs:
+  synth:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    name: CDK Synthesis
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    defaults:
+      run:
+        shell: bash
+        working-directory: serverless/cdk-app
+    steps:
+      - name: Checkout
+        uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493 # v5.0.0
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: package.json
+          check-latest: false
+          cache: npm
+          package-manager-cache: true
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install AWS CDK
+        run: npm install -g aws-cdk@'${{ vars.cdk_version }}'
+
+      - name: Bootstrap
+        run: cdk bootstrap
+
+      - name: Synth
+        run: |
+          cdk synth \
+            --notices false \
+            --context env=prod \
+            --ci \
+            --debug \
+            --verbose \
+            --output dist
+
+      - name: Upload a Build Artifact
+        id: upload-artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: aws_lambda_calculator
+          path: |
+            ${{ github.workspace }}/serverless/cdk-app/dist
+          if-no-files-found: error
+          retention-days: 1
+          overwrite: true
+          include-hidden-files: false
+
+  deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    needs: synth
+    name: CDK Deploy
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+    defaults:
+      run:
+        shell: bash
+        working-directory: serverless/cdk-app
+    environment:
+      name: prod
+      url: steps.set-env-url.outputs.url
+    steps:
+      - name: Download a Build Artifact
+        id: download-artifact
+        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
+        with:
+          name: aws_lambda_calculator
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: ${{ github.event.workflow_run.id }}
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: package.json
+          check-latest: false
+          cache: npm
+          package-manager-cache: true
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install AWS CDK
+        run: npm install -g aws-cdk@'${{ vars.cdk_version }}'
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v5.0.0
+        with:
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          audience: sts.amazonaws.com
+          mask-aws-account-id: true
+          role-duration-seconds: 1500
+          role-external-id: ${{ secrets.AWS_ROLE_EXTERNAL_ID }}
+          role-session-name: GitHubActions-CDK
+          inline-session-policy: >-
+            {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                "Sid":"AWSLambdaCalculatorDeployAPIGW"
+                "Effect":"Allow",
+                "Action":"api:*",
+                "Resource":"*"
+                },
+                {
+                "Sid":"AWSLambdaCalculatorDeployLambda",
+                "Effect":"Allow",
+                "Action":"api:*",
+                "Resource":"*"
+                }
+              ]
+            }
+          managed-session-policies: |
+            arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess
+          output-credentials: false
+          output-env-credentials: true
+          unset-current-credentials: true
+          disable-retry: false
+          retry-max-attempts: 3
+          use-existing-credentials: false
+          allowed-account-ids: ${{ secrets.AWS_ACCOUNT_ID }}
+          force-skip-oidc: false
+          action-timeout-s: 60
+
+      - name: Deploy
+        run: cdk deploy \
+          --app dist \
+          --notices false \
+          --context env=prod \
+          --ci \
+          --rollback true \
+          --progress bar \
+          --debug \
+          --verbose \
+          --require-approval never \
+          --outputs-file outputs.json
+
+      - name: Set environment url
+        id: set-env-url
+        run: |
+          set -exou pipefail
+          url=$(jq '.ApiGatewayUri' outputs.json)
+          echo "url=$url" >> $GITHUB_OUTPUTS

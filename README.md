@@ -5,7 +5,7 @@
 <a name="top"></a>
 
 <p align="center">
-<img src="./docs/assets/IMG_0416.PNG" alt="aws-lambda-calculator" height="500" width="500" border="5"/>
+<img src="./site/app/assets/IMG_0416.PNG" alt="aws-lambda-calculator" height="500" width="500" border="5"/>
 </p>
 <h1 align="center"><samp> AWS Lambda Calculator</samp></h1>
 
@@ -21,7 +21,7 @@
 
 This project is under the served with the Apache License.\
 Provided AS IS, no warranty given, not liability taken - USE AT YOUR OWN RISK.\
-More info can be found in our [LICENSE file](./docs/LICENSE).
+More info can be found in our [LICENSE file](./LICENSE).
 
 <h1 align="left"><samp>Contributing</samp></h1>
 
@@ -36,7 +36,7 @@ Follow our [CONTRIBUTING](./docs/CONTRIBUTING) guide on our docs section.
 
 <h1 align="left"><samp>Sponser</samp></h1>
 <p align="center">
-<img src="./docs/assets/bmc_qr.png" alt="buy-me-a-coffee-qr-code" style="width:80px;height:80px;"></a>
+<img src="./site/app/assets/bmc_qr.png" alt="buy-me-a-coffee-qr-code" style="width:80px;height:80px;"></a>
 </p>
 
 Enjoy our projects? make sure to follow for more!\

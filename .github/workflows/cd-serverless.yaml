@@ -5,10 +5,11 @@ on:
   workflow_run:
     workflows: [Release]
     types: [completed]
+  workflow_dispatch:
 
 jobs:
   synth:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
     name: CDK Synthesis
     runs-on: ubuntu-latest
     permissions:
@@ -74,7 +75,7 @@ jobs:
           include-hidden-files: false
 
   deploy:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
     needs: synth
     name: CDK Deploy
     runs-on: ubuntu-latest

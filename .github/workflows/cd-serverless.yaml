@@ -39,10 +39,19 @@ jobs:
       - name: Install AWS CDK
         run: npm install -g aws-cdk@'${{ vars.cdk_version }}'
 
-      - name: Bootstrap
-        run: cdk bootstrap
+      # WARN:
+      # bootstrapping to be done once by an admin per account
+      # Leaving here for readers reference
+      # - name: Bootstrap
+      #   run: |
+      #     cdk bootstrap aws://'${{ secrets.AWS_ACCOUNT_ID }}'/'${{ vars.AWS_REGION }}' \
+      #       --notices false \
+      #       --context env=prod
 
       - name: Synth
+        env:
+          CDK_DEFAULT_ACCOUNT: ${{ secrets.AWS_ACCOUNT_ID }}
+          CDK_DEFAULT_REGION: ${{ vars.AWS_REGION }}
         run: |
           cdk synth \
             --notices false \
@@ -144,17 +153,21 @@ jobs:
           action-timeout-s: 60
 
       - name: Deploy
-        run: cdk deploy \
-          --app dist \
-          --notices false \
-          --context env=prod \
-          --ci \
-          --rollback true \
-          --progress bar \
-          --debug \
-          --verbose \
-          --require-approval never \
-          --outputs-file outputs.json
+        env:
+          CDK_DEFAULT_ACCOUNT: ${{ secrets.AWS_ACCOUNT_ID }}
+          CDK_DEFAULT_REGION: ${{ vars.AWS_REGION }}
+        run: |
+          cdk deploy \
+            --app dist \
+            --notices false \
+            --context env=prod \
+            --ci \
+            --rollback true \
+            --progress bar \
+            --debug \
+            --verbose \
+            --require-approval never \
+            --outputs-file outputs.json
 
       - name: Set environment url
         id: set-env-url

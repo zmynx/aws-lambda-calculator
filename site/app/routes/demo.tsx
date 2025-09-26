@@ -52,9 +52,7 @@ export default function Demo() {
 
     try {
       // Replace with your actual API Gateway endpoint
-      // const apiEndpoint = 'https://your-api-gateway-url.amazonaws.com/prod/calculate';
-      // const apiEndpoint = 'http://localhost:9000/2015-03-31/functions/function/invocations';
-      const apiEndpoint = 'http://localhost:3000/api/'; // Adjust this URL to your local setup
+      const apiEndpoint = import.meta.env.API_GATEWAY_ENDPOINT || 'http://localhost:3000/api/';
       const res = await axios.post(apiEndpoint, JSON.stringify({
         region: formData.region,
         include_free_tier: formData.include_free_tier === 'true',

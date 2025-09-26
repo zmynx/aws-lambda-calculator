@@ -174,4 +174,4 @@ jobs:
         run: |
           set -exou pipefail
           url=$(jq '.ApiGatewayUri' outputs.json)
-          echo "url=$url" >> $GITHUB_OUTPUTS
+          echo "url=$url" >> $GITHUB_OUTPUT

@@ -159,6 +159,7 @@ jobs:
             arn:aws:iam::aws:policy/AmazonAPIGatewayAdministrator
             arn:aws:iam::aws:policy/AWSLambda_FullAccess
             arn:aws:iam::aws:policy/AmazonS3FullAccess
+            arn:aws:iam::aws:policy/AmazonSSMReadOnlyAccess
           output-credentials: false
           output-env-credentials: true
           unset-current-credentials: true
@@ -167,7 +168,7 @@ jobs:
           use-existing-credentials: false
           allowed-account-ids: ${{ secrets.AWS_ACCOUNT_ID }}
           force-skip-oidc: false
-          action-timeout-s: 60
+          # action-timeout-s: 60
 
       - name: Deploy
         env:

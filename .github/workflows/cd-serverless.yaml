@@ -94,7 +94,7 @@ jobs:
         working-directory: ${{ env.working_directory }}
     environment:
       name: prod
-      url: steps.set-env-url.outputs.url
+      url: ${{ steps.set-env-url.outputs.url }}
     steps:
       - name: Checkout
         uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493 # v5.0.0

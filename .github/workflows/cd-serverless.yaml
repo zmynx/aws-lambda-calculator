@@ -71,7 +71,7 @@ jobs:
         id: upload-artifact
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: aws_lambda_calculator
+          name: dist
           path: |
             ${{ github.workspace }}/${{ env.working_directory }}/dist
           if-no-files-found: error
@@ -106,7 +106,7 @@ jobs:
         id: download-artifact
         uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
         with:
-          name: aws_lambda_calculator
+          name: dist
           path: ${{ github.workspace }}/${{ env.working_directory }}
 
       - uses: actions/setup-node@v5
@@ -169,9 +169,9 @@ jobs:
           CDK_DEFAULT_REGION: ${{ vars.AWS_REGION }}
         run: |
           cdk deploy \
-            --app dist \
             --notices false \
             --context env=prod \
+            --app dist \
             --ci \
             --rollback true \
             --progress bar \

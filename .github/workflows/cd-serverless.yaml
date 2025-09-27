@@ -7,6 +7,9 @@ on:
     types: [completed]
   workflow_dispatch:
 
+env:
+  working_directory: serverless/cdk-app
+
 jobs:
   synth:
     if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
@@ -18,7 +21,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: serverless/cdk-app
+        working-directory: ${{ env.working_directory }}
     environment:
       name: prod
     steps:
@@ -30,11 +33,11 @@ jobs:
 
       - uses: actions/setup-node@v5
         with:
-          node-version-file: site/package.json
+          node-version-file: ${{ env.working_directory }}/package.json
           check-latest: false
           cache: npm
           package-manager-cache: true
-          cache-dependency-path: site/package-lock.json
+          cache-dependency-path: ${{ env.working_directory }}/package-lock.json
 
       - name: Install dependencies
         run: npm install
@@ -70,7 +73,7 @@ jobs:
         with:
           name: aws_lambda_calculator
           path: |
-            ${{ github.workspace }}/serverless/cdk-app/dist
+            ${{ github.workspace }}/${{ env.working_directory }}/dist
           if-no-files-found: error
           retention-days: 1
           overwrite: true
@@ -88,7 +91,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: serverless/cdk-app
+        working-directory: ${{ env.working_directory }}
     environment:
       name: prod
       url: steps.set-env-url.outputs.url
@@ -104,15 +107,15 @@ jobs:
         uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
         with:
           name: aws_lambda_calculator
-          path: ${{ github.workspace }}/serverless/cdk-app
+          path: ${{ github.workspace }}/${{ env.working_directory }}
 
       - uses: actions/setup-node@v5
         with:
-          node-version-file: site/package.json
+          node-version-file: ${{ env.working_directory }}/package.json
           check-latest: false
           cache: npm
           package-manager-cache: true
-          cache-dependency-path: site/package-lock.json
+          cache-dependency-path: ${{ env.working_directory }}/package-lock.json
 
       - name: Install dependencies
         run: npm install

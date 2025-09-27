@@ -109,6 +109,9 @@ jobs:
           name: dist
           path: ${{ github.workspace }}/${{ env.working_directory }}
 
+      - name: Check folder structure [DEBUG]
+        run: ls -la .
+
       - uses: actions/setup-node@v5
         with:
           node-version-file: ${{ env.working_directory }}/package.json

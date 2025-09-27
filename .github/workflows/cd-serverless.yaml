@@ -141,9 +141,9 @@ jobs:
           #     "Version": "2012-10-17",
           #     "Statement": [
           #       {
-          #       "Sid":"AWSLambdaCalculatorDeployAPIGW"
+          #       "Sid":"AssumeCDKRoles"
           #       "Effect":"Allow",
-          #       "Action":"api:*",
+          #       "Action":"sts:AssumeRole",
           #       "Resource":"*"
           #       },
           #       {
@@ -155,6 +155,7 @@ jobs:
           #     ]
           #   }
           managed-session-policies: |
+            arn:aws:iam::aws:policy/AdministratorAccess
             arn:aws:iam::aws:policy/AWSCloudFormationFullAccess
             arn:aws:iam::aws:policy/AmazonAPIGatewayAdministrator
             arn:aws:iam::aws:policy/AWSLambda_FullAccess

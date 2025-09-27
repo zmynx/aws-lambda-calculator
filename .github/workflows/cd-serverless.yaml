@@ -93,6 +93,12 @@ jobs:
       name: prod
       url: steps.set-env-url.outputs.url
     steps:
+      - name: Checkout
+        uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493 # v5.0.0
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
       - name: Download a Build Artifact
         id: download-artifact
         uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
@@ -116,45 +122,45 @@ jobs:
       - name: Install AWS CDK
         run: npm install -g aws-cdk@'${{ vars.cdk_version }}'
 
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v5.0.0
-        with:
-          aws-region: ${{ vars.AWS_REGION }}
-          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          audience: sts.amazonaws.com
-          mask-aws-account-id: true
-          role-duration-seconds: 1500
-          role-external-id: ${{ secrets.AWS_ROLE_EXTERNAL_ID }}
-          role-session-name: GitHubActions-CDK
-          inline-session-policy: >-
-            {
-              "Version": "2012-10-17",
-              "Statement": [
-                {
-                "Sid":"AWSLambdaCalculatorDeployAPIGW"
-                "Effect":"Allow",
-                "Action":"api:*",
-                "Resource":"*"
-                },
-                {
-                "Sid":"AWSLambdaCalculatorDeployLambda",
-                "Effect":"Allow",
-                "Action":"api:*",
-                "Resource":"*"
-                }
-              ]
-            }
-          managed-session-policies: |
-            arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess
-          output-credentials: false
-          output-env-credentials: true
-          unset-current-credentials: true
-          disable-retry: false
-          retry-max-attempts: 3
-          use-existing-credentials: false
-          allowed-account-ids: ${{ secrets.AWS_ACCOUNT_ID }}
-          force-skip-oidc: false
-          action-timeout-s: 60
+      # - name: Configure AWS Credentials
+      #   uses: aws-actions/configure-aws-credentials@v5.0.0
+      #   with:
+      #     aws-region: ${{ vars.AWS_REGION }}
+      #     role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+      #     audience: sts.amazonaws.com
+      #     mask-aws-account-id: true
+      #     role-duration-seconds: 1500
+      #     role-external-id: ${{ secrets.AWS_ROLE_EXTERNAL_ID }}
+      #     role-session-name: GitHubActions-CDK
+      #     inline-session-policy: >-
+      #       {
+      #         "Version": "2012-10-17",
+      #         "Statement": [
+      #           {
+      #           "Sid":"AWSLambdaCalculatorDeployAPIGW"
+      #           "Effect":"Allow",
+      #           "Action":"api:*",
+      #           "Resource":"*"
+      #           },
+      #           {
+      #           "Sid":"AWSLambdaCalculatorDeployLambda",
+      #           "Effect":"Allow",
+      #           "Action":"lambda:*",
+      #           "Resource":"*"
+      #           }
+      #         ]
+      #       }
+      #     managed-session-policies: |
+      #       arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess
+      #     output-credentials: false
+      #     output-env-credentials: true
+      #     unset-current-credentials: true
+      #     disable-retry: false
+      #     retry-max-attempts: 3
+      #     use-existing-credentials: false
+      #     allowed-account-ids: ${{ secrets.AWS_ACCOUNT_ID }}
+      #     force-skip-oidc: false
+      #     action-timeout-s: 60
 
       - name: Deploy
         env:

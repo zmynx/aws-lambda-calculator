@@ -140,7 +140,7 @@ export default function Demo() {
 
             <div>
               <label htmlFor="include_free_tier" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Include Free Tier
+                Free Tier
               </label>
               <select
                 id="include_free_tier"

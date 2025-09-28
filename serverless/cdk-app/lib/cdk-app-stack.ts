@@ -5,6 +5,7 @@ import * as lambda from "aws-cdk-lib/aws-lambda";
 import * as apigateway from "aws-cdk-lib/aws-apigateway";
 import * as ecrAssets from "aws-cdk-lib/aws-ecr-assets";
 import * as logs from "aws-cdk-lib/aws-logs";
+import * as wafv2 from "aws-cdk-lib/aws-wafv2";
 
 export interface AwsLambdaCalculatorStackProps extends cdk.StackProps {
   readonly imageUri: string;
@@ -30,6 +31,9 @@ export class AwsLambdaCalculatorStack extends cdk.Stack {
       code: lambda.DockerImageCode.fromEcr(dockerAsset.repository, {
         tagOrDigest: dockerAsset.assetHash,
       }),
+      // Set memory and timeout limits for cost control
+      memorySize: 512, // Adjust based on your needs
+      timeout: cdk.Duration.seconds(30), // Prevent long-running requests
     });
 
     const logGroup = new logs.LogGroup(this, "AwsLambdaCalculatorApiGatewayAccessLogs", {
@@ -37,7 +41,7 @@ export class AwsLambdaCalculatorStack extends cdk.Stack {
       removalPolicy: cdk.RemovalPolicy.DESTROY,
     });
 
-    // Create API Gateway with CORS enabled
+    // Create API Gateway with throttling
     const api = new apigateway.RestApi(this, "AwsLambdaCalculatorApiGateway", {
       deployOptions: {
         loggingLevel: apigateway.MethodLoggingLevel.INFO,
@@ -45,11 +49,14 @@ export class AwsLambdaCalculatorStack extends cdk.Stack {
         metricsEnabled: true,
         accessLogDestination: new apigateway.LogGroupLogDestination(logGroup),
         accessLogFormat: apigateway.AccessLogFormat.jsonWithStandardFields(),
+        // Global throttling limits
+        throttleRateLimit: 100, // requests per second
+        throttleBurstLimit: 200, // burst capacity
       },
       // Default CORS configuration for all resources
       defaultCorsPreflightOptions: {
         allowOrigins: apigateway.Cors.ALL_ORIGINS,
-        allowMethods: apigateway.Cors.ALL_METHODS,
+        allowMethods: ['POST', 'OPTIONS'], // Only allow needed methods
         allowHeaders: [
           'Content-Type',
           'X-Amz-Date',
@@ -66,12 +73,109 @@ export class AwsLambdaCalculatorStack extends cdk.Stack {
     });
 
     const root = api.root;
-    root.addMethod("POST", lambdaIntegration);
+    
+    // Add POST method (no API key required)
+    const postMethod = root.addMethod("POST", lambdaIntegration);
 
-    // Output the API Gateway URL
+    // Create WAF Web ACL for advanced protection
+    const webAcl = new wafv2.CfnWebACL(this, 'CalculatorWebACL', {
+      scope: 'REGIONAL', // For API Gateway
+      defaultAction: { allow: {} },
+      name: 'CalculatorWebACL',
+      description: 'WAF rules for Calculator API protection',
+      rules: [
+        // Rate limiting rule - 100 requests per 5 minutes per IP
+        {
+          name: 'RateLimitRule',
+          priority: 1,
+          statement: {
+            rateBasedStatement: {
+              limit: 100,
+              aggregateKeyType: 'IP',
+              evaluationWindowSec: 300, // 5 minutes
+            },
+          },
+          action: { block: {} },
+          visibilityConfig: {
+            sampledRequestsEnabled: true,
+            cloudWatchMetricsEnabled: true,
+            metricName: 'RateLimitRule',
+          },
+        },
+        // AWS Managed Rules - Common Rule Set
+        {
+          name: 'AWSManagedRulesCommonRuleSet',
+          priority: 2,
+          overrideAction: { none: {} },
+          statement: {
+            managedRuleGroupStatement: {
+              vendorName: 'AWS',
+              name: 'AWSManagedRulesCommonRuleSet',
+            },
+          },
+          visibilityConfig: {
+            sampledRequestsEnabled: true,
+            cloudWatchMetricsEnabled: true,
+            metricName: 'CommonRuleSetMetric',
+          },
+        },
+        // AWS Managed Rules - Known Bad Inputs
+        {
+          name: 'AWSManagedRulesKnownBadInputsRuleSet',
+          priority: 3,
+          overrideAction: { none: {} },
+          statement: {
+            managedRuleGroupStatement: {
+              vendorName: 'AWS',
+              name: 'AWSManagedRulesKnownBadInputsRuleSet',
+            },
+          },
+          visibilityConfig: {
+            sampledRequestsEnabled: true,
+            cloudWatchMetricsEnabled: true,
+            metricName: 'KnownBadInputsRuleSetMetric',
+          },
+        },
+        // Block requests with large payloads (prevent payload-based attacks)
+        {
+          name: 'LargePayloadRule',
+          priority: 4,
+          statement: {
+            sizeConstraintStatement: {
+              fieldToMatch: { body: {} },
+              comparisonOperator: 'GT',
+              size: 1024 * 10, // 10KB limit - adjust based on your needs
+              textTransformations: [{
+                priority: 0,
+                type: 'NONE',
+              }],
+            },
+          },
+          action: { block: {} },
+          visibilityConfig: {
+            sampledRequestsEnabled: true,
+            cloudWatchMetricsEnabled: true,
+            metricName: 'LargePayloadRule',
+          },
+        },
+      ],
+    });
+
+    // Associate WAF with API Gateway
+    const webAclAssociation = new wafv2.CfnWebACLAssociation(this, 'WebACLAssociation', {
+      resourceArn: `arn:aws:apigateway:${this.region}::/restapis/${api.restApiId}/stages/${api.deploymentStage.stageName}`,
+      webAclArn: webAcl.attrArn,
+    });
+
+    // Output the API Gateway URL and WAF info
     new cdk.CfnOutput(this, "ApiGatewayUri", {
       value: api.url,
       description: "API Gateway endpoint URL",
+    });
+
+    new cdk.CfnOutput(this, "WebACLArn", {
+      value: webAcl.attrArn,
+      description: "WAF Web ACL ARN",
     });
   }
 }

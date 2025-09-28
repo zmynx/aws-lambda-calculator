@@ -3,7 +3,7 @@
 name: Continuous Delivery
 on:
   workflow_run:
-    workflows: [Release]
+    workflows: [CD Image]
     types: [completed]
   workflow_dispatch:
 

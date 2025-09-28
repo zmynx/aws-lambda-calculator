@@ -154,11 +154,7 @@ jobs:
                 {
                   "Effect": "Allow",
                   "Action": [
-                    "s3:ListBucket",
-                    "s3:GetBucketLocation",
-                    "s3:GetObject",
-                    "s3:PutObject",
-                    "s3:DeleteObject"
+                    "s3:*"
                   ],
                   "Resource": [
                     "arn:aws:s3:::cdk-hnb659fds-assets-${{ secrets.AWS_ACCOUNT_ID }}-${{ vars.AWS_REGION }}",
@@ -168,12 +164,7 @@ jobs:
                 {
                   "Effect": "Allow",
                   "Action": [
-                    "ecr:DescribeRepositories",
-                    "ecr:DescribeImages",
-                    "ecr:BatchCheckLayerAvailability",
-                    "ecr:GetDownloadUrlForLayer",
-                    "ecr:BatchGetImage",
-                    "ecr:GetAuthorizationToken"
+                    "ecr:*"
                   ],
                   "Resource": [
                     "arn:aws:ecr:${{ vars.AWS_REGION }}:${{ secrets.AWS_ACCOUNT_ID }}:repository/cdk-hnb659fds-container-assets-${{ secrets.AWS_ACCOUNT_ID }}-${{ vars.AWS_REGION }}",

@@ -135,32 +135,59 @@ jobs:
           mask-aws-account-id: true
           role-duration-seconds: 1500
           # role-external-id: ${{ secrets.AWS_ROLE_EXTERNAL_ID }}
-          role-session-name: GitHubActions-CDK
-          # inline-session-policy: >-
-          #   {
-          #     "Version": "2012-10-17",
-          #     "Statement": [
-          #       {
-          #       "Sid":"AssumeCDKRoles"
-          #       "Effect":"Allow",
-          #       "Action":"sts:AssumeRole",
-          #       "Resource":"*"
-          #       },
-          #       {
-          #       "Sid":"AWSLambdaCalculatorDeployLambda",
-          #       "Effect":"Allow",
-          #       "Action":"lambda:*",
-          #       "Resource":"*"
-          #       }
-          #     ]
-          #   }
-          managed-session-policies: |
-            arn:aws:iam::aws:policy/AdministratorAccess
-            arn:aws:iam::aws:policy/AWSCloudFormationFullAccess
-            arn:aws:iam::aws:policy/AmazonAPIGatewayAdministrator
-            arn:aws:iam::aws:policy/AWSLambda_FullAccess
-            arn:aws:iam::aws:policy/AmazonS3FullAccess
-            arn:aws:iam::aws:policy/AmazonSSMReadOnlyAccess
+          role-session-name:
+            GitHubActions-CDK
+            # Minimal inline session policy - CDK execution role handles the rest
+          inline-session-policy: >-
+            {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Sid": "AssumeDeploymentRole",
+                  "Effect": "Allow",
+                  "Action": "sts:AssumeRole",
+                  "Resource": "arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/cdk-*-cfn-exec-role-${{ secrets.AWS_ACCOUNT_ID }}-${{ vars.AWS_REGION }}"
+                },
+                {
+                  "Sid": "CDKFileAssetAccess",
+                  "Effect": "Allow", 
+                  "Action": [
+                    "s3:GetObject",
+                    "s3:GetBucketLocation"
+                  ],
+                  "Resource": [
+                    "arn:aws:s3:::cdk-*-assets-${{ secrets.AWS_ACCOUNT_ID }}-${{ vars.AWS_REGION }}",
+                    "arn:aws:s3:::cdk-*-assets-${{ secrets.AWS_ACCOUNT_ID }}-${{ vars.AWS_REGION }}/*"
+                  ]
+                },
+                {
+                  "Sid": "CDKBootstrapAccess",
+                  "Effect": "Allow",
+                  "Action": [
+                    "ssm:GetParameter"
+                  ],
+                  "Resource": "arn:aws:ssm:${{ vars.AWS_REGION }}:${{ secrets.AWS_ACCOUNT_ID }}:parameter/cdk-bootstrap/*/version"
+                },
+                {
+                  "Sid": "CloudFormationReadOnly",
+                  "Effect": "Allow",
+                  "Action": [
+                    "cloudformation:DescribeStacks",
+                    "cloudformation:DescribeStackEvents",
+                    "cloudformation:DescribeStackResources",
+                    "cloudformation:GetTemplate"
+                  ],
+                  "Resource": "arn:aws:cloudformation:${{ vars.AWS_REGION }}:${{ secrets.AWS_ACCOUNT_ID }}:stack/*"
+                }
+              ]
+            }
+          # managed-session-policies: |
+          #   arn:aws:iam::aws:policy/AdministratorAccess
+          #   arn:aws:iam::aws:policy/AWSCloudFormationFullAccess
+          #   arn:aws:iam::aws:policy/AmazonAPIGatewayAdministrator
+          #   arn:aws:iam::aws:policy/AWSLambda_FullAccess
+          #   arn:aws:iam::aws:policy/AmazonS3FullAccess
+          #   arn:aws:iam::aws:policy/AmazonSSMReadOnlyAccess
           output-credentials: false
           output-env-credentials: true
           unset-current-credentials: true

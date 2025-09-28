@@ -54,33 +54,52 @@ jobs:
           set -exou pipefail
           echo "API_GATEWAY_ENDPOINT=${{ github.event.deployment_status.environment_url }}" >> $GITHUB_ENV
 
-      - name: Update depyloment uri (from latest deployment)
+      - name: Update deployment URI (from latest deployment)
         if: ${{ github.event_name == 'push' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          set -exou pipefail
+          set -xeuo pipefail
 
-          # Iterate over production deployment until we get the latest succeeded deployment id
-          while true:
-            # Grab latest production deployment id
-            LAST_DEPLOYEMNT_ID=$(gh api \
-              --header "Accept: application/vnd.github+json" \
-              --header "X-GitHub-Api-Version: 2022-11-28" \
-              /repos/'${{ github.repository }}'/deployments --jq 'map(select(.environment == "prod"))[0].id')
-
-            STATUS=$(gh api \
-              --header "Accept: application/vnd.github+json" \
-              --header "X-GitHub-Api-Version: 2022-11-28" \
-              /repos/'${{ github.repository }}'/deployments/"${LAST_DEPLOYEMNT_ID}"/statuses --jq 'map(select(.state == "success")) | .[].environment_url')
-
-
-          API_GATEWAY_ENDPOINT=$(gh api \
+          echo "Fetching latest successful prod deployment..."
+          # Get all prod deployments sorted by created_at (newest first)
+          DEPLOYMENTS=$(gh api \
             --header "Accept: application/vnd.github+json" \
             --header "X-GitHub-Api-Version: 2022-11-28" \
-            /repos/'${{ github.repository }}'/deployments --jq 'map(select(.environment == "prod"))[0].payload.web_url')
+            /repos/${{ github.repository }}/deployments \
+            --jq 'map(select(.environment == "prod")) | sort_by(.created_at) | reverse')
 
-          echo "API_GATEWAY_ENDPOINT=${API_GATEWAY_ENDPOINT}" >> $GITHUB_ENV
+          # Find the first deployment with a successful status
+          ENVIRONMENT_URL=""
+          for deployment_id in $(echo "$DEPLOYMENTS" | jq -r '.[].id'); do
+            echo "Checking deployment ID: $deployment_id"
+
+            # Get the latest status for this deployment
+            STATUS_DATA=$(gh api \
+              --header "Accept: application/vnd.github+json" \
+              --header "X-GitHub-Api-Version: 2022-11-28" \
+              /repos/${{ github.repository }}/deployments/"${deployment_id}"/statuses \
+              --jq 'sort_by(.created_at) | reverse | .[0]')
+
+            STATE=$(echo "$STATUS_DATA" | jq -r '.state')
+
+            if [ "$STATE" = "success" ]; then
+              ENVIRONMENT_URL=$(echo "$STATUS_DATA" | jq -r '.environment_url // empty')
+              if [ -n "$ENVIRONMENT_URL" ] && [ "$ENVIRONMENT_URL" != "null" ]; then
+                echo "Found successful deployment with environment_url: $ENVIRONMENT_URL"
+                break
+              fi
+            fi
+          done
+
+          if [ -n "$ENVIRONMENT_URL" ]; then
+            echo "API_GATEWAY_ENDPOINT=${ENVIRONMENT_URL}" >> $GITHUB_ENV
+            echo "Successfully set API_GATEWAY_ENDPOINT to: $ENVIRONMENT_URL"
+          else
+            echo "ERROR: No successful prod deployment with environment_url found!"
+            echo "This is required for the build to proceed."
+            exit 1
+          fi
 
       - name: Build React App using update-to-date deployment uri
         run: npm run build

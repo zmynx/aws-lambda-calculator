@@ -21,7 +21,7 @@ export class AwsLambdaCalculatorStack extends cdk.Stack {
       file: "Dockerfile",
       buildArgs: {
         IMAGE_URI: props?.imageUri || "",
-        IMAGE_TAG: props?.imageTag || "latest",
+        IMAGE_TAG: props?.imageTag || "latest-lambda",
       },
     });
 
@@ -36,6 +36,8 @@ export class AwsLambdaCalculatorStack extends cdk.Stack {
       retention: logs.RetentionDays.ONE_WEEK,
       removalPolicy: cdk.RemovalPolicy.DESTROY,
     });
+
+    // Create API Gateway with CORS enabled
     const api = new apigateway.RestApi(this, "AwsLambdaCalculatorApiGateway", {
       deployOptions: {
         loggingLevel: apigateway.MethodLoggingLevel.INFO,
@@ -43,14 +45,30 @@ export class AwsLambdaCalculatorStack extends cdk.Stack {
         metricsEnabled: true,
         accessLogDestination: new apigateway.LogGroupLogDestination(logGroup),
         accessLogFormat: apigateway.AccessLogFormat.jsonWithStandardFields(),
-      }
+      },
+      // Default CORS configuration for all resources
+      defaultCorsPreflightOptions: {
+        allowOrigins: apigateway.Cors.ALL_ORIGINS,
+        allowMethods: apigateway.Cors.ALL_METHODS,
+        allowHeaders: [
+          'Content-Type',
+          'X-Amz-Date',
+          'Authorization',
+          'X-Api-Key',
+          'X-Amz-Security-Token'
+        ],
+      },
+    });
+
+    // Create Lambda integration with proxy enabled
+    const lambdaIntegration = new apigateway.LambdaIntegration(myLambda, {
+      proxy: true,
     });
 
     const root = api.root;
-    root.addMethod("GET", new apigateway.LambdaIntegration(myLambda), {
-      methodResponses: [{ statusCode: "200" }],
-    });
+    root.addMethod("POST", lambdaIntegration);
 
+    // Output the API Gateway URL
     new cdk.CfnOutput(this, "ApiGatewayUri", {
       value: api.url,
       description: "API Gateway endpoint URL",

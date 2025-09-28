@@ -192,5 +192,8 @@ jobs:
         id: set-env-url
         run: |
           set -exou pipefail
-          url=$(jq '.[].ApiGatewayUri' outputs.json | tr -d '"')
+          url=$(jq \
+            --exit-status \
+            --raw-output '.[].ApiGatewayUri' \
+            outputs.json)
           echo "url=$url" >> $GITHUB_OUTPUT

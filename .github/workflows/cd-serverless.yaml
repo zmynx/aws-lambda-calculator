@@ -135,41 +135,65 @@ jobs:
           mask-aws-account-id: true
           role-duration-seconds: 1500
           # role-external-id: ${{ secrets.AWS_ROLE_EXTERNAL_ID }}
-          role-session-name:
-            GitHubActions-CDK
-            # Minimal inline session policy - CDK execution role handles the rest
+          role-session-name: GitHubActions-CDK
+          # Minimal inline session policy - CDK execution role handles the rest
           inline-session-policy: >-
             {
               "Version": "2012-10-17",
               "Statement": [
                 {
-                  "Sid": "AssumeDeploymentRole",
+                  "Sid": "AssumeCDKBootstrapRoles",
                   "Effect": "Allow",
                   "Action": "sts:AssumeRole",
-                  "Resource": "arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/cdk-*-cfn-exec-role-${{ secrets.AWS_ACCOUNT_ID }}-${{ vars.AWS_REGION }}"
-                },
-                {
-                  "Sid": "CDKFileAssetAccess",
-                  "Effect": "Allow", 
-                  "Action": [
-                    "s3:GetObject",
-                    "s3:GetBucketLocation"
-                  ],
                   "Resource": [
-                    "arn:aws:s3:::cdk-*-assets-${{ secrets.AWS_ACCOUNT_ID }}-${{ vars.AWS_REGION }}",
-                    "arn:aws:s3:::cdk-*-assets-${{ secrets.AWS_ACCOUNT_ID }}-${{ vars.AWS_REGION }}/*"
+                    "arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/cdk-hnb659fds-deploy-role-${{ secrets.AWS_ACCOUNT_ID }}-${{ vars.AWS_REGION }}",
+                    "arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/cdk-hnb659fds-file-publishing-role-${{ secrets.AWS_ACCOUNT_ID }}-${{ vars.AWS_REGION }}",
+                    "arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/cdk-hnb659fds-image-publishing-role-${{ secrets.AWS_ACCOUNT_ID }}-${{ vars.AWS_REGION }}",
+                    "arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/cdk-hnb659fds-cfn-exec-role-${{ secrets.AWS_ACCOUNT_ID }}-${{ vars.AWS_REGION }}"
                   ]
                 },
                 {
-                  "Sid": "CDKBootstrapAccess",
+                  "Sid": "CDKAssetBucketAccess",
                   "Effect": "Allow",
                   "Action": [
-                    "ssm:GetParameter"
+                    "s3:ListBucket",
+                    "s3:GetBucketLocation",
+                    "s3:GetObject",
+                    "s3:PutObject",
+                    "s3:DeleteObject"
                   ],
-                  "Resource": "arn:aws:ssm:${{ vars.AWS_REGION }}:${{ secrets.AWS_ACCOUNT_ID }}:parameter/cdk-bootstrap/*/version"
+                  "Resource": [
+                    "arn:aws:s3:::cdk-hnb659fds-assets-${{ secrets.AWS_ACCOUNT_ID }}-${{ vars.AWS_REGION }}",
+                    "arn:aws:s3:::cdk-hnb659fds-assets-${{ secrets.AWS_ACCOUNT_ID }}-${{ vars.AWS_REGION }}/*"
+                  ]
                 },
                 {
-                  "Sid": "CloudFormationReadOnly",
+                  "Sid": "ECRRepositoryAccess",
+                  "Effect": "Allow",
+                  "Action": [
+                    "ecr:DescribeRepositories",
+                    "ecr:DescribeImages",
+                    "ecr:BatchCheckLayerAvailability",
+                    "ecr:GetDownloadUrlForLayer",
+                    "ecr:BatchGetImage",
+                    "ecr:GetAuthorizationToken"
+                  ],
+                  "Resource": [
+                    "arn:aws:ecr:${{ vars.AWS_REGION }}:${{ secrets.AWS_ACCOUNT_ID }}:repository/cdk-hnb659fds-container-assets-${{ secrets.AWS_ACCOUNT_ID }}-${{ vars.AWS_REGION }}",
+                    "*"
+                  ]
+                },
+                {
+                  "Sid": "SSMParameterAccess",
+                  "Effect": "Allow",
+                  "Action": [
+                    "ssm:GetParameter",
+                    "ssm:GetParameters"
+                  ],
+                  "Resource": "arn:aws:ssm:${{ vars.AWS_REGION }}:${{ secrets.AWS_ACCOUNT_ID }}:parameter/cdk-bootstrap/hnb659fds/version"
+                },
+                {
+                  "Sid": "CloudFormationAccess",
                   "Effect": "Allow",
                   "Action": [
                     "cloudformation:DescribeStacks",

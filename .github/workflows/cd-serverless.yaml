@@ -142,7 +142,6 @@ jobs:
               "Version": "2012-10-17",
               "Statement": [
                 {
-                  "Sid": "AssumeCDKBootstrapRoles",
                   "Effect": "Allow",
                   "Action": "sts:AssumeRole",
                   "Resource": [
@@ -153,7 +152,6 @@ jobs:
                   ]
                 },
                 {
-                  "Sid": "CDKAssetBucketAccess",
                   "Effect": "Allow",
                   "Action": [
                     "s3:ListBucket",
@@ -168,7 +166,6 @@ jobs:
                   ]
                 },
                 {
-                  "Sid": "ECRRepositoryAccess",
                   "Effect": "Allow",
                   "Action": [
                     "ecr:DescribeRepositories",
@@ -184,7 +181,6 @@ jobs:
                   ]
                 },
                 {
-                  "Sid": "SSMParameterAccess",
                   "Effect": "Allow",
                   "Action": [
                     "ssm:GetParameter",
@@ -193,7 +189,6 @@ jobs:
                   "Resource": "arn:aws:ssm:${{ vars.AWS_REGION }}:${{ secrets.AWS_ACCOUNT_ID }}:parameter/cdk-bootstrap/hnb659fds/version"
                 },
                 {
-                  "Sid": "CloudFormationAccess",
                   "Effect": "Allow",
                   "Action": [
                     "cloudformation:DescribeStacks",

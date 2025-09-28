@@ -52,7 +52,7 @@ jobs:
         if: ${{ github.event.deployment.environment == 'prod' && github.event.deployment_status.state == 'success' }}
         run: |
           set -exou pipefail
-          echo "API_GATEWAY_ENDPOINT=${{ github.event.deployment_status.environment_url }}" >> $GITHUB_ENV
+          echo "VITE_API_GATEWAY_ENDPOINT=${{ github.event.deployment_status.environment_url }}" >> $GITHUB_ENV
 
       - name: Update deployment URI (from latest deployment)
         if: ${{ github.event_name == 'push' }}
@@ -93,8 +93,8 @@ jobs:
           done
 
           if [ -n "$ENVIRONMENT_URL" ]; then
-            echo "API_GATEWAY_ENDPOINT=${ENVIRONMENT_URL}" >> $GITHUB_ENV
-            echo "Successfully set API_GATEWAY_ENDPOINT to: $ENVIRONMENT_URL"
+            echo "VITE_API_GATEWAY_ENDPOINT=${ENVIRONMENT_URL}" >> $GITHUB_ENV
+            echo "Successfully set VITE_API_GATEWAY_ENDPOINT to: $ENVIRONMENT_URL"
           else
             echo "ERROR: No successful prod deployment with environment_url found!"
             echo "This is required for the build to proceed."

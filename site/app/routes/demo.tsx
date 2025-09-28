@@ -52,7 +52,7 @@ export default function Demo() {
 
     try {
       // Replace with your actual API Gateway endpoint
-      const apiEndpoint = import.meta.env.API_GATEWAY_ENDPOINT || 'http://localhost:3000/api/';
+      const apiEndpoint = import.meta.env.VITE_API_GATEWAY_ENDPOINT || 'http://localhost:3000/api/';
       const res = await axios.post(apiEndpoint, JSON.stringify({
         region: formData.region,
         include_free_tier: formData.include_free_tier === 'true',

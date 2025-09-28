@@ -50,8 +50,8 @@ export class AwsLambdaCalculatorStack extends cdk.Stack {
         accessLogDestination: new apigateway.LogGroupLogDestination(logGroup),
         accessLogFormat: apigateway.AccessLogFormat.jsonWithStandardFields(),
         // Global throttling limits
-        throttleRateLimit: 100, // requests per second
-        throttleBurstLimit: 200, // burst capacity
+        throttlingRateLimit: 100, // requests per second
+        throttlingBurstLimit: 200, // burst capacity
       },
       // Default CORS configuration for all resources
       defaultCorsPreflightOptions: {
@@ -73,7 +73,7 @@ export class AwsLambdaCalculatorStack extends cdk.Stack {
     });
 
     const root = api.root;
-    
+
     // Add POST method (no API key required)
     const postMethod = root.addMethod("POST", lambdaIntegration);
 
@@ -83,6 +83,11 @@ export class AwsLambdaCalculatorStack extends cdk.Stack {
       defaultAction: { allow: {} },
       name: 'CalculatorWebACL',
       description: 'WAF rules for Calculator API protection',
+      visibilityConfig: {
+        sampledRequestsEnabled: true,
+        cloudWatchMetricsEnabled: true,
+        metricName: 'CalculatorWebACL',
+      },
       rules: [
         // Rate limiting rule - 100 requests per 5 minutes per IP
         {

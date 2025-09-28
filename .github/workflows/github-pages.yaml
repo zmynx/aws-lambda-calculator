@@ -1,7 +1,11 @@
+# .github/workflows/github-pages.yaml
+---
 name: GitHub Pages
 
 on:
-  deployment_status:
+  workflow_run:
+    workflows: [Continous Delivery]
+    types: [completed]
   push:
     branches: [main]
     paths:
@@ -9,6 +13,7 @@ on:
 
 jobs:
   deploy:
+    if: ${{ (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success') || github.event_name == 'push' }}
     name: Deploy to GitHub Pages
     runs-on: ubuntu-latest
     permissions:
@@ -48,14 +53,8 @@ jobs:
       - name: Install dependencies
         run: npm clean-install
 
-      - name: Update deployment uri (from new deployment)
-        if: ${{ github.event.deployment.environment == 'prod' && github.event.deployment_status.state == 'success' }}
-        run: |
-          set -exou pipefail
-          echo "VITE_API_GATEWAY_ENDPOINT=${{ github.event.deployment_status.environment_url }}" >> $GITHUB_ENV
-
-      - name: Update deployment URI (from latest deployment)
-        if: ${{ github.event_name == 'push' }}
+      - name: Retrieve & Set the apigw uri
+        id: set-apigw-uri
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -93,8 +92,8 @@ jobs:
           done
 
           if [ -n "$ENVIRONMENT_URL" ]; then
-            echo "VITE_API_GATEWAY_ENDPOINT=${ENVIRONMENT_URL}" >> $GITHUB_ENV
-            echo "Successfully set VITE_API_GATEWAY_ENDPOINT to: $ENVIRONMENT_URL"
+            echo "uri=${ENVIRONMENT_URL}" >> $GITHUB_OUTPUT
+            echo "Successfully set uri to: $ENVIRONMENT_URL"
           else
             echo "ERROR: No successful prod deployment with environment_url found!"
             echo "This is required for the build to proceed."
@@ -102,6 +101,8 @@ jobs:
           fi
 
       - name: Build React App using update-to-date deployment uri
+        env:
+          VITE_API_GATEWAY_ENDPOINT: ${{ steps.set-apigw-uri.outputs.uri }}
         run: npm run build
 
       - name: Deploy to github pages

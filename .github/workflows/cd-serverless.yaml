@@ -1,6 +1,6 @@
 # .github/workflows/cd-serverless.yaml
 ---
-name: Continous Delivery
+name: Continuous Delivery
 on:
   workflow_run:
     workflows: [Release]
@@ -166,10 +166,7 @@ jobs:
                   "Action": [
                     "ecr:*"
                   ],
-                  "Resource": [
-                    "arn:aws:ecr:${{ vars.AWS_REGION }}:${{ secrets.AWS_ACCOUNT_ID }}:repository/cdk-hnb659fds-container-assets-${{ secrets.AWS_ACCOUNT_ID }}-${{ vars.AWS_REGION }}",
-                    "*"
-                  ]
+                  "Resource": "arn:aws:ecr:${{ vars.AWS_REGION }}:${{ secrets.AWS_ACCOUNT_ID }}:repository/cdk-hnb659fds-container-assets-${{ secrets.AWS_ACCOUNT_ID }}-${{ vars.AWS_REGION }}"
                 },
                 {
                   "Effect": "Allow",

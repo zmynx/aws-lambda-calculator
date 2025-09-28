@@ -4,7 +4,7 @@ name: GitHub Pages
 
 on:
   workflow_run:
-    workflows: [Continous Delivery]
+    workflows: [Continuous Delivery]
     types: [completed]
   push:
     branches: [main]

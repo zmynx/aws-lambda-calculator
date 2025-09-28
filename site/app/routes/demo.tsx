@@ -28,7 +28,7 @@ export default function Demo() {
     include_free_tier: true,
     architecture: 'x86',
     number_of_requests: '1000000',
-    request_unit: 'Per Month',
+    request_unit: 'per month',
     duration_of_each_request_in_ms: '100',
     memory: '1024',
     memory_unit: 'MB',

@@ -19,7 +19,7 @@ Resources:
         'Fn::Transform':
           Name: 'AWS::Include'
           Parameters:
-            Location: ./openapi.yaml
+            Location: ../site/public/openapi.yaml
       Cors:
         AllowMethods: "'GET,POST,OPTIONS'"
         AllowHeaders: "'*'"

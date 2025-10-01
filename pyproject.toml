@@ -51,9 +51,10 @@ relative_files = true
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.12.11"
-pytest = "^8.4.1"
+pytest = "^8.4.2"
 mypy = "^1.18.2"
-pytest-cov = "^6.2.1"
+pytest-cov = "^7.0.0"
+
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]

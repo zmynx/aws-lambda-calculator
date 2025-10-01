@@ -19,12 +19,12 @@ jobs:
         working-directory: aws-lambda-calculator
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+          fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
 
       - name: Setup Python
-        uses: actions/setup-python@v5.4.0
+        uses: actions/setup-python@e797f83bcb11b83ae66e0230d6156d7c80228e7c # v6.0.0
         with:
           python-version-file: pyproject.toml
           # cache: poetry
@@ -43,21 +43,21 @@ jobs:
 
       - name: Get Cover
         if: ${{ github.event_name != 'merge_group' }}
-        uses: orgoro/coverage@v3.2
+        uses: orgoro/coverage@3f13a558c5af7376496aa4848bf0224aead366ac # v3.2
         with:
-            coverageFile: ./aws-lambda-calculator/coverage.xml
-            token: ${{ github.token }}
+          coverageFile: ./aws-lambda-calculator/coverage.xml
+          token: ${{ github.token }}
 
       - name: Coverage comment
         if: ${{ github.event_name != 'merge_group' }}
         id: coverage_comment
-        uses: py-cov-action/python-coverage-comment-action@v3
+        uses: py-cov-action/python-coverage-comment-action@91aaf3b39c7e2331c6bc77767ce017f5160c5f11 # v3.38
         with:
           GITHUB_TOKEN: ${{ github.token }}
           COVERAGE_PATH: ./aws-lambda-calculator
 
       - name: Store Pull Request comment to be posted
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: ${{ github.event_name != 'merge_group' && steps.coverage_comment.outputs.COMMENT_FILE_WRITTEN == 'true' }}
         with:
           # If you use a different name, update COMMENT_ARTIFACT_NAME accordingly
@@ -66,6 +66,6 @@ jobs:
           path: python-coverage-comment-action.txt
 
       - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v5.1.0
+        uses: SonarSource/sonarqube-scan-action@fd88b7d7ccbaefd23d8f36f73b59db7a3d246602 # v6.0.0
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

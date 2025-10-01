@@ -1,4 +1,5 @@
 # Run Super-Linter in a container
+[no-cd]
 superlinter-run:
     podman run \
       --env LOG_LEVEL=DEBUG \

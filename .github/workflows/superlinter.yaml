@@ -14,10 +14,10 @@ jobs:
       contents: read
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
 
       - name: Run Super-Linter
-        uses: github/super-linter@v5
+        uses: github/super-linter@b807e99ddd37e444d189cfd2c2ca1274d8ae8ef1 # v7
         env:
           VALIDATE_ALL_CODEBASE: false
           VALIDATE_PYTHON: true
@@ -26,4 +26,4 @@ jobs:
           DEFAULT_BRANCH: main
 
       - name: Check GitHub Actions YAML with actionlint
-        uses: reviewdog/action-actionlint@v1
+        uses: reviewdog/action-actionlint@93dc1f9bc10856298b6cc1a3b3239cfbbb87fe4b # v1.67.0

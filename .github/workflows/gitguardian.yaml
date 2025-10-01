@@ -17,12 +17,12 @@ jobs:
       contents: read
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           fetch-depth: 0 # fetch all history so multiple commits can be scanned
 
       - name: GitGuardian scan
-        uses: GitGuardian/ggshield-action@v1.42.0
+        uses: GitGuardian/ggshield-action@0935c02957f6fd78bc52166570e4e345c539120f # v1.43.0
         with:
           args: --all-secrets --with-incident-details -v --ignore-known-secrets # TBD: Sarif report --format sarif
         env:

@@ -27,7 +27,7 @@ export default function ApiDocs() {
         // Initialize Swagger UI after scripts are loaded
         if ((window as any).SwaggerUIBundle) {
           (window as any).SwaggerUIBundle({
-            url: "/openapi.yaml",
+            url: `${window.location.origin}${window.location.pathname.includes('/aws-lambda-calculator') ? '/aws-lambda-calculator' : ''}/openapi.yaml`,
             dom_id: "#swagger-ui",
             deepLinking: true,
             presets: [

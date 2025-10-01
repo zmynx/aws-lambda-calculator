@@ -6,7 +6,6 @@ import * as apigateway from "aws-cdk-lib/aws-apigateway";
 import * as ecrAssets from "aws-cdk-lib/aws-ecr-assets";
 import * as logs from "aws-cdk-lib/aws-logs";
 import * as wafv2 from "aws-cdk-lib/aws-wafv2";
-import * as fs from "fs";
 
 export interface AwsLambdaCalculatorStackProps extends cdk.StackProps {
   readonly imageUri: string;
@@ -42,12 +41,8 @@ export class AwsLambdaCalculatorStack extends cdk.Stack {
       removalPolicy: cdk.RemovalPolicy.DESTROY,
     });
 
-    // Load OpenAPI specification                                                                                                                          │ │
-    const openApiSpec = fs.readFileSync(path.join(__dirname, 'swagger.yaml'), 'utf8');                                                               │ │
-                                                                                                                                                            │ │
-    // Create API Gateway from OpenAPI specification                                                                                                       │ │
-    const api = new apigateway.SpecRestApi(this, "AwsLambdaCalculatorApiGateway", {                                                                        │ │
-      apiDefinition: apigateway.ApiDefinition.fromInline(openApiSpec),  
+    // Create API Gateway with throttling
+    const api = new apigateway.RestApi(this, "AwsLambdaCalculatorApiGateway", {
       deployOptions: {
         loggingLevel: apigateway.MethodLoggingLevel.INFO,
         dataTraceEnabled: true,
@@ -70,7 +65,6 @@ export class AwsLambdaCalculatorStack extends cdk.Stack {
           'X-Amz-Security-Token'
         ],
       },
-      endpointExportName: 'CalculatorApiEndpoint',
     });
 
     // Create Lambda integration with proxy enabled

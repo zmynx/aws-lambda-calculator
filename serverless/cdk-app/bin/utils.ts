@@ -2,14 +2,13 @@
 import * as fs from "fs";
 import * as path from "path";
 import * as yaml from "js-yaml";
-import { CdkAppStackProps } from "../lib/cdk-app-stack";
-import { CdkAppStackProps } from "../lib/aws-cdk-context-demo-stack";
+import { AwsLambdaCalculatorStackProps } from "../lib/cdk-app-stack";
 
-export function loadConfig(env: string): CdkAppStackProps {
+export function loadConfig(env: string): AwsLambdaCalculatorStackProps {
   // `../` point to the cdk appplication root.
   const contextFilePath = path.join(
     __dirname,
-    `../configs/${env}.context.yaml`,
+    `../../configs/${env}.context.yaml`,
   );
   console.log(`contextFilePath: ${contextFilePath}`);
   if (!fs.existsSync(contextFilePath)) {
@@ -18,8 +17,8 @@ export function loadConfig(env: string): CdkAppStackProps {
 
   const fullContext = yaml.load(
     fs.readFileSync(contextFilePath, "utf-8"),
-  ) as CdkAppStackProps;
-  const context: CdkAppStackProps = fullContext;
+  ) as AwsLambdaCalculatorStackProps;
+  const context: AwsLambdaCalculatorStackProps = fullContext;
 
   console.log("\n##############################################");
   console.log(`#                EnvProps:                   #`);

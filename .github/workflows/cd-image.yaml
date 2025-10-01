@@ -20,6 +20,14 @@ jobs:
     defaults:
       run:
         shell: bash
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - target: distroless
+            tag-suffix: ""
+          - target: lambda_runtime
+            tag-suffix: "-lambda"
     steps:
       - name: Download a Build Artifact
         id: download-artifact
@@ -76,28 +84,29 @@ jobs:
           file: Containerfile
           platforms: linux/amd64,linux/arm64
           build-args: VERSION=${{ steps.release-version.outputs.release_version }}
-          target: distroless
+          target: ${{ matrix.target }}
           labels: |
             project='aws-lambda-calculator'
             org='zmynx'
             commit-sha='${{ github.sha }}'
             version='${{ steps.release-version.outputs.release_version }}'
+            target='${{ matrix.target }}'
             org.opencontainers.image.source='https://github.com/${{ github.repository }}'
             org.opencontainers.image.description='AWS Lambda Calculator is the only extensive and thorough cost estimation tool for the AWS Lambda product. It's based on a simple API that produces a cost estimation based on different Lambda configuration variables and parameters such as CPU, RAM, concurrency, invocations, free tier, and much more. This can be helpful for any FinOps fields or tools in the future.'
             org.opencontainers.image.licenses='Apache-2.0'
           tags: |
-            ${{ steps.docker_meta.outputs.tags }}
-            ghcr.io/${{ github.repository }}:cache
-            ghcr.io/${{ github.repository }}:${{ github.sha }}
-            ghcr.io/${{ github.repository }}:${{ steps.release-version.outputs.release_version }}
-            ghcr.io/${{ github.repository }}:latest
+            ${{ steps.docker_meta.outputs.tags }}${{ matrix.tag-suffix }}
+            ghcr.io/${{ github.repository }}:cache${{ matrix.tag-suffix }}
+            ghcr.io/${{ github.repository }}:${{ github.sha }}${{ matrix.tag-suffix }}
+            ghcr.io/${{ github.repository }}:${{ steps.release-version.outputs.release_version }}${{ matrix.tag-suffix }}
+            ghcr.io/${{ github.repository }}:latest${{ matrix.tag-suffix }}
           provenance: true
           sbom: true
           cache-from: |
-            ghcr.io/${{ github.repository }}:cache
-            ghcr.io/${{ github.repository }}:${{ github.sha }}
-            ghcr.io/${{ github.repository }}:${{ steps.release-version.outputs.release_version }}
-            ghcr.io/${{ github.repository }}:latest
+            ghcr.io/${{ github.repository }}:cache${{ matrix.tag-suffix }}
+            ghcr.io/${{ github.repository }}:${{ github.sha }}${{ matrix.tag-suffix }}
+            ghcr.io/${{ github.repository }}:${{ steps.release-version.outputs.release_version }}${{ matrix.tag-suffix }}
+            ghcr.io/${{ github.repository }}:latest${{ matrix.tag-suffix }}
           cache-to: type=inline
           push: true
 
@@ -112,7 +121,7 @@ jobs:
       - name: Sign and verify the images with GitHub OIDC Token
         env:
           DIGEST: ${{ steps.build-and-push.outputs.digest }}
-          TAGS: ${{ steps.docker_meta.outputs.tags }}
+          TAGS: ${{ steps.docker_meta.outputs.tags }}${{ matrix.tag-suffix }}
         run: |
           images=""
           for tag in ${TAGS}; do

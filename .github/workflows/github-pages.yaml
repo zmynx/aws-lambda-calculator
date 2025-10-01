@@ -1,17 +1,25 @@
+# .github/workflows/github-pages.yaml
+---
 name: GitHub Pages
 
 on:
+  workflow_run:
+    workflows: [Continuous Delivery]
+    types: [completed]
   push:
     branches: [main]
+    paths:
+      - site
 
 jobs:
   deploy:
+    if: ${{ (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success') || github.event_name == 'push' }}
     name: Deploy to GitHub Pages
     runs-on: ubuntu-latest
-    permissions: write-all
-      # contents: read
-      # pages: write
-      # id-token: write
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
 
     # Allow only one concurrent deployment
     concurrency:
@@ -20,27 +28,81 @@ jobs:
 
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: https://zmynx.github.io/aws-lambda-calculator/
     defaults:
       run:
         shell: bash
         working-directory: site
     steps:
-
       - name: Checkout
-        uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493 # v5.0.0
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
 
       - name: Setup Node
-        uses: actions/setup-node@d7a11313b581b306c961b506cfc8971208bb03f6 # v4.4.0
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
         with:
-          node-version: '20'
-          cache: npm
-          cache-dependency-path: site/package-lock.json
+          node-version: "20"
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
       - name: Install dependencies
-        run: npm install
+        run: npm clean-install
 
-      - name: Build React App
+      - name: Retrieve & Set the apigw uri
+        id: set-apigw-uri
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -xeuo pipefail
+
+          echo "Fetching latest successful prod deployment..."
+          # Get all prod deployments sorted by created_at (newest first)
+          DEPLOYMENTS=$(gh api \
+            --header "Accept: application/vnd.github+json" \
+            --header "X-GitHub-Api-Version: 2022-11-28" \
+            /repos/${{ github.repository }}/deployments \
+            --jq 'map(select(.environment == "prod")) | sort_by(.created_at) | reverse')
+
+          # Find the first deployment with a successful status
+          ENVIRONMENT_URL=""
+          for deployment_id in $(echo "$DEPLOYMENTS" | jq -r '.[].id'); do
+            echo "Checking deployment ID: $deployment_id"
+
+            # Get the latest status for this deployment
+            STATUS_DATA=$(gh api \
+              --header "Accept: application/vnd.github+json" \
+              --header "X-GitHub-Api-Version: 2022-11-28" \
+              /repos/${{ github.repository }}/deployments/"${deployment_id}"/statuses \
+              --jq 'sort_by(.created_at) | reverse | .[0]')
+
+            STATE=$(echo "$STATUS_DATA" | jq -r '.state')
+
+            if [ "$STATE" = "success" ]; then
+              ENVIRONMENT_URL=$(echo "$STATUS_DATA" | jq -r '.environment_url // empty')
+              if [ -n "$ENVIRONMENT_URL" ] && [ "$ENVIRONMENT_URL" != "null" ]; then
+                echo "Found successful deployment with environment_url: $ENVIRONMENT_URL"
+                break
+              fi
+            fi
+          done
+
+          if [ -n "$ENVIRONMENT_URL" ]; then
+            echo "uri=${ENVIRONMENT_URL}" >> $GITHUB_OUTPUT
+            echo "Successfully set uri to: $ENVIRONMENT_URL"
+          else
+            echo "ERROR: No successful prod deployment with environment_url found!"
+            echo "This is required for the build to proceed."
+            exit 1
+          fi
+
+      - name: Build React App using update-to-date deployment uri
+        env:
+          VITE_API_GATEWAY_ENDPOINT: ${{ steps.set-apigw-uri.outputs.uri }}
         run: npm run build
 
       - name: Deploy to github pages
@@ -48,3 +110,5 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: site/dist
+          user_name: github-pages[bot]
+          user_email: github-pages[bot]@users.noreply.github.com

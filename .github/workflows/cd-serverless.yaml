@@ -1,0 +1,233 @@
+# .github/workflows/cd-serverless.yaml
+---
+name: Continuous Delivery
+on:
+  workflow_run:
+    workflows: [CD Image]
+    types: [completed]
+  workflow_dispatch:
+
+env:
+  working_directory: serverless/cdk-app
+
+jobs:
+  synth:
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
+    name: CDK Synthesis
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${{ env.working_directory }}
+    environment:
+      name: prod
+    steps:
+      - name: Checkout
+        uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493 # v5.0.0
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: ${{ env.working_directory }}/package.json
+          check-latest: false
+          cache: npm
+          package-manager-cache: true
+          cache-dependency-path: ${{ env.working_directory }}/package-lock.json
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install AWS CDK
+        run: npm install -g aws-cdk@'${{ vars.cdk_version }}'
+
+      # WARN:
+      # bootstrapping to be done once by an admin per account
+      # Leaving here for readers reference
+      # - name: Bootstrap
+      #   run: |
+      #     cdk bootstrap aws://'${{ secrets.AWS_ACCOUNT_ID }}'/'${{ vars.AWS_REGION }}' \
+      #       --notices false \
+      #       --context env=prod
+
+      - name: Synth
+        env:
+          CDK_DEFAULT_ACCOUNT: ${{ secrets.AWS_ACCOUNT_ID }}
+          CDK_DEFAULT_REGION: ${{ vars.AWS_REGION }}
+        run: |
+          cdk synth \
+            --notices false \
+            --context env=prod \
+            --ci \
+            --debug \
+            --verbose \
+            --output dist
+
+      - name: Upload a Build Artifact
+        id: upload-artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: dist
+          path: |
+            ${{ github.workspace }}/${{ env.working_directory }}/dist
+          if-no-files-found: error
+          retention-days: 1
+          overwrite: true
+          include-hidden-files: false
+
+  deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
+    needs: synth
+    name: CDK Deploy
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+      actions: read
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${{ env.working_directory }}
+    environment:
+      name: prod
+      url: ${{ steps.set-env-url.outputs.url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493 # v5.0.0
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Download a Build Artifact
+        id: download-artifact
+        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
+        with:
+          name: dist
+          path: ${{ github.workspace }}/${{ env.working_directory }}/dist
+
+      - name: Check folder structure [DEBUG]
+        run: ls -la .
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: ${{ env.working_directory }}/package.json
+          check-latest: false
+          cache: npm
+          package-manager-cache: true
+          cache-dependency-path: ${{ env.working_directory }}/package-lock.json
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install AWS CDK
+        run: npm install -g aws-cdk@'${{ vars.cdk_version }}'
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v5.0.0
+        with:
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          audience: sts.amazonaws.com
+          mask-aws-account-id: true
+          role-duration-seconds: 1500
+          # role-external-id: ${{ secrets.AWS_ROLE_EXTERNAL_ID }}
+          role-session-name: GitHubActions-CDK
+          # Minimal inline session policy - CDK execution role handles the rest
+          inline-session-policy: >-
+            {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": "sts:AssumeRole",
+                  "Resource": [
+                    "arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/cdk-hnb659fds-deploy-role-${{ secrets.AWS_ACCOUNT_ID }}-${{ vars.AWS_REGION }}",
+                    "arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/cdk-hnb659fds-file-publishing-role-${{ secrets.AWS_ACCOUNT_ID }}-${{ vars.AWS_REGION }}",
+                    "arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/cdk-hnb659fds-image-publishing-role-${{ secrets.AWS_ACCOUNT_ID }}-${{ vars.AWS_REGION }}",
+                    "arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/cdk-hnb659fds-cfn-exec-role-${{ secrets.AWS_ACCOUNT_ID }}-${{ vars.AWS_REGION }}"
+                  ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "s3:*"
+                  ],
+                  "Resource": [
+                    "arn:aws:s3:::cdk-hnb659fds-assets-${{ secrets.AWS_ACCOUNT_ID }}-${{ vars.AWS_REGION }}",
+                    "arn:aws:s3:::cdk-hnb659fds-assets-${{ secrets.AWS_ACCOUNT_ID }}-${{ vars.AWS_REGION }}/*"
+                  ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "ecr:*"
+                  ],
+                  "Resource": "arn:aws:ecr:${{ vars.AWS_REGION }}:${{ secrets.AWS_ACCOUNT_ID }}:repository/cdk-hnb659fds-container-assets-${{ secrets.AWS_ACCOUNT_ID }}-${{ vars.AWS_REGION }}"
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "ssm:GetParameter",
+                    "ssm:GetParameters"
+                  ],
+                  "Resource": "arn:aws:ssm:${{ vars.AWS_REGION }}:${{ secrets.AWS_ACCOUNT_ID }}:parameter/cdk-bootstrap/hnb659fds/version"
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "cloudformation:DescribeStacks",
+                    "cloudformation:DescribeStackEvents",
+                    "cloudformation:DescribeStackResources",
+                    "cloudformation:GetTemplate"
+                  ],
+                  "Resource": "arn:aws:cloudformation:${{ vars.AWS_REGION }}:${{ secrets.AWS_ACCOUNT_ID }}:stack/*"
+                }
+              ]
+            }
+          # managed-session-policies: |
+          #   arn:aws:iam::aws:policy/AdministratorAccess
+          #   arn:aws:iam::aws:policy/AWSCloudFormationFullAccess
+          #   arn:aws:iam::aws:policy/AmazonAPIGatewayAdministrator
+          #   arn:aws:iam::aws:policy/AWSLambda_FullAccess
+          #   arn:aws:iam::aws:policy/AmazonS3FullAccess
+          #   arn:aws:iam::aws:policy/AmazonSSMReadOnlyAccess
+          output-credentials: false
+          output-env-credentials: true
+          unset-current-credentials: true
+          disable-retry: false
+          retry-max-attempts: 3
+          use-existing-credentials: false
+          allowed-account-ids: ${{ secrets.AWS_ACCOUNT_ID }}
+          force-skip-oidc: false
+          # action-timeout-s: 60
+
+      - name: Deploy
+        env:
+          CDK_DEFAULT_ACCOUNT: ${{ secrets.AWS_ACCOUNT_ID }}
+          CDK_DEFAULT_REGION: ${{ vars.AWS_REGION }}
+        run: |
+          cdk deploy \
+            --notices false \
+            --context env=prod \
+            --app dist \
+            --ci \
+            --rollback true \
+            --progress bar \
+            --debug \
+            --verbose \
+            --require-approval never \
+            --outputs-file outputs.json
+
+      - name: Set environment url
+        id: set-env-url
+        run: |
+          set -exou pipefail
+          url=$(jq \
+            --exit-status \
+            --raw-output '.[].ApiGatewayUri' \
+            outputs.json)
+          echo "url=$url" >> $GITHUB_OUTPUT

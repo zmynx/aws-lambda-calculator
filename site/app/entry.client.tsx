@@ -8,6 +8,7 @@ import Introduction from "./routes/introduction";
 import InstallUsage from "./routes/install-usage";
 import Configuration from "./routes/configuration";
 import GettingStarted from "./routes/getting-started";
+import ApiDocs from "./routes/api-docs";
 import Demo from "./routes/demo";
 import About from "./routes/about";
 
@@ -58,6 +59,10 @@ const router = createHashRouter([
       {
         path: "getting-started",
         element: <GettingStarted />,
+      },
+      {
+        path: "api-docs",
+        element: <ApiDocs />,
       },
       {
         path: "demo",

@@ -1,4 +1,4 @@
-AWSTemplateFormatVersion: '2010-09-09'
+AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 Description: Lambda API Gateway simulation with Docker
 
@@ -16,8 +16,8 @@ Resources:
     Properties:
       StageName: Prod
       DefinitionBody:
-        'Fn::Transform':
-          Name: 'AWS::Include'
+        "Fn::Transform":
+          Name: "AWS::Include"
           Parameters:
             Location: ../site/public/openapi.yaml
       Cors:
@@ -42,7 +42,3 @@ Outputs:
   CalculatorApi:
     Description: "API Gateway endpoint URL for Prod stage for Calculator function"
     Value: !Sub "https://${CalculatorApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
-  
-  SwaggerUI:
-    Description: "Swagger UI URL"
-    Value: !Sub "https://${CalculatorApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/swagger-ui"

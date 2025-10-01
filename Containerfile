@@ -23,7 +23,7 @@ RUN apt-get update --yes
 # Install dependencies
 COPY requirements.txt .
 RUN python -m pip install --upgrade pip && \
-	python -m pip install -r requirements.txt
+  python -m pip install -r requirements.txt
 
 ARG VERSION=main
 ENV VERSION=${VERSION}
@@ -40,7 +40,7 @@ COPY src/ .
 FROM al3xos/python-distroless:${PYTHON_VERSION}-debian12-debug AS distroless
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
-	PYTHONUNBUFFERED=1
+  PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
@@ -64,7 +64,7 @@ FROM public.ecr.aws/lambda/python:${LAMBDA_PYTHON_VERSION} AS lambda_runtime
 WORKDIR /var/task
 
 # Copy dependencies and app code from builder
-COPY --from=builder /usr/local/lib/python3.13/site-packages/ /var/lang/lib/python3.13/site-packages/. 
+COPY --from=builder /usr/local/lib/python3.13/site-packages/ /var/lang/lib/python3.13/site-packages/.
 COPY --from=builder /app/utils utils
 COPY --from=builder /app/aws_lambda.py .
 

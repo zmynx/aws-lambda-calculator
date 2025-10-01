@@ -1,2 +1,2 @@
-hello: world!
-lambdaPythonVersion: 3.13
+imageUri: ghcr.io/zmynx/aws-lambda-calculator
+imageTag: latest-lambda

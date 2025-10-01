@@ -40,7 +40,7 @@ console_handler.setFormatter(formatter)
 
 # File Handler (no colors, but with aligned levels)
 file_handler = RotatingFileHandler(
-    f"{APP_NAME}.log", maxBytes=5 * 1024 * 1024, backupCount=3
+    f"/tmp/{APP_NAME}.log", maxBytes=5 * 1024 * 1024, backupCount=3
 )
 file_handler.setFormatter(
     logging.Formatter(

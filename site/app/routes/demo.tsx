@@ -28,7 +28,7 @@ export default function Demo() {
     include_free_tier: true,
     architecture: 'x86',
     number_of_requests: '1000000',
-    request_unit: 'Per Month',
+    request_unit: 'per month',
     duration_of_each_request_in_ms: '100',
     memory: '1024',
     memory_unit: 'MB',
@@ -52,9 +52,7 @@ export default function Demo() {
 
     try {
       // Replace with your actual API Gateway endpoint
-      // const apiEndpoint = 'https://your-api-gateway-url.amazonaws.com/prod/calculate';
-      // const apiEndpoint = 'http://localhost:9000/2015-03-31/functions/function/invocations';
-      const apiEndpoint = 'http://localhost:3000/api/'; // Adjust this URL to your local setup
+      const apiEndpoint = import.meta.env.VITE_API_GATEWAY_ENDPOINT || 'http://localhost:3000/api/';
       const res = await axios.post(apiEndpoint, JSON.stringify({
         region: formData.region,
         include_free_tier: formData.include_free_tier === 'true',
@@ -142,7 +140,7 @@ export default function Demo() {
 
             <div>
               <label htmlFor="include_free_tier" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Include Free Tier
+                Free Tier
               </label>
               <select
                 id="include_free_tier"

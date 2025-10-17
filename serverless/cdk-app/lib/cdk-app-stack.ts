@@ -24,6 +24,7 @@ export class AwsLambdaCalculatorStack extends cdk.Stack {
         IMAGE_URI: props?.imageUri || "",
         IMAGE_TAG: props?.imageTag || "latest-lambda",
       },
+      extraHash: props?.imageTag || "latest-lambda", // Force rebuild when imageTag changes
     });
 
     // Define the Lambda function using the Docker image from ECR

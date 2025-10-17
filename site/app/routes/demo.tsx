@@ -36,7 +36,7 @@ export default function Demo() {
     region: 'us-east-1',
     include_free_tier: true,
     architecture: 'x86',
-    number_of_requests: '1000000',
+    number_of_requests: '1000',
     request_unit: 'per month',
     duration_of_each_request_in_ms: '100',
     memory: '1024',
@@ -49,15 +49,46 @@ export default function Demo() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showVerboseLogs, setShowVerboseLogs] = useState(false);
+  const [validationErrors, setValidationErrors] = useState<{memory?: string; ephemeral_storage?: string}>({});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
     const actualValue = type === 'checkbox' ? (e.target as HTMLInputElement).checked : value;
     setFormData(prev => ({ ...prev, [name]: actualValue }));
+    
+    // Validate memory and ephemeral storage
+    if (name === 'memory' && value) {
+      const memValue = parseInt(value);
+      if (memValue < 128) {
+        setValidationErrors(prev => ({ ...prev, memory: 'Memory must be at least 128 MB' }));
+      } else if (memValue > 10240) {
+        setValidationErrors(prev => ({ ...prev, memory: 'Memory cannot exceed 10,240 MB' }));
+      } else {
+        setValidationErrors(prev => ({ ...prev, memory: undefined }));
+      }
+    }
+    
+    if (name === 'ephemeral_storage' && value) {
+      const storageValue = parseInt(value);
+      if (storageValue < 512) {
+        setValidationErrors(prev => ({ ...prev, ephemeral_storage: 'Ephemeral storage must be at least 512 MB' }));
+      } else if (storageValue > 10240) {
+        setValidationErrors(prev => ({ ...prev, ephemeral_storage: 'Ephemeral storage cannot exceed 10,240 MB' }));
+      } else {
+        setValidationErrors(prev => ({ ...prev, ephemeral_storage: undefined }));
+      }
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Check for validation errors before submitting
+    if (validationErrors.memory || validationErrors.ephemeral_storage) {
+      setError('Please fix the validation errors before submitting.');
+      return;
+    }
+    
     setLoading(true);
     setError(null);
     setResponse(null);
@@ -261,6 +292,14 @@ export default function Demo() {
                 required
               />
               <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 font-medium">Range: 128 MB to 10,240 MB</p>
+              {validationErrors.memory && (
+                <div className="flex items-center mt-2 text-red-600 dark:text-red-400">
+                  <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                  </svg>
+                  <span className="text-xs font-medium">{validationErrors.memory}</span>
+                </div>
+              )}
             </div>
 
             <div>
@@ -297,6 +336,14 @@ export default function Demo() {
                 required
               />
               <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 font-medium">Range: 512 MB to 10,240 MB</p>
+              {validationErrors.ephemeral_storage && (
+                <div className="flex items-center mt-2 text-red-600 dark:text-red-400">
+                  <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                  </svg>
+                  <span className="text-xs font-medium">{validationErrors.ephemeral_storage}</span>
+                </div>
+              )}
             </div>
 
             <div>
@@ -331,8 +378,8 @@ export default function Demo() {
 
             <button
               type="submit"
-              disabled={loading}
-              className={`w-full py-3 px-4 rounded-lg text-white font-semibold ${loading
+              disabled={loading || !!validationErrors.memory || !!validationErrors.ephemeral_storage}
+              className={`w-full py-3 px-4 rounded-lg text-white font-semibold ${loading || validationErrors.memory || validationErrors.ephemeral_storage
                 ? 'bg-gray-400 cursor-not-allowed'
                 : 'bg-blue-600 hover:bg-blue-700 focus:ring-2 focus:ring-blue-500'
                 }`}

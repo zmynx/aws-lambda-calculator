@@ -51,32 +51,102 @@ export default function Demo() {
   const [showVerboseLogs, setShowVerboseLogs] = useState(false);
   const [validationErrors, setValidationErrors] = useState<{memory?: string; ephemeral_storage?: string}>({});
 
+  const validateMemory = (memoryValue: string, memoryUnit: string) => {
+    if (!memoryValue) return;
+    
+    const value = parseInt(memoryValue);
+    const isGB = memoryUnit === 'GB';
+    
+    // Convert to MB for validation
+    const valueInMB = isGB ? value * 1024 : value;
+    
+    if (valueInMB < 128) {
+      setValidationErrors(prev => ({ 
+        ...prev, 
+        memory: `Memory must be at least 128 MB${isGB ? ' (0.125 GB)' : ''}` 
+      }));
+    } else if (valueInMB > 10240) {
+      setValidationErrors(prev => ({ 
+        ...prev, 
+        memory: `Memory cannot exceed 10,240 MB${isGB ? ' (10 GB)' : ''}` 
+      }));
+    } else {
+      setValidationErrors(prev => ({ ...prev, memory: undefined }));
+    }
+  };
+
+  const validateEphemeralStorage = (storageValue: string, storageUnit: string) => {
+    if (!storageValue) return;
+    
+    const value = parseInt(storageValue);
+    const isGB = storageUnit === 'GB';
+    
+    // Convert to MB for validation
+    const valueInMB = isGB ? value * 1024 : value;
+    
+    if (valueInMB < 512) {
+      setValidationErrors(prev => ({ 
+        ...prev, 
+        ephemeral_storage: `Ephemeral storage must be at least 512 MB${isGB ? ' (0.5 GB)' : ''}` 
+      }));
+    } else if (valueInMB > 10240) {
+      setValidationErrors(prev => ({ 
+        ...prev, 
+        ephemeral_storage: `Ephemeral storage cannot exceed 10,240 MB${isGB ? ' (10 GB)' : ''}` 
+      }));
+    } else {
+      setValidationErrors(prev => ({ ...prev, ephemeral_storage: undefined }));
+    }
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
     const actualValue = type === 'checkbox' ? (e.target as HTMLInputElement).checked : value;
-    setFormData(prev => ({ ...prev, [name]: actualValue }));
+    let newFormData = { ...formData, [name]: actualValue };
     
-    // Validate memory and ephemeral storage
-    if (name === 'memory' && value) {
-      const memValue = parseInt(value);
-      if (memValue < 128) {
-        setValidationErrors(prev => ({ ...prev, memory: 'Memory must be at least 128 MB' }));
-      } else if (memValue > 10240) {
-        setValidationErrors(prev => ({ ...prev, memory: 'Memory cannot exceed 10,240 MB' }));
-      } else {
-        setValidationErrors(prev => ({ ...prev, memory: undefined }));
+    // Convert memory value when unit changes
+    if (name === 'memory_unit') {
+      const currentValue = parseFloat(formData.memory);
+      if (!isNaN(currentValue)) {
+        if (value === 'GB' && formData.memory_unit === 'MB') {
+          // Convert MB to GB
+          newFormData.memory = (currentValue / 1024).toFixed(3);
+        } else if (value === 'MB' && formData.memory_unit === 'GB') {
+          // Convert GB to MB
+          newFormData.memory = (currentValue * 1024).toString();
+        }
       }
     }
     
-    if (name === 'ephemeral_storage' && value) {
-      const storageValue = parseInt(value);
-      if (storageValue < 512) {
-        setValidationErrors(prev => ({ ...prev, ephemeral_storage: 'Ephemeral storage must be at least 512 MB' }));
-      } else if (storageValue > 10240) {
-        setValidationErrors(prev => ({ ...prev, ephemeral_storage: 'Ephemeral storage cannot exceed 10,240 MB' }));
-      } else {
-        setValidationErrors(prev => ({ ...prev, ephemeral_storage: undefined }));
+    // Convert storage value when unit changes
+    if (name === 'storage_unit') {
+      const currentValue = parseFloat(formData.ephemeral_storage);
+      if (!isNaN(currentValue)) {
+        if (value === 'GB' && formData.storage_unit === 'MB') {
+          // Convert MB to GB
+          newFormData.ephemeral_storage = (currentValue / 1024).toFixed(3);
+        } else if (value === 'MB' && formData.storage_unit === 'GB') {
+          // Convert GB to MB
+          newFormData.ephemeral_storage = (currentValue * 1024).toString();
+        }
       }
+    }
+    
+    setFormData(newFormData);
+    
+    // Validate memory and ephemeral storage whenever relevant fields change
+    if (name === 'memory' || name === 'memory_unit') {
+      validateMemory(
+        name === 'memory' ? value : newFormData.memory,
+        name === 'memory_unit' ? value : newFormData.memory_unit
+      );
+    }
+    
+    if (name === 'ephemeral_storage' || name === 'storage_unit') {
+      validateEphemeralStorage(
+        name === 'ephemeral_storage' ? value : newFormData.ephemeral_storage,
+        name === 'storage_unit' ? value : newFormData.storage_unit
+      );
     }
   };
 
@@ -276,7 +346,7 @@ export default function Demo() {
 
             <div>
               <label htmlFor="memory" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Memory Allocation (MB)
+                Memory Allocation
               </label>
               <input
                 type="number"
@@ -284,14 +354,16 @@ export default function Demo() {
                 name="memory"
                 value={formData.memory}
                 onChange={handleChange}
-                min="128"
-                max="10240"
-                step="1"
+                min={formData.memory_unit === 'GB' ? '0.125' : '128'}
+                max={formData.memory_unit === 'GB' ? '10' : '10240'}
+                step={formData.memory_unit === 'GB' ? '0.001' : '1'}
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="1024"
+                placeholder={formData.memory_unit === 'GB' ? '1' : '1024'}
                 required
               />
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 font-medium">Range: 128 MB to 10,240 MB</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 font-medium">
+                Range: {formData.memory_unit === 'GB' ? '0.125 GB to 10 GB' : '128 MB to 10,240 MB'}
+              </p>
               {validationErrors.memory && (
                 <div className="flex items-center mt-2 text-red-600 dark:text-red-400">
                   <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
@@ -304,6 +376,7 @@ export default function Demo() {
 
             <div>
               <label htmlFor="memory_unit" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Memory Unit
               </label>
               <select
                 id="memory_unit"
@@ -320,7 +393,7 @@ export default function Demo() {
 
             <div>
               <label htmlFor="ephemeral_storage" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Ephemeral Storage (MB)
+                Ephemeral Storage
               </label>
               <input
                 type="number"
@@ -328,14 +401,16 @@ export default function Demo() {
                 name="ephemeral_storage"
                 value={formData.ephemeral_storage}
                 onChange={handleChange}
-                min="512"
-                max="10240"
-                step="1"
+                min={formData.storage_unit === 'GB' ? '0.5' : '512'}
+                max={formData.storage_unit === 'GB' ? '10' : '10240'}
+                step={formData.storage_unit === 'GB' ? '0.001' : '1'}
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="512"
+                placeholder={formData.storage_unit === 'GB' ? '0.5' : '512'}
                 required
               />
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 font-medium">Range: 512 MB to 10,240 MB</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 font-medium">
+                Range: {formData.storage_unit === 'GB' ? '0.5 GB to 10 GB' : '512 MB to 10,240 MB'}
+              </p>
               {validationErrors.ephemeral_storage && (
                 <div className="flex items-center mt-2 text-red-600 dark:text-red-400">
                   <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">

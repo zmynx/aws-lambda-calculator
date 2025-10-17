@@ -82,7 +82,7 @@ def handler(event: dict, context: object) -> dict:
         response_data = {"status": "success", "cost": round(cost, 6)}
         if verbose:
             response_data["calculation_steps"] = steps
-            return make_response(200, response_data)
+        return make_response(200, response_data)
 
     except KeyError as e:
         logger.error(f"Missing required field: {e}")

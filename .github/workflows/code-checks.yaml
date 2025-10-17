@@ -48,7 +48,7 @@ jobs:
           python -m poetry run ruff format --check
           python -m poetry run ruff check
 
-      - name: Types cheking (mypy)
+      - name: Types checking (mypy)
         run: python -m poetry run mypy . --show-error-codes --ignore-missing-imports
 
       - name: Notify failure if checks failed

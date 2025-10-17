@@ -38,7 +38,8 @@ poetry-install:
 
 # Full check: lint, type-check, and format
 [no-cd]
-poetry-checks: poetry-lint
+poetry-checks: poetry-lint poetry-type-check
+    echo "All checks passed successfully."
 
 # Create a tarball, wheel, dist from this package
 [no-cd]

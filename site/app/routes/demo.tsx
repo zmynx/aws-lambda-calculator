@@ -20,6 +20,15 @@ interface CalculationForm {
   memory_unit: string;
   ephemeral_storage: string;
   storage_unit: string;
+  verbose: boolean;
+}
+
+interface ApiResponse {
+  status: string;
+  cost: number;
+  verbose_logs?: string;
+  message?: string;
+  error?: string;
 }
 
 export default function Demo() {
@@ -27,25 +36,129 @@ export default function Demo() {
     region: 'us-east-1',
     include_free_tier: true,
     architecture: 'x86',
-    number_of_requests: '1000000',
+    number_of_requests: '1000',
     request_unit: 'per month',
     duration_of_each_request_in_ms: '100',
     memory: '1024',
     memory_unit: 'MB',
     ephemeral_storage: '512',
-    storage_unit: 'MB'
+    storage_unit: 'MB',
+    verbose: true
   });
-  const [response, setResponse] = useState<string | null>(null);
+  const [response, setResponse] = useState<ApiResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showVerboseLogs, setShowVerboseLogs] = useState(false);
+  const [validationErrors, setValidationErrors] = useState<{memory?: string; ephemeral_storage?: string}>({});
+
+  const validateMemory = (memoryValue: string, memoryUnit: string) => {
+    if (!memoryValue) return;
+    
+    const value = parseInt(memoryValue);
+    const isGB = memoryUnit === 'GB';
+    
+    // Convert to MB for validation
+    const valueInMB = isGB ? value * 1024 : value;
+    
+    if (valueInMB < 128) {
+      setValidationErrors(prev => ({ 
+        ...prev, 
+        memory: `Memory must be at least 128 MB${isGB ? ' (0.125 GB)' : ''}` 
+      }));
+    } else if (valueInMB > 10240) {
+      setValidationErrors(prev => ({ 
+        ...prev, 
+        memory: `Memory cannot exceed 10,240 MB${isGB ? ' (10 GB)' : ''}` 
+      }));
+    } else {
+      setValidationErrors(prev => ({ ...prev, memory: undefined }));
+    }
+  };
+
+  const validateEphemeralStorage = (storageValue: string, storageUnit: string) => {
+    if (!storageValue) return;
+    
+    const value = parseInt(storageValue);
+    const isGB = storageUnit === 'GB';
+    
+    // Convert to MB for validation
+    const valueInMB = isGB ? value * 1024 : value;
+    
+    if (valueInMB < 512) {
+      setValidationErrors(prev => ({ 
+        ...prev, 
+        ephemeral_storage: `Ephemeral storage must be at least 512 MB${isGB ? ' (0.5 GB)' : ''}` 
+      }));
+    } else if (valueInMB > 10240) {
+      setValidationErrors(prev => ({ 
+        ...prev, 
+        ephemeral_storage: `Ephemeral storage cannot exceed 10,240 MB${isGB ? ' (10 GB)' : ''}` 
+      }));
+    } else {
+      setValidationErrors(prev => ({ ...prev, ephemeral_storage: undefined }));
+    }
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    const { name, value, type } = e.target;
+    const actualValue = type === 'checkbox' ? (e.target as HTMLInputElement).checked : value;
+    let newFormData = { ...formData, [name]: actualValue };
+    
+    // Convert memory value when unit changes
+    if (name === 'memory_unit') {
+      const currentValue = parseFloat(formData.memory);
+      if (!isNaN(currentValue)) {
+        if (value === 'GB' && formData.memory_unit === 'MB') {
+          // Convert MB to GB
+          newFormData.memory = (currentValue / 1024).toFixed(3);
+        } else if (value === 'MB' && formData.memory_unit === 'GB') {
+          // Convert GB to MB
+          newFormData.memory = (currentValue * 1024).toString();
+        }
+      }
+    }
+    
+    // Convert storage value when unit changes
+    if (name === 'storage_unit') {
+      const currentValue = parseFloat(formData.ephemeral_storage);
+      if (!isNaN(currentValue)) {
+        if (value === 'GB' && formData.storage_unit === 'MB') {
+          // Convert MB to GB
+          newFormData.ephemeral_storage = (currentValue / 1024).toFixed(3);
+        } else if (value === 'MB' && formData.storage_unit === 'GB') {
+          // Convert GB to MB
+          newFormData.ephemeral_storage = (currentValue * 1024).toString();
+        }
+      }
+    }
+    
+    setFormData(newFormData);
+    
+    // Validate memory and ephemeral storage whenever relevant fields change
+    if (name === 'memory' || name === 'memory_unit') {
+      validateMemory(
+        name === 'memory' ? value : newFormData.memory,
+        name === 'memory_unit' ? value : newFormData.memory_unit
+      );
+    }
+    
+    if (name === 'ephemeral_storage' || name === 'storage_unit') {
+      validateEphemeralStorage(
+        name === 'ephemeral_storage' ? value : newFormData.ephemeral_storage,
+        name === 'storage_unit' ? value : newFormData.storage_unit
+      );
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Check for validation errors before submitting
+    if (validationErrors.memory || validationErrors.ephemeral_storage) {
+      setError('Please fix the validation errors before submitting.');
+      return;
+    }
+    
     setLoading(true);
     setError(null);
     setResponse(null);
@@ -64,9 +177,13 @@ export default function Demo() {
         memory_unit: formData.memory_unit,
         ephemeral_storage: parseInt(formData.ephemeral_storage),
         storage_unit: formData.storage_unit,
+        verbose: formData.verbose,
       }));
 
-      setResponse(res.data.message || JSON.stringify(res.data, null, 2));
+      setResponse(res.data);
+      if (res.data.verbose_logs) {
+        setShowVerboseLogs(false); // Reset collapsed state
+      }
     } catch (err) {
       setError('Error: Unable to fetch data. Please check your API endpoint configuration.');
       console.error('API Error:', err);
@@ -204,7 +321,7 @@ export default function Demo() {
                 <option value="per hour">Per Hour</option>
                 <option value="per day">Per Day</option>
                 <option value="per month">Per Month</option>
-                <option value="millions per mouth">Millions per Month</option>
+                <option value="millions per month">Millions per Month</option>
               </select>
             </div>
 
@@ -229,7 +346,7 @@ export default function Demo() {
 
             <div>
               <label htmlFor="memory" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Memory Allocation (MB)
+                Memory Allocation
               </label>
               <input
                 type="number"
@@ -237,18 +354,29 @@ export default function Demo() {
                 name="memory"
                 value={formData.memory}
                 onChange={handleChange}
-                min="128"
-                max="10240"
-                step="64"
+                min={formData.memory_unit === 'GB' ? '0.125' : '128'}
+                max={formData.memory_unit === 'GB' ? '10' : '10240'}
+                step={formData.memory_unit === 'GB' ? '0.001' : '1'}
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="1024"
+                placeholder={formData.memory_unit === 'GB' ? '1' : '1024'}
                 required
               />
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 font-medium">Range: 128 MB to 10,240 MB</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 font-medium">
+                Range: {formData.memory_unit === 'GB' ? '0.125 GB to 10 GB' : '128 MB to 10,240 MB'}
+              </p>
+              {validationErrors.memory && (
+                <div className="flex items-center mt-2 text-red-600 dark:text-red-400">
+                  <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                  </svg>
+                  <span className="text-xs font-medium">{validationErrors.memory}</span>
+                </div>
+              )}
             </div>
 
             <div>
               <label htmlFor="memory_unit" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Memory Unit
               </label>
               <select
                 id="memory_unit"
@@ -265,7 +393,7 @@ export default function Demo() {
 
             <div>
               <label htmlFor="ephemeral_storage" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Ephemeral Storage (MB)
+                Ephemeral Storage
               </label>
               <input
                 type="number"
@@ -273,14 +401,24 @@ export default function Demo() {
                 name="ephemeral_storage"
                 value={formData.ephemeral_storage}
                 onChange={handleChange}
-                min="512"
-                max="10240"
-                step="64"
+                min={formData.storage_unit === 'GB' ? '0.5' : '512'}
+                max={formData.storage_unit === 'GB' ? '10' : '10240'}
+                step={formData.storage_unit === 'GB' ? '0.001' : '1'}
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="512"
+                placeholder={formData.storage_unit === 'GB' ? '0.5' : '512'}
                 required
               />
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 font-medium">Range: 512 MB to 10,240 MB</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 font-medium">
+                Range: {formData.storage_unit === 'GB' ? '0.5 GB to 10 GB' : '512 MB to 10,240 MB'}
+              </p>
+              {validationErrors.ephemeral_storage && (
+                <div className="flex items-center mt-2 text-red-600 dark:text-red-400">
+                  <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                  </svg>
+                  <span className="text-xs font-medium">{validationErrors.ephemeral_storage}</span>
+                </div>
+              )}
             </div>
 
             <div>
@@ -299,10 +437,24 @@ export default function Demo() {
               </select>
             </div>
 
+            <div className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                id="verbose"
+                name="verbose"
+                checked={formData.verbose}
+                onChange={handleChange}
+                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+              />
+              <label htmlFor="verbose" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                Show detailed calculation logs
+              </label>
+            </div>
+
             <button
               type="submit"
-              disabled={loading}
-              className={`w-full py-3 px-4 rounded-lg text-white font-semibold ${loading
+              disabled={loading || !!validationErrors.memory || !!validationErrors.ephemeral_storage}
+              className={`w-full py-3 px-4 rounded-lg text-white font-semibold ${loading || validationErrors.memory || validationErrors.ephemeral_storage
                 ? 'bg-gray-400 cursor-not-allowed'
                 : 'bg-blue-600 hover:bg-blue-700 focus:ring-2 focus:ring-blue-500'
                 }`}
@@ -325,9 +477,58 @@ export default function Demo() {
           )}
 
           {response && (
-            <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-              <h3 className="text-lg font-semibold text-green-800 mb-2">Cost Estimate</h3>
-              <pre className="text-sm text-green-700 whitespace-pre-wrap">{response}</pre>
+            <div className="space-y-4">
+              {/* Main Cost Display */}
+              <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border border-green-200 dark:border-green-700 rounded-lg p-6">
+                <h3 className="text-2xl font-bold text-green-800 dark:text-green-300 mb-2">Monthly Cost Estimate</h3>
+                <div className="text-4xl font-bold text-green-900 dark:text-green-200">
+                  ${response.cost?.toFixed(2) || '0.00'} <span className="text-lg font-normal">USD</span>
+                </div>
+                {response.status === 'success' && (
+                  <p className="text-sm text-green-700 dark:text-green-400 mt-2">Calculation completed successfully</p>
+                )}
+              </div>
+
+              {/* Verbose Logs Section */}
+              {response.verbose_logs && (
+                <div className="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+                  <button
+                    onClick={() => setShowVerboseLogs(!showVerboseLogs)}
+                    className="w-full px-4 py-3 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200 flex items-center justify-between"
+                  >
+                    <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                      Calculation Details
+                    </span>
+                    <svg
+                      className={`w-5 h-5 text-gray-600 dark:text-gray-400 transition-transform duration-200 ${
+                        showVerboseLogs ? 'rotate-180' : ''
+                      }`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  {showVerboseLogs && (
+                    <div className="p-4">
+                      <div className="bg-gray-900 dark:bg-black rounded-lg p-4 overflow-x-auto">
+                        <pre className="text-xs text-green-400 font-mono whitespace-pre-wrap">
+                          {response.verbose_logs
+                            .split('\n')
+                            .filter(line => line.includes('DEBUG'))
+                            .map(line => {
+                              // Extract just the debug message part
+                              const match = line.match(/DEBUG\s+\[.*?\]\s+-\s+(.*)/);
+                              return match ? match[1] : line;
+                            })
+                            .join('\n')}
+                        </pre>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           )}
 

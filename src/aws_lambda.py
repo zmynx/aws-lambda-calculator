@@ -1,4 +1,6 @@
 import json
+import os
+import logging
 from utils.logger import logger
 from aws_lambda_calculator import calculate
 
@@ -28,6 +30,10 @@ def handler(event: dict, context: object) -> dict:
 
     try:
         payload = json.loads(event.get("body", "{}"))
+        
+        # Check for verbose flag (default to True as per requirements)
+        verbose = payload.get("verbose", True)
+        
         region = payload.get("region")
         architecture = payload.get("architecture")
         number_of_requests = payload.get("number_of_requests")
@@ -54,6 +60,12 @@ def handler(event: dict, context: object) -> dict:
             if value is None:
                 raise KeyError(name)
 
+        # Set logger to DEBUG level if verbose mode is enabled
+        if verbose:
+            calc_logger = logging.getLogger('aws_lambda_calculator')
+            calc_logger.setLevel(logging.DEBUG)
+            logger.setLevel(logging.DEBUG)
+
         logger.info("Calculating cost...")
         cost = calculate(
             region=region,
@@ -67,10 +79,26 @@ def handler(event: dict, context: object) -> dict:
             storage_unit=storage_unit,
         )
 
-        return make_response(200, {
+        response_data = {
             "status": "success",
             "cost": round(cost, 6)
-        })
+        }
+        
+        # If verbose mode, read and include log file content
+        if verbose:
+            log_file_path = "/tmp/aws_lambda_calculator.log"
+            try:
+                if os.path.exists(log_file_path):
+                    with open(log_file_path, 'r') as log_file:
+                        # Get last 100 lines or so to avoid huge responses
+                        log_lines = log_file.readlines()
+                        recent_logs = log_lines[-100:] if len(log_lines) > 100 else log_lines
+                        response_data["verbose_logs"] = ''.join(recent_logs)
+            except Exception as e:
+                logger.warning(f"Could not read log file: {e}")
+                response_data["verbose_logs"] = "Log file not accessible"
+
+        return make_response(200, response_data)
 
     except KeyError as e:
         logger.error(f"Missing required field: {e}")

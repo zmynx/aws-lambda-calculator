@@ -29,7 +29,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       PackageType: Image
-      ImageUri: ghcr.io/zmynx/aws-lambda-calculator:latest
+      ImageUri: ghcr.io/zmynx/aws-lambda-calculator:latest-lambda
       Events:
         CalculateApi:
           Type: Api

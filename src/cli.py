@@ -154,7 +154,7 @@ def run() -> None:
         logger.debug(f"Arguments received: {vars(args)}")
 
         # Call the calculate function with parsed values
-        total_cost = calculate(
+        total_cost, steps = calculate(
             region=args.region,
             architecture=args.architecture,
             number_of_requests=args.number_of_requests,

@@ -1,4 +1,4 @@
-black==25.1.0 ; python_version >= "3.13"
+black==25.9.0 ; python_version >= "3.13"
 click==8.3.0 ; python_version >= "3.13"
 colorama==0.4.6 ; (platform_system == "Windows" or sys_platform == "win32") and python_version >= "3.13"
 iniconfig==2.1.0 ; python_version >= "3.13"

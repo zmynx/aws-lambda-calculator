@@ -26,7 +26,7 @@ interface CalculationForm {
 interface ApiResponse {
   status: string;
   cost: number;
-  verbose_logs?: string;
+  calculation_steps?: string[];
   message?: string;
   error?: string;
 }
@@ -181,7 +181,7 @@ export default function Demo() {
       }));
 
       setResponse(res.data);
-      if (res.data.verbose_logs) {
+      if (res.data.calculation_steps) {
         setShowVerboseLogs(false); // Reset collapsed state
       }
     } catch (err) {
@@ -482,15 +482,15 @@ export default function Demo() {
               <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border border-green-200 dark:border-green-700 rounded-lg p-6">
                 <h3 className="text-2xl font-bold text-green-800 dark:text-green-300 mb-2">Monthly Cost Estimate</h3>
                 <div className="text-4xl font-bold text-green-900 dark:text-green-200">
-                  ${response.cost?.toFixed(2) || '0.00'} <span className="text-lg font-normal">USD</span>
+                  ${response.cost ? (response.cost < 0.01 ? response.cost.toFixed(6) : response.cost.toFixed(2)) : '0.00'} <span className="text-lg font-normal">USD</span>
                 </div>
                 {response.status === 'success' && (
                   <p className="text-sm text-green-700 dark:text-green-400 mt-2">Calculation completed successfully</p>
                 )}
               </div>
 
-              {/* Verbose Logs Section */}
-              {response.verbose_logs && (
+              {/* Calculation Steps Section */}
+              {response.calculation_steps && (
                 <div className="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
                   <button
                     onClick={() => setShowVerboseLogs(!showVerboseLogs)}
@@ -514,15 +514,7 @@ export default function Demo() {
                     <div className="p-4">
                       <div className="bg-gray-900 dark:bg-black rounded-lg p-4 overflow-x-auto">
                         <pre className="text-xs text-green-400 font-mono whitespace-pre-wrap">
-                          {response.verbose_logs
-                            .split('\n')
-                            .filter(line => line.includes('DEBUG'))
-                            .map(line => {
-                              // Extract just the debug message part
-                              const match = line.match(/DEBUG\s+\[.*?\]\s+-\s+(.*)/);
-                              return match ? match[1] : line;
-                            })
-                            .join('\n')}
+                          {response.calculation_steps.join('\n')}
                         </pre>
                       </div>
                     </div>

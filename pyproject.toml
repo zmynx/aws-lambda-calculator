@@ -39,10 +39,10 @@ documentation = "https://github.com/zMynx/aws-lambda-calculator/docs/"
 pythonpath = ["src"]
 testpaths = ["tests"]
 addopts = """
-    --cov
-    --cov-report=term-missing
-    --cov-report=xml:coverage.xml
-    --cov-branch
+  --cov
+  --cov-report=term-missing
+  --cov-report=xml:coverage.xml
+  --cov-branch
 """
 
 [tool.coverage.run]

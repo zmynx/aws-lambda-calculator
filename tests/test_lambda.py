@@ -44,10 +44,7 @@ def test_lambda_missing_duration():
     logger.debug(f"response: {response}")
     body = json.loads(response["body"])
     assert body["status"] == "error"
-    assert (
-        "Missing required field: 'duration_of_each_request_in_ms'"
-        in body["message"]
-    )
+    assert "Missing required field: 'duration_of_each_request_in_ms'" in body["message"]
 
 
 def test_lambda_missing_storage_unit():
@@ -91,8 +88,8 @@ def test_lambda_verbose_default():
     body = json.loads(response["body"])
     assert body["status"] == "success"
     assert isinstance(body["cost"], float)
-    # Check that verbose_logs is present (default is verbose=True)
-    assert "verbose_logs" in body
+    # Check that calculation_steps is present (default is verbose=True)
+    assert "calculation_steps" in body
 
 
 def test_lambda_verbose_true():
@@ -107,7 +104,7 @@ def test_lambda_verbose_true():
         "memory_unit": "MB",
         "ephemeral_storage": 512,
         "storage_unit": "MB",
-        "verbose": True
+        "verbose": True,
     }
     event = {"body": json.dumps(payload)}
     response = handler(event, None)
@@ -115,9 +112,9 @@ def test_lambda_verbose_true():
     body = json.loads(response["body"])
     assert body["status"] == "success"
     assert isinstance(body["cost"], float)
-    assert "verbose_logs" in body
-    # Verify that verbose_logs is a string
-    assert isinstance(body["verbose_logs"], str)
+    assert "calculation_steps" in body
+    # Verify that calculation_steps is a list
+    assert isinstance(body["calculation_steps"], list)
 
 
 def test_lambda_verbose_false():
@@ -132,7 +129,7 @@ def test_lambda_verbose_false():
         "memory_unit": "MB",
         "ephemeral_storage": 512,
         "storage_unit": "MB",
-        "verbose": False
+        "verbose": False,
     }
     event = {"body": json.dumps(payload)}
     response = handler(event, None)
@@ -140,8 +137,8 @@ def test_lambda_verbose_false():
     body = json.loads(response["body"])
     assert body["status"] == "success"
     assert isinstance(body["cost"], float)
-    # Check that verbose_logs is NOT present when verbose=False
-    assert "verbose_logs" not in body
+    # Check that calculation_steps is NOT present when verbose=False
+    assert "calculation_steps" not in body
 
 
 def test_lambda_verbose_with_different_units():
@@ -156,7 +153,7 @@ def test_lambda_verbose_with_different_units():
         "memory_unit": "MB",
         "ephemeral_storage": 1,
         "storage_unit": "GB",
-        "verbose": True
+        "verbose": True,
     }
     event = {"body": json.dumps(payload)}
     response = handler(event, None)
@@ -164,7 +161,8 @@ def test_lambda_verbose_with_different_units():
     body = json.loads(response["body"])
     assert body["status"] == "success"
     assert isinstance(body["cost"], float)
-    assert "verbose_logs" in body
-    # Check that logs contain some expected debug information
-    verbose_logs = body["verbose_logs"]
-    assert isinstance(verbose_logs, str)
+    assert "calculation_steps" in body
+    # Check that calculation_steps contains expected information
+    calculation_steps = body["calculation_steps"]
+    assert isinstance(calculation_steps, list)
+    assert len(calculation_steps) > 0

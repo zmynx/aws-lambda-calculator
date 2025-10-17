@@ -106,7 +106,7 @@ def test_calculate(
     storage_unit,
     expected_cost,
 ):
-    cost = calculate(
+    cost, steps = calculate(
         region=region,
         architecture=architecture,
         number_of_requests=number_of_requests,
@@ -120,3 +120,6 @@ def test_calculate(
     assert cost == approx(expected_cost, abs=0.01), (
         f"Expected {expected_cost}, got {cost}"
     )
+    # Verify that steps is a list and contains calculation information
+    assert isinstance(steps, list)
+    assert len(steps) > 0

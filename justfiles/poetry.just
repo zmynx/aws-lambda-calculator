@@ -22,7 +22,7 @@ poetry-lint:
     python -m poetry run ruff format
     python -m poetry run ruff check --fix
 
-# Type check with mypy
+# Type check with mypy (static analysis) - complements pydantic (runtime validation)
 [no-cd]
 poetry-type-check:
     echo "Running type checks with mypy..."

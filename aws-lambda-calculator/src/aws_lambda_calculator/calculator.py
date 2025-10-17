@@ -2,6 +2,7 @@ import os
 from dotenv import load_dotenv
 import logging
 import json
+from .models import CalculationRequest, CalculationResult
 
 # Load environment variables from .env file
 load_dotenv()
@@ -298,8 +299,24 @@ def calculate(
     memory_unit: str = "MB",
     ephemeral_storage: int = 128,
     storage_unit: str = "MB",
-) -> tuple[float, list[str]]:
+) -> CalculationResult:
     """Calculate the total cost of execution."""
+    
+    # Validate inputs using pydantic
+    request = CalculationRequest(
+        region=region,
+        architecture=architecture,
+        number_of_requests=number_of_requests,
+        request_unit=request_unit,
+        duration_of_each_request_in_ms=duration_of_each_request_in_ms,
+        memory=memory,
+        memory_unit=memory_unit,
+        ephemeral_storage=ephemeral_storage,
+        storage_unit=storage_unit,
+    )
+
+    global steps
+    steps = []
 
     logger.info("Starting cost calculation...")
 
@@ -364,4 +381,10 @@ def calculate(
     )
     logger.debug(f"Lambda cost (monthly): {total} USD")
     steps.append(f"Lambda cost (monthly): {total} USD")
-    return total, steps
+    
+    return CalculationResult(
+        total_cost=total,
+        calculation_steps=steps
+    )
+
+

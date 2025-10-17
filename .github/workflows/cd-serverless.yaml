@@ -62,6 +62,7 @@ jobs:
           cdk synth \
             --notices false \
             --context env=prod \
+            --context imageTag="${{ github.event_name == 'workflow_run' && format('{0}-lambda', github.event.workflow_run.head_sha) || 'latest-lambda' }}" \
             --ci \
             --debug \
             --verbose \

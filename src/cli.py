@@ -87,7 +87,7 @@ def parse_args() -> argparse.Namespace:
             "per hour",
             "per day",
             "per month",
-            "millions per month",
+            "million per month",
         ],
         help="Request unit",
     )

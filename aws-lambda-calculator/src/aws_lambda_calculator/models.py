@@ -39,7 +39,7 @@ class CalculationRequest(BaseModel):
         description="Duration of each request in milliseconds"
     )
     
-    memory: int = Field(
+    memory: float = Field(
         default=128,
         gt=0,
         description="Memory allocated to Lambda function"
@@ -50,8 +50,8 @@ class CalculationRequest(BaseModel):
         description="Unit for memory allocation"
     )
     
-    ephemeral_storage: int = Field(
-        default=128,
+    ephemeral_storage: float = Field(
+        default=512,
         gt=0,
         description="Ephemeral storage allocated to Lambda function"
     )

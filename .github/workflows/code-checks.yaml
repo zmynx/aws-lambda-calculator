@@ -11,7 +11,7 @@ jobs:
     name: Code Standard Checks
     runs-on: ubuntu-latest
     permissions:
-      contents: read 
+      contents: read
     defaults:
       run:
         working-directory: aws-lambda-calculator
@@ -48,13 +48,14 @@ jobs:
           python -m poetry run ruff format --check
           python -m poetry run ruff check
 
-      # - name: Types cheking (mypy)
-      #   run: python -m poetry run mypy --check-untyped-defs .
+      - name: Types cheking (mypy)
+        run: python -m poetry run mypy . --show-error-codes --ignore-missing-imports
 
       - name: Notify failure if checks failed
         if: ${{ failure() }}
         env:
-          msg: Some of the code standard checks have failed. Please run `just checks`
+          msg:
+            Some of the code standard checks have failed. Please run `just checks`
             locally before pushing your changes.
         run: |-
           echo "::error::${msg}"

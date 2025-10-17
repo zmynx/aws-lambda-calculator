@@ -44,10 +44,7 @@ def test_lambda_missing_duration():
     logger.debug(f"response: {response}")
     body = json.loads(response["body"])
     assert body["status"] == "error"
-    assert (
-        "Missing required field: 'duration_of_each_request_in_ms'"
-        in body["message"]
-    )
+    assert "Missing required field: 'duration_of_each_request_in_ms'" in body["message"]
 
 
 def test_lambda_missing_storage_unit():
@@ -107,7 +104,7 @@ def test_lambda_verbose_true():
         "memory_unit": "MB",
         "ephemeral_storage": 512,
         "storage_unit": "MB",
-        "verbose": True
+        "verbose": True,
     }
     event = {"body": json.dumps(payload)}
     response = handler(event, None)
@@ -132,7 +129,7 @@ def test_lambda_verbose_false():
         "memory_unit": "MB",
         "ephemeral_storage": 512,
         "storage_unit": "MB",
-        "verbose": False
+        "verbose": False,
     }
     event = {"body": json.dumps(payload)}
     response = handler(event, None)
@@ -156,7 +153,7 @@ def test_lambda_verbose_with_different_units():
         "memory_unit": "MB",
         "ephemeral_storage": 1,
         "storage_unit": "GB",
-        "verbose": True
+        "verbose": True,
     }
     event = {"body": json.dumps(payload)}
     response = handler(event, None)

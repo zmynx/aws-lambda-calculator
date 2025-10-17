@@ -3,7 +3,9 @@ import sys
 from utils.logger import logger
 from aws_lambda_calculator import calculate
 from importlib import metadata
+
 __version__ = metadata.version("aws_lambda_calculator")
+
 
 def parse_args() -> argparse.Namespace:
     """Parses command-line arguments."""
@@ -12,7 +14,7 @@ def parse_args() -> argparse.Namespace:
         usage="%(prog)s [options]",
         description="CLI tool to calculate AWS Lambda costs based on various parameters.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-        epilog='Thanks for using the CLI tool! For more information, visit the project repository.',
+        epilog="Thanks for using the CLI tool! For more information, visit the project repository.",
         add_help=True,
         allow_abbrev=True,
         exit_on_error=True,

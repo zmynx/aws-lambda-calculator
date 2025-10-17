@@ -52,6 +52,9 @@ def unit_conversion_requests(number_of_requests: int, request_unit: str) -> int:
             )
             return int(number_of_requests * (730 / 24))
         case "per month":
+            logger.debug(
+                f"Number of requests: {int(number_of_requests)} per month"
+            )
             return int(number_of_requests)
         case "million per month":
             logger.debug(
@@ -128,16 +131,23 @@ def calculate_tiered_cost(
         if usage_in_tier > 0:
             total_cost += usage_in_tier * rate
             prev_threshold += usage_in_tier
+        logger.debug(
+            f"{usage_in_tier} GB-s x {rate} USD = {usage_in_tier * rate} USD"
 
         # once we've billed all the usage, early exit
         if total_compute_gb_sec <= threshold:
+            logger.debug(f"Total tier cost: {total_cost} USD (Monthly compute charges)")
             return total_cost
 
     # 3) bill any remaining usage above the highest threshold
     remaining = total_compute_gb_sec - prev_threshold
     if remaining > 0:
+        logger.debug(
+            f"{remaining} GB-s x {overflow_rate} USD = {remaining * overflow_rate} USD"
+        )
         total_cost += remaining * overflow_rate
 
+    logger.debug(f"Total tier cost: {total_cost} USD (Monthly compute charges)")
     return total_cost
 
 
@@ -178,7 +188,11 @@ def calc_monthly_compute_charges(
 def calc_monthly_request_charges(
     requests_per_month: float, requests_cost_factor: float
 ) -> float:
-    return float(requests_per_month) * float(requests_cost_factor)
+    res = float(requests_per_month) * float(requests_cost_factor)
+    logger.debug(
+        f"{requests_per_month} requests x {requests_cost_factor} USD = {res} USD (monthly request charges)"
+    )
+    return res 
 
 
 def calc_monthly_ephemeral_storage_charges(
@@ -187,9 +201,13 @@ def calc_monthly_ephemeral_storage_charges(
     total_compute_gb_sec: float,
 ) -> float:
     billable_storage = max(0.0, float(storage_in_gb) - 0.5)
-    return (
-        billable_storage * float(ephemeral_storage_cost_factor) * total_compute_gb_sec
-    )
+    gb_s = billable_storage * total_compute_gb_sec
+    res = (billable_storage * float(ephemeral_storage_cost_factor) * total_compute_gb_sec)
+    logger.debug(f"{storage_in_gb} GB - 0.5 GB (no additional charges) = {billable_storage} GB (billable ephemeral storage)")
+    if billable_storage >= 0.0:
+        logger.debug(f"{billable_storage} GB x{total_compute_gb_sec} seconds = {gb_s} total storage (GB-s")
+        logger.debug(f"{gb_s} GB x {ephemeral_storage_cost_factor} USD = {res} USD (monthly ephemeral storage charges)")
+    return res
 
 
 # Flow:
@@ -248,23 +266,29 @@ def calculate(
     tier_cost_factor: dict = arch_config.get("Tier", {})
 
     # Step 4
+    if request_unit is not "per month" or memory_unit is not "GB" or storage_unit is not "GB":
+        logger.debug("Unit conversions:")
     requests_per_month = unit_conversion_requests(number_of_requests, request_unit)
     memory_in_gb = unit_conversion_memory(memory, memory_unit)
     storage_in_gb = unit_conversion_ephemeral_storage(ephemeral_storage, storage_unit)
 
     # Step 5
+    logger.debug("Pricing calculations:")
     total_compute_gb_sec, monthly_compute_charges = calc_monthly_compute_charges(
         requests_per_month,
         duration_of_each_request_in_ms,
         memory_in_gb,
         tier_cost_factor,
     )
+    logger.debug(f"Monthly compute charges: {monthly_compute_charges} USD")
     monthly_request_charges = calc_monthly_request_charges(
         requests_per_month, requests_cost_factor
     )
+    logger.debug(f"Monthly request charges: {monthly_request_charges} USD")
     monthly_ephemeral_storage_charges = calc_monthly_ephemeral_storage_charges(
         storage_in_gb, ephemeral_storage_cost_factor, total_compute_gb_sec
     )
+    logger.debug(f"Monthly epheral storage charges: {monthly_request_charges} USD")
 
     # Step 6
     total = (
@@ -272,4 +296,6 @@ def calculate(
         + monthly_request_charges
         + monthly_ephemeral_storage_charges
     )
+    logger.debug(f"{monthly_compute_charges} USD + {monthly_request_charges} USD + {monthly_ephemeral_storage_charges} USD = {total} USD")
+    logger.debug(f"Lambda cost (montly): {total} USD")
     return total

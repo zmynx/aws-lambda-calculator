@@ -482,7 +482,7 @@ export default function Demo() {
               <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border border-green-200 dark:border-green-700 rounded-lg p-6">
                 <h3 className="text-2xl font-bold text-green-800 dark:text-green-300 mb-2">Monthly Cost Estimate</h3>
                 <div className="text-4xl font-bold text-green-900 dark:text-green-200">
-                  ${response.cost?.toFixed(2) || '0.00'} <span className="text-lg font-normal">USD</span>
+                  ${response.cost ? (response.cost < 0.01 ? response.cost.toFixed(6) : response.cost.toFixed(2)) : '0.00'} <span className="text-lg font-normal">USD</span>
                 </div>
                 {response.status === 'success' && (
                   <p className="text-sm text-green-700 dark:text-green-400 mt-2">Calculation completed successfully</p>
@@ -514,15 +514,41 @@ export default function Demo() {
                     <div className="p-4">
                       <div className="bg-gray-900 dark:bg-black rounded-lg p-4 overflow-x-auto">
                         <pre className="text-xs text-green-400 font-mono whitespace-pre-wrap">
-                          {response.verbose_logs
-                            .split('\n')
-                            .filter(line => line.includes('DEBUG'))
+                          {(() => {
+                            const debugLines = response.verbose_logs
+                              .split('\n')
+                              .filter(line => line.includes('DEBUG'));
+                            console.log('Raw debug lines:', debugLines);
+                            return debugLines
                             .map(line => {
-                              // Extract just the debug message part
-                              const match = line.match(/DEBUG\s+\[.*?\]\s+-\s+(.*)/);
-                              return match ? match[1] : line;
+                              // Remove ANSI color codes first
+                              const cleanLine = line.replace(/\u001b\[[0-9;]*m/g, '');
+                              // Try multiple patterns to extract the message
+                              let message = cleanLine;
+                              
+                              // Pattern 1: Standard format with timestamp
+                              let match = cleanLine.match(/\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},\d{3} .+? DEBUG\s+\[.+?\] - (.*)/);
+                              if (match) {
+                                message = match[1];
+                              } else {
+                                // Pattern 2: Simpler DEBUG format
+                                match = cleanLine.match(/DEBUG\s+\[.+?\] - (.*)/);
+                                if (match) {
+                                  message = match[1];
+                                } else {
+                                  // Pattern 3: Just DEBUG followed by message
+                                  match = cleanLine.match(/DEBUG\s+(.+)/);
+                                  if (match) {
+                                    message = match[1];
+                                  }
+                                }
+                              }
+                              
+                              return message;
                             })
-                            .join('\n')}
+                            .filter(line => line && line.trim() !== '' && !line.includes('Received event:')) // Remove empty lines and event dumps
+                            .join('\n');
+                          })()}
                         </pre>
                       </div>
                     </div>

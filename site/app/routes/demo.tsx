@@ -26,7 +26,7 @@ interface CalculationForm {
 interface ApiResponse {
   status: string;
   cost: number;
-  verbose_logs?: string;
+  calculation_steps?: string[];
   message?: string;
   error?: string;
 }
@@ -181,7 +181,7 @@ export default function Demo() {
       }));
 
       setResponse(res.data);
-      if (res.data.verbose_logs) {
+      if (res.data.calculation_steps) {
         setShowVerboseLogs(false); // Reset collapsed state
       }
     } catch (err) {
@@ -489,8 +489,8 @@ export default function Demo() {
                 )}
               </div>
 
-              {/* Verbose Logs Section */}
-              {response.verbose_logs && (
+              {/* Calculation Steps Section */}
+              {response.calculation_steps && (
                 <div className="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
                   <button
                     onClick={() => setShowVerboseLogs(!showVerboseLogs)}
@@ -514,41 +514,7 @@ export default function Demo() {
                     <div className="p-4">
                       <div className="bg-gray-900 dark:bg-black rounded-lg p-4 overflow-x-auto">
                         <pre className="text-xs text-green-400 font-mono whitespace-pre-wrap">
-                          {(() => {
-                            const debugLines = response.verbose_logs
-                              .split('\n')
-                              .filter(line => line.includes('DEBUG'));
-                            console.log('Raw debug lines:', debugLines);
-                            return debugLines
-                            .map(line => {
-                              // Remove ANSI color codes first
-                              const cleanLine = line.replace(/\u001b\[[0-9;]*m/g, '');
-                              // Try multiple patterns to extract the message
-                              let message = cleanLine;
-                              
-                              // Pattern 1: Standard format with timestamp
-                              let match = cleanLine.match(/\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},\d{3} .+? DEBUG\s+\[.+?\] - (.*)/);
-                              if (match) {
-                                message = match[1];
-                              } else {
-                                // Pattern 2: Simpler DEBUG format
-                                match = cleanLine.match(/DEBUG\s+\[.+?\] - (.*)/);
-                                if (match) {
-                                  message = match[1];
-                                } else {
-                                  // Pattern 3: Just DEBUG followed by message
-                                  match = cleanLine.match(/DEBUG\s+(.+)/);
-                                  if (match) {
-                                    message = match[1];
-                                  }
-                                }
-                              }
-                              
-                              return message;
-                            })
-                            .filter(line => line && line.trim() !== '' && !line.includes('Received event:')) // Remove empty lines and event dumps
-                            .join('\n');
-                          })()}
+                          {response.calculation_steps.join('\n')}
                         </pre>
                       </div>
                     </div>

@@ -83,22 +83,9 @@ def handler(event: dict, context: object) -> dict:
             "status": "success",
             "cost": round(cost, 6)
         }
-        
-        # If verbose mode, read and include log file content
         if verbose:
-            log_file_path = "/tmp/aws_lambda_calculator.log"
-            try:
-                if os.path.exists(log_file_path):
-                    with open(log_file_path, 'r') as log_file:
-                        # Get last 100 lines or so to avoid huge responses
-                        log_lines = log_file.readlines()
-                        recent_logs = log_lines[-100:] if len(log_lines) > 100 else log_lines
-                        response_data["verbose_logs"] = ''.join(recent_logs)
-            except Exception as e:
-                logger.warning(f"Could not read log file: {e}")
-                response_data["verbose_logs"] = "Log file not accessible"
-
-        return make_response(200, response_data)
+            response_data["calculation_steps"] = steps
+            return make_response(200, response_data)
 
     except KeyError as e:
         logger.error(f"Missing required field: {e}")

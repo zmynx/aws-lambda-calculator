@@ -19,12 +19,14 @@ profile   := "default"
 ## General recipes
 ####################################################################################################################################################################################
 
+import 'justfiles/cdk.just'
 import 'justfiles/cosign.just'
 import 'justfiles/podman.just'
 import 'justfiles/poetry.just'
-import 'justfiles/trivy.just'
+import 'justfiles/serverless.just'
+import 'justfiles/site.just'
 import 'justfiles/superlinter.just'
-import 'justfiles/cdk.just'
+import 'justfiles/trivy.just'
 
 # Default recipe to display help information
 [no-cd]

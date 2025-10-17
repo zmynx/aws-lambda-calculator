@@ -62,7 +62,7 @@ class CalculationRequest(BaseModel):
     )
 
     @model_validator(mode='after')
-    def validate_aws_lambda_limits(self):
+    def validate_aws_lambda_limits(self) -> 'CalculationRequest':
         """Validate memory and ephemeral storage are within AWS Lambda limits."""
         # Validate memory
         if self.memory_unit == 'MB':

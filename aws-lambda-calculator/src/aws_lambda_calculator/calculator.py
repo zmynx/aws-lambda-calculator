@@ -298,7 +298,7 @@ def calculate(
     memory_unit: str = "MB",
     ephemeral_storage: int = 128,
     storage_unit: str = "MB",
-) -> (float, list[str]):
+) -> float, list[str]:
     """Calculate the total cost of execution."""
 
     logger.info("Starting cost calculation...")

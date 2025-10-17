@@ -319,14 +319,14 @@ def calculate(
     # Step 4
     if request_unit != "per month" or memory_unit != "GB" or storage_unit != "GB":
         logger.debug("Unit conversions:")
-        steps.append("Unit conversions:")
+        steps.append("\nUnit conversions:")
     requests_per_month = unit_conversion_requests(number_of_requests, request_unit)
     memory_in_gb = unit_conversion_memory(memory, memory_unit)
     storage_in_gb = unit_conversion_ephemeral_storage(ephemeral_storage, storage_unit)
 
     # Step 5
     logger.debug("Pricing calculations:")
-    steps.append("Pricing calculations:")
+    steps.append("\nPricing calculations:")
     total_compute_gb_sec, monthly_compute_charges = calc_monthly_compute_charges(
         requests_per_month,
         duration_of_each_request_in_ms,
@@ -334,12 +334,12 @@ def calculate(
         tier_cost_factor,
     )
     logger.debug(f"Monthly compute charges: {monthly_compute_charges} USD")
-    steps.append(f"Monthly compute charges: {monthly_compute_charges} USD")
+    steps.append(f"Monthly compute charges: {monthly_compute_charges} USD\n")
     monthly_request_charges = calc_monthly_request_charges(
         requests_per_month, requests_cost_factor
     )
     logger.debug(f"Monthly request charges: {monthly_request_charges} USD")
-    steps.append(f"Monthly request charges: {monthly_request_charges} USD")
+    steps.append(f"Monthly request charges: {monthly_request_charges} USD\n")
     monthly_ephemeral_storage_charges = calc_monthly_ephemeral_storage_charges(
         storage_in_gb, ephemeral_storage_cost_factor, total_compute_gb_sec
     )
@@ -347,7 +347,7 @@ def calculate(
         f"Monthly ephemeral storage charges: {monthly_ephemeral_storage_charges} USD"
     )
     steps.append(
-        f"Monthly ephemeral storage charges: {monthly_ephemeral_storage_charges} USD"
+        f"Monthly ephemeral storage charges: {monthly_ephemeral_storage_charges} USD\n"
     )
 
     # Step 6
@@ -360,7 +360,7 @@ def calculate(
         f"{monthly_compute_charges} USD + {monthly_request_charges} USD + {monthly_ephemeral_storage_charges} USD = {total} USD"
     )
     steps.append(
-        f"{monthly_compute_charges} USD + {monthly_request_charges} USD + {monthly_ephemeral_storage_charges} USD = {total} USD"
+        f"{monthly_compute_charges} USD + {monthly_request_charges} USD + {monthly_ephemeral_storage_charges} USD = {total} USD\n"
     )
     logger.debug(f"Lambda cost (monthly): {total} USD")
     steps.append(f"Lambda cost (monthly): {total} USD")

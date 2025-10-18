@@ -9,7 +9,6 @@ from typing import Literal, Any
 load_dotenv()
 
 logger = logging.getLogger(__name__)
-steps = []
 
 
 def open_json_file(region: str) -> dict[str, Any]:
@@ -26,7 +25,9 @@ def open_json_file(region: str) -> dict[str, Any]:
         return data
 
 
-def unit_conversion_requests(number_of_requests: int, request_unit: str) -> int:
+def unit_conversion_requests(
+    number_of_requests: int, request_unit: str, steps: list[str]
+) -> int:
     """
     @brief Convert number of requests based on the unit provided. Assuming 730 hours in a month (30 days). Assuming 24 hours in a day.
     @param number_of_requests: The number of requests to convert.
@@ -82,7 +83,7 @@ def unit_conversion_requests(number_of_requests: int, request_unit: str) -> int:
             raise ValueError(f"Unknown request unit: {request_unit}")
 
 
-def unit_conversion_memory(memory: float, memory_unit: str) -> float:
+def unit_conversion_memory(memory: float, memory_unit: str, steps: list[str]) -> float:
     """
     @brief Convert memory based on the unit provided.
     @param memory: amount of memory.
@@ -105,7 +106,7 @@ def unit_conversion_memory(memory: float, memory_unit: str) -> float:
 
 
 def unit_conversion_ephemeral_storage(
-    ephemeral_storage_mb: float, storage_unit: str
+    ephemeral_storage_mb: float, storage_unit: str, steps: list[str]
 ) -> float:
     """
     @brief Convert ephemeral storage based on the unit provided.
@@ -132,6 +133,7 @@ def calculate_tiered_cost(
     total_compute_gb_sec: float,
     tier_cost_factor: dict[str, float],
     overflow_rate: float,
+    steps: list[str],
 ) -> float:
     """
     total_compute_gb_sec: total usage in GB‑seconds
@@ -183,6 +185,7 @@ def calc_monthly_compute_charges(
     duration_of_each_request_in_ms: int,
     memory_in_gb: float,
     tier_cost_factor: dict[str, float],
+    steps: list[str],
 ) -> tuple[float, float]:
     """
     @brief Calculate the monthly compute charges based on requests per month, duration of each request in ms, and memory in GB.
@@ -214,13 +217,13 @@ def calc_monthly_compute_charges(
     # anything above 15 B GB‑sec
     overflow_rate = 0.0000133334
     monthly_compute_charges = calculate_tiered_cost(
-        total_compute_gb_sec, tier_cost_factor, overflow_rate
+        total_compute_gb_sec, tier_cost_factor, overflow_rate, steps
     )
     return total_compute_gb_sec, monthly_compute_charges
 
 
 def calc_monthly_request_charges(
-    requests_per_month: float, requests_cost_factor: float
+    requests_per_month: float, requests_cost_factor: float, steps: list[str]
 ) -> float:
     res = float(requests_per_month) * float(requests_cost_factor)
     logger.debug(
@@ -236,6 +239,7 @@ def calc_monthly_ephemeral_storage_charges(
     storage_in_gb: float,
     ephemeral_storage_cost_factor: float,
     total_compute_gb_sec: float,
+    steps: list[str],
 ) -> float:
     billable_storage = max(0.0, float(storage_in_gb) - 0.5)
     gb_s = billable_storage * total_compute_gb_sec
@@ -322,8 +326,7 @@ def calculate(
         storage_unit=storage_unit,
     )
 
-    global steps
-    steps = []
+    steps: list[str] = []
 
     logger.info("Starting cost calculation...")
 
@@ -344,9 +347,13 @@ def calculate(
     if request_unit != "per month" or memory_unit != "GB" or storage_unit != "GB":
         logger.debug("Unit conversions:")
         steps.append("\nUnit conversions:")
-    requests_per_month = unit_conversion_requests(number_of_requests, request_unit)
-    memory_in_gb = unit_conversion_memory(memory, memory_unit)
-    storage_in_gb = unit_conversion_ephemeral_storage(ephemeral_storage, storage_unit)
+    requests_per_month = unit_conversion_requests(
+        number_of_requests, request_unit, steps
+    )
+    memory_in_gb = unit_conversion_memory(memory, memory_unit, steps)
+    storage_in_gb = unit_conversion_ephemeral_storage(
+        ephemeral_storage, storage_unit, steps
+    )
 
     # Step 5
     logger.debug("Pricing calculations:")
@@ -356,16 +363,17 @@ def calculate(
         duration_of_each_request_in_ms,
         memory_in_gb,
         tier_cost_factor,
+        steps,
     )
     logger.debug(f"Monthly compute charges: {monthly_compute_charges} USD")
     steps.append(f"Monthly compute charges: {monthly_compute_charges} USD\n")
     monthly_request_charges = calc_monthly_request_charges(
-        requests_per_month, requests_cost_factor
+        requests_per_month, requests_cost_factor, steps
     )
     logger.debug(f"Monthly request charges: {monthly_request_charges} USD")
     steps.append(f"Monthly request charges: {monthly_request_charges} USD\n")
     monthly_ephemeral_storage_charges = calc_monthly_ephemeral_storage_charges(
-        storage_in_gb, ephemeral_storage_cost_factor, total_compute_gb_sec
+        storage_in_gb, ephemeral_storage_cost_factor, total_compute_gb_sec, steps
     )
     logger.debug(
         f"Monthly ephemeral storage charges: {monthly_ephemeral_storage_charges} USD"

@@ -1,4 +1,5 @@
 import type { Route } from "./+types/configuration";
+import { useState } from "react";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -8,6 +9,8 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Configuration() {
+  const [isPrettyPrint, setIsPrettyPrint] = useState(true);
+  const [isResponsePrettyPrint, setIsResponsePrettyPrint] = useState(true);
   return (
     <div className="container mx-auto p-8">
       <h1 className="text-4xl font-bold mb-6 text-slate-900 dark:text-slate-100 tracking-tight">Configuration</h1>
@@ -99,11 +102,21 @@ export default function Configuration() {
             <h3 className="text-xl font-semibold mb-4 text-slate-900 dark:text-slate-100">Request Format</h3>
             
             <div className="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-lg mb-4 border border-slate-200 dark:border-slate-700">
-              <p className="text-slate-700 dark:text-slate-300 mb-2 font-medium">The API accepts JSON payloads with the following structure:</p>
+              <div className="flex justify-between items-center mb-3">
+                <p className="text-slate-700 dark:text-slate-300 font-medium">The API accepts JSON payloads with the following structure:</p>
+                <button
+                  onClick={() => setIsPrettyPrint(!isPrettyPrint)}
+                  className="flex items-center gap-2 px-3 py-1 text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-md hover:bg-blue-200 dark:hover:bg-blue-900/50 transition-colors border border-blue-200 dark:border-blue-800"
+                >
+                  <span>{isPrettyPrint ? '📋' : '🎨'}</span>
+                  {isPrettyPrint ? 'Compact' : 'Pretty Print'}
+                </button>
+              </div>
               
               <div className="bg-slate-900 dark:bg-slate-950 text-emerald-400 p-4 rounded-lg overflow-x-auto border border-slate-700 dark:border-slate-800">
-                <code className="text-sm font-mono">
-{`{
+                <code className="text-sm font-mono whitespace-pre">
+                  {isPrettyPrint ? 
+`{
   "region": "us-east-1",                    // AWS region (36 supported)
   "architecture": "x86_64",                 // "x86_64" or "arm64"
   "number_of_requests": 1000000,            // Number of requests
@@ -113,8 +126,10 @@ export default function Configuration() {
   "memory_unit": "MB",                      // Memory unit
   "ephemeral_storage": 512,                 // Ephemeral storage in MB
   "storage_unit": "MB",                     // Storage unit
-  "include_free_tier": true                 // Apply AWS free tier
-}`}
+  "include_free_tier": true,                // Apply AWS free tier
+  "verbose": true                           // Include calculation steps
+}` : 
+`{"region":"us-east-1","architecture":"x86_64","number_of_requests":1000000,"request_unit":"per month","duration_of_each_request_in_ms":1500,"memory":128,"memory_unit":"MB","ephemeral_storage":512,"storage_unit":"MB","include_free_tier":true,"verbose":true}`}
                 </code>
               </div>
             </div>
@@ -179,21 +194,34 @@ export default function Configuration() {
               </div>
 
               <div className="bg-green-50 dark:bg-green-950/40 p-4 rounded-lg border border-green-100 dark:border-green-900/30">
-                <h4 className="font-semibold text-green-800 dark:text-green-200 mb-2">Response Format</h4>
+                <div className="flex justify-between items-center mb-3">
+                  <h4 className="font-semibold text-green-800 dark:text-green-200">Response Format</h4>
+                  <button
+                    onClick={() => setIsResponsePrettyPrint(!isResponsePrettyPrint)}
+                    className="flex items-center gap-2 px-3 py-1 text-xs bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-md hover:bg-green-200 dark:hover:bg-green-900/50 transition-colors border border-green-200 dark:border-green-800"
+                  >
+                    <span>{isResponsePrettyPrint ? '📋' : '🎨'}</span>
+                    {isResponsePrettyPrint ? 'Compact' : 'Pretty Print'}
+                  </button>
+                </div>
                 <div className="bg-gray-900 dark:bg-gray-950 text-green-400 p-3 rounded text-xs overflow-x-auto border border-gray-700 dark:border-gray-800">
-                  <code>
-{`{
-  "total_cost": 1.87,
-  "request_cost": 0.20,
-  "duration_cost": 1.67,
-  "ephemeral_storage_cost": 0.00,
-  "calculation_steps": [
-    "Free tier applied...",
-    "Duration cost calculated..."
-  ],
-  "message": "Calculation completed"
-}`}
+                  <code className="whitespace-pre">
+                    {isResponsePrettyPrint ? 
+`{
+  "status": "success",                       // Response status
+  "cost": 0.000417,                         // Total cost in USD
+  "calculation_steps": [                    // Detailed breakdown (if verbose=true)
+    "Applied AWS Free Tier benefits: 1000000 requests, 400000 GB-seconds",
+    "Request cost: 1000000 requests * $0.0000002 = $0.0002",
+    "Duration cost: 192 GB-seconds * $0.0000166667 = $0.000320",
+    "Total cost: $0.000417"
+  ]
+}` : 
+`{"status":"success","cost":0.000417,"calculation_steps":["Applied AWS Free Tier benefits: 1000000 requests, 400000 GB-seconds","Request cost: 1000000 requests * $0.0000002 = $0.0002","Duration cost: 192 GB-seconds * $0.0000166667 = $0.000320","Total cost: $0.000417"]}`}
                   </code>
+                </div>
+                <div className="mt-2 text-xs text-green-700 dark:text-green-300">
+                  <p><strong>Note:</strong> <code>calculation_steps</code> array is only included when <code>verbose: true</code> is set in the request.</p>
                 </div>
               </div>
             </div>

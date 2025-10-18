@@ -9,7 +9,7 @@ const Navbar: React.FC = () => {
         <div className="flex flex-wrap items-center justify-between">
           <div className="flex items-center space-x-2">
             <Link to="/" className="text-xl font-bold hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200">
-              <img src="/logo.svg" alt="Lambda Calculator" className="w-8 h-8 inline mr-2" /> Lambda Calculator
+              <img src="logo.svg" alt="Lambda Calculator" className="w-8 h-8 inline mr-2" /> Lambda Calculator
             </Link>
           </div>
           

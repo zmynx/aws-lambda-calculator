@@ -87,7 +87,7 @@ def parse_args() -> argparse.Namespace:
             "per hour",
             "per day",
             "per month",
-            "millions per month",
+            "million per month",
         ],
         help="Request unit",
     )
@@ -154,7 +154,7 @@ def run() -> None:
         logger.debug(f"Arguments received: {vars(args)}")
 
         # Call the calculate function with parsed values
-        total_cost, steps = calculate(
+        result = calculate(
             region=args.region,
             architecture=args.architecture,
             number_of_requests=args.number_of_requests,
@@ -166,9 +166,9 @@ def run() -> None:
             storage_unit=args.storage_unit,
         )
 
-        logger.info(f"Total cost: {total_cost:.6f} USD")
+        logger.info(f"Total cost: {result.total_cost:.6f} USD")
         logger.info("Execution completed successfully.")
-        print(f"Total cost: {total_cost:.6f} USD")
+        print(f"Total cost: {result.total_cost:.6f} USD")
 
     except Exception as e:
         logger.error(f"An error occurred: {e}")

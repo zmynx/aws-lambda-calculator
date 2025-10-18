@@ -2,6 +2,8 @@ import os
 from dotenv import load_dotenv
 import logging
 import json
+from .models import CalculationRequest, CalculationResult
+from typing import Literal, Any
 
 # Load environment variables from .env file
 load_dotenv()
@@ -10,7 +12,7 @@ logger = logging.getLogger(__name__)
 steps = []
 
 
-def open_json_file(region: str) -> dict:
+def open_json_file(region: str) -> dict[str, Any]:
     """Open a JSON file containing cost factors for a specific region."""
     base_dir = os.path.dirname(__file__)
     file_path = os.path.join(base_dir, "jsons", f"{region}.json")
@@ -80,7 +82,7 @@ def unit_conversion_requests(number_of_requests: int, request_unit: str) -> int:
             raise ValueError(f"Unknown request unit: {request_unit}")
 
 
-def unit_conversion_memory(memory: int, memory_unit: str) -> float:
+def unit_conversion_memory(memory: float, memory_unit: str) -> float:
     """
     @brief Convert memory based on the unit provided.
     @param memory: amount of memory.
@@ -124,7 +126,6 @@ def unit_conversion_ephemeral_storage(
             return ephemeral_storage_mb
         case _:
             raise ValueError(f"Unknown storage unit: {storage_unit}")
-    return None
 
 
 def calculate_tiered_cost(
@@ -181,8 +182,8 @@ def calc_monthly_compute_charges(
     requests_per_month: int,
     duration_of_each_request_in_ms: int,
     memory_in_gb: float,
-    tier_cost_factor: dict,
-):
+    tier_cost_factor: dict[str, float],
+) -> tuple[float, float]:
     """
     @brief Calculate the monthly compute charges based on requests per month, duration of each request in ms, and memory in GB.
     @param requests_per_month: The number of requests per month.
@@ -290,16 +291,39 @@ def calc_monthly_ephemeral_storage_charges(
 # 6. Calculate the total monthly cost by summing up the monthly compute charges, monthly request charges, and monthly ephemeral storage charges.
 def calculate(
     region: str = "us-east-1",
-    architecture: str = "x86",
+    architecture: Literal["x86", "arm64"] = "x86",
     number_of_requests: int = 1000000,
-    request_unit: str = "per day",
+    request_unit: Literal[
+        "per second",
+        "per minute",
+        "per hour",
+        "per day",
+        "per month",
+        "million per month",
+    ] = "per day",
     duration_of_each_request_in_ms: int = 1500,
-    memory: int = 128,
-    memory_unit: str = "MB",
-    ephemeral_storage: int = 128,
-    storage_unit: str = "MB",
-) -> tuple[float, list[str]]:
+    memory: float = 128,
+    memory_unit: Literal["MB", "GB"] = "MB",
+    ephemeral_storage: float = 512,
+    storage_unit: Literal["MB", "GB"] = "MB",
+) -> CalculationResult:
     """Calculate the total cost of execution."""
+
+    # Validate inputs using pydantic
+    CalculationRequest(
+        region=region,
+        architecture=architecture,
+        number_of_requests=number_of_requests,
+        request_unit=request_unit,
+        duration_of_each_request_in_ms=duration_of_each_request_in_ms,
+        memory=memory,
+        memory_unit=memory_unit,
+        ephemeral_storage=ephemeral_storage,
+        storage_unit=storage_unit,
+    )
+
+    global steps
+    steps = []
 
     logger.info("Starting cost calculation...")
 
@@ -364,4 +388,5 @@ def calculate(
     )
     logger.debug(f"Lambda cost (monthly): {total} USD")
     steps.append(f"Lambda cost (monthly): {total} USD")
-    return total, steps
+
+    return CalculationResult(total_cost=total, calculation_steps=steps)

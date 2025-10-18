@@ -68,8 +68,8 @@ def pytest_generate_tests(metafunc):
 
 
 def test_calculate_dynamic(params, expected_cost):
-    cost, steps = calculate(**params)
-    assert cost == approx(expected_cost, abs=0.1), (
-        f"Expected {expected_cost}, got {cost}"
+    result = calculate(**params)
+    assert result.total_cost == approx(expected_cost, abs=0.1), (
+        f"Expected {expected_cost}, got {result.total_cost}"
     )
-    assert isinstance(steps, list)
+    assert isinstance(result.calculation_steps, list)

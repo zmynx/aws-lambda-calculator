@@ -29,6 +29,7 @@ colorama = "^0.4.6"
 types-colorama = "^0.4.15.20250801"
 aws-lambda-calculator = { path = "./aws-lambda-calculator", develop = true }
 # aws-lambda-calculator = {git = "https://github.com/zMynx/aws-lambda-calculator.git", rev = "feat/package", subdirectory = "aws-lambda-calculator"}
+pydantic = "^2.12.3"
 
 [project.urls]
 homepage = "https://zmynx.github.io/aws-lambda-calculator"
@@ -52,8 +53,9 @@ relative_files = true
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.14.1"
 pytest = "^8.4.2"
-mypy = "^1.18.2"
 pytest-cov = "^7.0.0"
+mypy = "^1.18.2"
+types-requests = "^2.32.4.20250913"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]

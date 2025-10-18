@@ -79,7 +79,7 @@ def build_region_dict(region_name: str, region_code: str) -> None:
     """
     region_data = get_region_data(region_code)
 
-    region_dict = {
+    region_dict: dict[str, dict[str, str] | None] = {
         "Requests": None,
         "EphemeralStorage": None,
         "x86": {"Memory": {}, "Tier": {}},

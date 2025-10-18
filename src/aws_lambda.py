@@ -67,7 +67,7 @@ def handler(event: dict, context: object) -> dict:
             logger.setLevel(logging.DEBUG)
 
         logger.info("Calculating cost...")
-        cost, steps = calculate(
+        result = calculate(
             region=region,
             architecture=architecture,
             number_of_requests=number_of_requests,
@@ -79,9 +79,9 @@ def handler(event: dict, context: object) -> dict:
             storage_unit=storage_unit,
         )
 
-        response_data = {"status": "success", "cost": round(cost, 6)}
+        response_data = {"status": "success", "cost": round(result.total_cost, 6)}
         if verbose:
-            response_data["calculation_steps"] = steps
+            response_data["calculation_steps"] = result.calculation_steps
         return make_response(200, response_data)
 
     except KeyError as e:

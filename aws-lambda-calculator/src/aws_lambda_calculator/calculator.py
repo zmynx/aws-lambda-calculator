@@ -155,8 +155,12 @@ def calculate_tiered_cost(
         if usage_in_tier > 0:
             total_cost += usage_in_tier * rate
             prev_threshold += usage_in_tier
-        logger.debug(f"{usage_in_tier} GB-s x {rate:.8f} USD = {usage_in_tier * rate} USD")
-        steps.append(f"{usage_in_tier} GB-s x {rate:.8f} USD = {usage_in_tier * rate} USD")
+        logger.debug(
+            f"{usage_in_tier} GB-s x {rate:.8f} USD = {usage_in_tier * rate} USD"
+        )
+        steps.append(
+            f"{usage_in_tier} GB-s x {rate:.8f} USD = {usage_in_tier * rate} USD"
+        )
 
         # once we've billed all the usage, early exit
         if total_compute_gb_sec <= threshold:

@@ -132,11 +132,11 @@ def parse_args() -> argparse.Namespace:
 
     # Optional free tier flag
     parser.add_argument(
-        "--free-tier", 
+        "--free-tier",
         type=str,
         choices=["true", "false"],
         default="true",
-        help="Include AWS Lambda free tier benefits (default: true)"
+        help="Include AWS Lambda free tier benefits (default: true)",
     )
 
     # Version argument

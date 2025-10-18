@@ -23,7 +23,7 @@ export default function Introduction() {
               <br/><br/>
               <strong>I couldn't find a single calculator to support all configuration range values. So I've decided to create my own clone of the original calculator provided by AWS.</strong>
               <br/><br/>
-              I ended up making this project my go-to for curiousities I've had regarding operations, tooling and anything DevOps related. And of course it been a blast!
+              I ended up making this project my go-to for curiosities I've had regarding operations, tooling and anything DevOps related. And of course it's been a blast!
               As a enthusiastic of FOSS projects, I wanted to share it with the community so others can benefit from it as well.
               Hope you find it useful! Enjoy!
             </p>

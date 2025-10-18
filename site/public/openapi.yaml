@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   title: AWS Lambda Calculator API
   description: API for calculating AWS Lambda costs based on various parameters
-  version: 2.1.3
+  version: 2.1.7
   contact:
     name: Lior Dux
     email: lior.dux@develeap.com
@@ -53,7 +53,12 @@ paths:
                   value:
                     status: "success"
                     cost: 0.000417
-                    calculation_steps: ["Applied AWS Free Tier benefits", "Calculated request cost", "Calculated duration cost"]
+                    calculation_steps:
+                      [
+                        "Applied AWS Free Tier benefits",
+                        "Calculated request cost",
+                        "Calculated duration cost",
+                      ]
         "400":
           description: Bad request - missing required field
           content:
@@ -256,7 +261,12 @@ components:
           items:
             type: string
           description: Step-by-step calculation breakdown (only included when verbose=true)
-          example: ["Applied AWS Free Tier benefits", "Calculated request cost", "Calculated duration cost"]
+          example:
+            [
+              "Applied AWS Free Tier benefits",
+              "Calculated request cost",
+              "Calculated duration cost",
+            ]
 
     ErrorResponse:
       type: object
@@ -274,4 +284,3 @@ components:
           type: string
           description: Error message
           example: "Missing required field: region"
-

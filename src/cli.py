@@ -130,6 +130,15 @@ def parse_args() -> argparse.Namespace:
         "-v", "--verbose", action="store_true", help="Enable verbose logging"
     )
 
+    # Optional free tier flag
+    parser.add_argument(
+        "--free-tier",
+        type=str,
+        choices=["true", "false"],
+        default="true",
+        help="Include AWS Lambda free tier benefits (default: true)",
+    )
+
     # Version argument
     parser.add_argument(
         "-V",
@@ -164,6 +173,7 @@ def run() -> None:
             memory_unit=args.memory_unit,
             ephemeral_storage=args.ephemeral_storage,
             storage_unit=args.storage_unit,
+            include_free_tier=args.free_tier.lower() == "true",
         )
 
         logger.info(f"Total cost: {result.total_cost:.6f} USD")

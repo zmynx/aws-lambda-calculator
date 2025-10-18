@@ -262,4 +262,4 @@ class TestCoverageGaps:
         assert abs(result - expected) < 1.0  # Allow for floating point precision
 
         # Should have steps for overflow calculation
-        assert any("x 1.33334e-05 USD" in step for step in steps)
+        assert any("x 0.00001333 USD" in step for step in steps)

@@ -15,11 +15,6 @@ license = "Apache-2.0"
 [tool.poetry]
 package-mode = false
 version = "1.0"  # base version
-# packages = [
-#   { include = "cli", from = "src" },
-#   { include = "lambda", from = "src" }
-#   # { include = "utils", from = "src" }
-# ]
 
 [tool.poetry.requires-plugins]
 poetry-plugin-export = ">=1.8"
@@ -30,6 +25,16 @@ types-colorama = "^0.4.15.20250801"
 aws-lambda-calculator = { path = "./aws-lambda-calculator", develop = true }
 # aws-lambda-calculator = {git = "https://github.com/zMynx/aws-lambda-calculator.git", rev = "feat/package", subdirectory = "aws-lambda-calculator"}
 pydantic = "^2.12.3"
+
+[tool.poetry.scripts]
+# Full command name
+aws-lambda-calculator = "cli:run"
+aws-lambda-calculator-lambda = "aws_lambda:handler"
+
+# Short alias
+alc = "cli:run"
+alc-lambda = "aws_lambda:handler"
+
 
 [project.urls]
 homepage = "https://zmynx.github.io/aws-lambda-calculator"

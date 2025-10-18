@@ -116,6 +116,7 @@ def test_calculate(
         memory_unit=memory_unit,
         ephemeral_storage=ephemeral_storage,
         storage_unit=storage_unit,
+        include_free_tier=False,  # Disable free tier for existing test expectations
     )
     assert result.total_cost == approx(expected_cost, abs=0.01), (
         f"Expected {expected_cost}, got {result.total_cost}"

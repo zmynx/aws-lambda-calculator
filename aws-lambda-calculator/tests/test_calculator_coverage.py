@@ -161,6 +161,7 @@ class TestCalculatorFunctionCoverage:
             memory_unit="MB",
             ephemeral_storage=512,
             storage_unit="MB",
+            include_free_tier=False,  # Disable free tier for existing test expectations
         )
         assert isinstance(result, CalculationResult)
         assert result.total_cost > 0

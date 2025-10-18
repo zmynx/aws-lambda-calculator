@@ -185,6 +185,7 @@ def calc_monthly_compute_charges(
     duration_of_each_request_in_ms: int,
     memory_in_gb: float,
     tier_cost_factor: dict[str, float],
+    include_free_tier: bool,
     steps: list[str],
 ) -> tuple[float, float]:
     """
@@ -210,28 +211,55 @@ def calc_monthly_compute_charges(
         f"{memory_in_gb} GB x {total_compute_sec} seconds = {total_compute_gb_sec} total compute (GB-s)"
     )
 
-    ## Tiered price for total compute GB-seconds
-    logger.debug(f"Tiered price for: {total_compute_gb_sec} GB-s")
-    steps.append(f"Tiered price for: {total_compute_gb_sec} GB-s")
+    ## Apply free tier for compute if enabled
+    billable_compute_gb_sec = total_compute_gb_sec
+    if include_free_tier:
+        free_compute_gb_sec = 400_000  # 400,000 GB-seconds per month
+        billable_compute_gb_sec = max(0.0, total_compute_gb_sec - free_compute_gb_sec)
+        steps.append(
+            f"{total_compute_gb_sec} GB-s - {free_compute_gb_sec} free tier GB-s = {billable_compute_gb_sec} billable GB-s"
+        )
+        logger.debug(
+            f"{total_compute_gb_sec} GB-s - {free_compute_gb_sec} free tier GB-s = {billable_compute_gb_sec} billable GB-s"
+        )
+
+    ## Tiered price for billable compute GB-seconds
+    logger.debug(f"Tiered price for: {billable_compute_gb_sec} GB-s")
+    steps.append(f"Tiered price for: {billable_compute_gb_sec} GB-s")
 
     # anything above 15 B GB‑sec
     overflow_rate = 0.0000133334
     monthly_compute_charges = calculate_tiered_cost(
-        total_compute_gb_sec, tier_cost_factor, overflow_rate, steps
+        billable_compute_gb_sec, tier_cost_factor, overflow_rate, steps
     )
     return total_compute_gb_sec, monthly_compute_charges
 
 
 def calc_monthly_request_charges(
-    requests_per_month: float, requests_cost_factor: float, steps: list[str]
+    requests_per_month: float,
+    requests_cost_factor: float,
+    include_free_tier: bool,
+    steps: list[str],
 ) -> float:
-    res = float(requests_per_month) * float(requests_cost_factor)
-    logger.debug(
-        f"{requests_per_month} requests x {requests_cost_factor} USD = {res} USD (monthly request charges)"
-    )
-    steps.append(
-        f"{requests_per_month} requests x {requests_cost_factor} USD = {res} USD (monthly request charges)"
-    )
+    billable_requests = requests_per_month
+    if include_free_tier:
+        free_requests = 1_000_000  # 1 million free requests per month
+        billable_requests = max(0, requests_per_month - free_requests)
+        steps.append(
+            f"{requests_per_month} requests - {free_requests} free tier requests = {billable_requests} monthly billable requests"
+        )
+        logger.debug(
+            f"{requests_per_month} requests - {free_requests} free tier requests = {billable_requests} monthly billable requests"
+        )
+
+    res = float(billable_requests) * float(requests_cost_factor)
+    if res > 0.0:
+        logger.debug(
+            f"{billable_requests} requests x {requests_cost_factor} USD = {res} USD (monthly request charges)"
+        )
+        steps.append(
+            f"{billable_requests} requests x {requests_cost_factor} USD = {res} USD (monthly request charges)"
+        )
     return res
 
 
@@ -310,6 +338,7 @@ def calculate(
     memory_unit: Literal["MB", "GB"] = "MB",
     ephemeral_storage: float = 512,
     storage_unit: Literal["MB", "GB"] = "MB",
+    include_free_tier: bool = True,
 ) -> CalculationResult:
     """Calculate the total cost of execution."""
 
@@ -324,6 +353,7 @@ def calculate(
         memory_unit=memory_unit,
         ephemeral_storage=ephemeral_storage,
         storage_unit=storage_unit,
+        include_free_tier=include_free_tier,
     )
 
     steps: list[str] = []
@@ -363,12 +393,13 @@ def calculate(
         duration_of_each_request_in_ms,
         memory_in_gb,
         tier_cost_factor,
+        include_free_tier,
         steps,
     )
     logger.debug(f"Monthly compute charges: {monthly_compute_charges} USD")
     steps.append(f"Monthly compute charges: {monthly_compute_charges} USD\n")
     monthly_request_charges = calc_monthly_request_charges(
-        requests_per_month, requests_cost_factor, steps
+        requests_per_month, requests_cost_factor, include_free_tier, steps
     )
     logger.debug(f"Monthly request charges: {monthly_request_charges} USD")
     steps.append(f"Monthly request charges: {monthly_request_charges} USD\n")

@@ -5,11 +5,14 @@
 | Name                                                 |    Stmts |     Miss |   Branch |   BrPart |   Cover |   Missing |
 |----------------------------------------------------- | -------: | -------: | -------: | -------: | ------: | --------: |
 | src/aws\_lambda\_calculator/\_\_init\_\_.py          |        2 |        0 |        0 |        0 |    100% |           |
-| src/aws\_lambda\_calculator/calculator.py            |       20 |        0 |        0 |        0 |    100% |           |
+| src/aws\_lambda\_calculator/calculator.py            |      165 |        1 |       42 |        5 |     97% |155->158, 173->182, 260->267, 375, 381->384 |
+| src/aws\_lambda\_calculator/models.py                |       31 |        0 |       16 |        2 |     96% |58->63, 68->74 |
 | tests/\_\_init\_\_.py                                |        0 |        0 |        0 |        0 |    100% |           |
-| tests/test\_calculator.py                            |        6 |        0 |        0 |        0 |    100% |           |
-| tests/test\_pytest\_generate\_tests\_sample\_code.py |        9 |        0 |        2 |        1 |     91% |  16->exit |
-|                                            **TOTAL** |   **37** |    **0** |    **2** |    **1** | **97%** |           |
+| tests/test\_calculator.py                            |        9 |        0 |        0 |        0 |    100% |           |
+| tests/test\_calculator\_coverage.py                  |      100 |        0 |        0 |        0 |    100% |           |
+| tests/test\_models.py                                |      141 |        0 |        0 |        0 |    100% |           |
+| tests/test\_pytest\_generate\_tests\_sample\_code.py |       10 |        0 |        2 |        1 |     92% |  70->exit |
+|                                            **TOTAL** |  **458** |    **1** |   **60** |    **8** | **98%** |           |
 
 
 ## Setup coverage badge

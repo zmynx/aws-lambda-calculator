@@ -44,6 +44,10 @@ class CalculationRequest(BaseModel):
         default="MB", description="Unit for ephemeral storage"
     )
 
+    include_free_tier: bool = Field(
+        default=True, description="Whether to include AWS Lambda free tier benefits"
+    )
+
     @model_validator(mode="after")
     def validate_aws_lambda_limits(self) -> "CalculationRequest":
         """Validate memory and ephemeral storage are within AWS Lambda limits."""

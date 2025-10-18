@@ -97,6 +97,7 @@ class TestEdgeCases:
             memory_unit="MB",
             ephemeral_storage=512,
             storage_unit="MB",
+            include_free_tier=False,  # Disable free tier to test actual pricing
         )
 
         assert isinstance(result, CalculationResult)

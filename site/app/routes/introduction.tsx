@@ -17,15 +17,15 @@ export default function Introduction() {
           <h2 className="text-3xl font-semibold mb-4 text-gray-900 dark:text-gray-100">📖 Back story</h2>
           <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg transition-colors duration-300">
             <p className="text-gray-700 dark:text-gray-300 mb-4 leading-relaxed">
-              This project is the fruits of a hackathon idea I had about a year ago:
-            </p>
-            <p className="text-gray-700 dark:text-gray-300 mb-4 leading-relaxed">
-              The original idea was to provide users with a system to decide whether to go with the lambda serverless solution, 
+              This project is the fruits of a hackathon idea I had about a year ago, which was to provide users with a system to decide whether to go with the lambda serverless solution, 
               or follow the more scalable kubernetes based solutions. To do that, I needed a cost estimation for both solutions 
               using the same configurations.
-            </p>
-            <p className="text-gray-700 dark:text-gray-300 italic">
-              <strong>I couldn't find a single calculator to support all configuration range values.</strong>
+              <br/><br/>
+              <strong>I couldn't find a single calculator to support all configuration range values. So I've decided to create my own clone of the original calculator provided by AWS.</strong>
+              <br/><br/>
+              I ended up making this project my go-to for curiousities I've had regarding operations, tooling and anything DevOps related. And of course it been a blast!
+              As a enthusiastic of FOSS projects, I wanted to share it with the community so others can benefit from it as well.
+              Hope you find it useful! Enjoy!
             </p>
           </div>
         </section>
@@ -35,7 +35,7 @@ export default function Introduction() {
           
           <div className="bg-yellow-50 dark:bg-yellow-900/20 border-l-4 border-yellow-500 dark:border-yellow-400 p-4 mb-6 transition-colors duration-300">
             <blockquote className="text-lg font-medium text-gray-800 dark:text-gray-200">
-              "Try to calculate a 10GB memory-use Lambda function, you simply can't. Calculators are capped somewhere in the 3GiB range."
+              "Today's calculators are too limited. Try to calculate a 10GB memory-use Lambda function, or estimate a real production workload. You simply can't."
             </blockquote>
           </div>
 

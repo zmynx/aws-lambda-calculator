@@ -43,6 +43,7 @@ def handler(event: dict, context: object) -> dict:
         memory_unit = payload.get("memory_unit")
         ephemeral_storage = payload.get("ephemeral_storage")
         storage_unit = payload.get("storage_unit")
+        include_free_tier = payload.get("include_free_tier", True)
 
         required_params = {
             "region": region,
@@ -77,6 +78,7 @@ def handler(event: dict, context: object) -> dict:
             memory_unit=memory_unit,
             ephemeral_storage=ephemeral_storage,
             storage_unit=storage_unit,
+            include_free_tier=include_free_tier,
         )
 
         response_data = {"status": "success", "cost": round(result.total_cost, 6)}

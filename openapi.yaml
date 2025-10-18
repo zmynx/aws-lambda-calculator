@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   title: AWS Lambda Calculator API
   description: API for calculating AWS Lambda costs based on various parameters
-  version: 1.0.0
+  version: 2.1.3
   contact:
     name: Lior Dux
     email: lior.dux@develeap.com
@@ -11,7 +11,7 @@ info:
     url: https://www.apache.org/licenses/LICENSE-2.0.html
 
 servers:
-  - url: /Prod
+  - url: /prod
     description: Production server
 
 paths:
@@ -25,7 +25,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CalculationRequest'
+              $ref: "#/components/schemas/CalculationRequest"
             examples:
               basic_calculation:
                 summary: Basic Lambda calculation
@@ -33,41 +33,44 @@ paths:
                   region: "us-east-1"
                   architecture: "x86_64"
                   number_of_requests: 1000000
-                  request_unit: "requests"
+                  request_unit: "per month"
                   duration_of_each_request_in_ms: 200
                   memory: 128
                   memory_unit: "MB"
                   ephemeral_storage: 512
                   storage_unit: "MB"
+                  include_free_tier: true
+                  verbose: true
       responses:
-        '200':
+        "200":
           description: Successful calculation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SuccessResponse'
+                $ref: "#/components/schemas/SuccessResponse"
               examples:
                 success:
                   value:
                     status: "success"
                     cost: 0.000417
-        '400':
+                    calculation_steps: ["Applied AWS Free Tier benefits", "Calculated request cost", "Calculated duration cost"]
+        "400":
           description: Bad request - missing required field
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               examples:
                 missing_field:
                   value:
                     status: "error"
                     message: "Missing required field: region"
-        '500':
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               examples:
                 server_error:
                   value:
@@ -83,7 +86,7 @@ paths:
       summary: CORS preflight
       description: Handle CORS preflight requests
       responses:
-        '200':
+        "200":
           description: CORS headers
           headers:
             Access-Control-Allow-Origin:
@@ -132,6 +135,7 @@ components:
           enum:
             - "af-south-1"
             - "ap-east-1"
+            - "ap-east-2"
             - "ap-northeast-1"
             - "ap-northeast-2"
             - "ap-northeast-3"
@@ -141,7 +145,11 @@ components:
             - "ap-southeast-2"
             - "ap-southeast-3"
             - "ap-southeast-4"
+            - "ap-southeast-5"
+            - "ap-southeast-6"
+            - "ap-southeast-7"
             - "ca-central-1"
+            - "ca-west-1"
             - "eu-central-1"
             - "eu-central-2"
             - "eu-north-1"
@@ -153,6 +161,7 @@ components:
             - "il-central-1"
             - "me-central-1"
             - "me-south-1"
+            - "mx-central-1"
             - "sa-east-1"
             - "us-east-1"
             - "us-east-2"
@@ -175,9 +184,13 @@ components:
         request_unit:
           type: string
           description: Unit for the number of requests
-          example: "requests"
+          example: "per month"
           enum:
-            - "requests"
+            - "per second"
+            - "per minute"
+            - "per hour"
+            - "per day"
+            - "per month"
         duration_of_each_request_in_ms:
           type: integer
           minimum: 1
@@ -208,7 +221,18 @@ components:
           example: "MB"
           enum:
             - "MB"
-    
+            - "GB"
+        include_free_tier:
+          type: boolean
+          description: Whether to include AWS Free Tier benefits in the calculation
+          example: true
+          default: true
+        verbose:
+          type: boolean
+          description: Whether to include detailed calculation steps in the response
+          example: true
+          default: true
+
     SuccessResponse:
       type: object
       required:
@@ -225,9 +249,15 @@ components:
           type: number
           format: double
           minimum: 0
-          description: Calculated cost in USD
+          description: Total calculated cost in USD (rounded to 6 decimal places)
           example: 0.000417
-    
+        calculation_steps:
+          type: array
+          items:
+            type: string
+          description: Step-by-step calculation breakdown (only included when verbose=true)
+          example: ["Applied AWS Free Tier benefits", "Calculated request cost", "Calculated duration cost"]
+
     ErrorResponse:
       type: object
       required:
@@ -244,3 +274,4 @@ components:
           type: string
           description: Error message
           example: "Missing required field: region"
+

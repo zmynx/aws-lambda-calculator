@@ -11,11 +11,11 @@ info:
     url: https://www.apache.org/licenses/LICENSE-2.0.html
 
 servers:
-  - url: /prod
+  - url: https://kdhtgb2u9d.execute-api.us-east-1.amazonaws.com/prod
     description: Production server
 
 paths:
-  /api:
+  /:
     post:
       summary: Calculate AWS Lambda costs
       description: Calculate the cost of running AWS Lambda functions based on the provided parameters
@@ -31,7 +31,7 @@ paths:
                 summary: Basic Lambda calculation
                 value:
                   region: "us-east-1"
-                  architecture: "x86_64"
+                  architecture: "x86"
                   number_of_requests: 1000000
                   request_unit: "per month"
                   duration_of_each_request_in_ms: 200
@@ -172,9 +172,9 @@ components:
         architecture:
           type: string
           description: Lambda function architecture
-          example: "x86_64"
+          example: "x86"
           enum:
-            - "x86_64"
+            - "x86"
             - "arm64"
         number_of_requests:
           type: integer

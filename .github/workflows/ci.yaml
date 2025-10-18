@@ -2,10 +2,13 @@
 ---
 name: CI
 on:
-  workflow_dispatch:
   pull_request:
     branches: [main]
   merge_group:
+  push:
+    branches: [main]
+  schedule:
+    - cron: 0 0 * * *
 
 jobs:
   code-checks:

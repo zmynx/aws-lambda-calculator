@@ -56,7 +56,7 @@ export default function InstallUsage() {
           <div className="bg-white/80 dark:bg-gray-800 shadow-lg rounded-lg p-6 transition-colors duration-300 mb-4">
             <div className="mb-4">
               <a
-                href="https://github.com/zmynx/aws-lambda-calculator/archive/HEAD.zip"
+                href="https://github.com/zmynx/aws-lambda-calculator/releases"
                 className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors inline-flex items-center"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -66,19 +66,56 @@ export default function InstallUsage() {
             </div>
             
             <p className="text-gray-700 mb-4">
-              Install the package using pip (@&lt;version&gt; is optional, main is latest, use a version tag for a specific version):
+              Use the "Download" button to pick you desired release. Install the package via pip:
             </p>
             
             <CodeBlock 
-              code="python -m pip install aws-lambda-calculator@git+https://github.com/zmynx/aws-lambda-calculator#egg=aws-lambda-calculator&subdirectory=aws-lambda-calculator@main"
+              code="python -m pip install 'https://github.com/zmynx/aws-lambda-calculator/releases/download/${VERSION}/aws_lambda_calculator-${VERSION}-py3-none-any.whl'"
               language="bash"
               className="mb-4"
             />
             
-            <p className="text-gray-700 mb-2">Then import the package in your python code (.py):</p>
+            <p className="text-gray-700 mb-2">Then import and use the package in your Python code:</p>
             
             <CodeBlock 
-              code="import aws_lambda_calculator"
+              code={`from aws_lambda_calculator import calculate
+from aws_lambda_calculator.models import CalculationRequest, CalculationResult
+
+# Using the calculate function directly
+result = calculate(
+    region="us-east-1",
+    architecture="x86",
+    number_of_requests=1000000,
+    request_unit="per month",
+    duration_of_each_request_in_ms=1500,
+    memory=128,
+    memory_unit="MB",
+    ephemeral_storage=512,
+    storage_unit="MB",
+    include_free_tier=True
+)
+
+print(f"Total cost: {result.total_cost:.6f} USD")
+print("Calculation steps:")
+for step in result.calculation_steps:
+    print(f"  - {step}")
+
+# Or using Pydantic models for type safety
+request = CalculationRequest(
+    region="us-east-1",
+    architecture="arm64",
+    number_of_requests=5000000,
+    request_unit="per month",
+    duration_of_each_request_in_ms=200,
+    memory=256,
+    memory_unit="MB",
+    ephemeral_storage=1024,
+    storage_unit="MB",
+    include_free_tier=False
+)
+
+result: CalculationResult = calculate(**request.model_dump())
+print(f"\nTotal monthly cost: \${result.total_cost:.2f}")`}
               language="python"
             />
           </div>
@@ -88,25 +125,48 @@ export default function InstallUsage() {
         <section className="mb-12" id="api">
           <div className="flex items-center mb-6">
             <span className="text-3xl mr-3">🚀</span>
-            <h2 className="text-3xl font-semibold">2. API</h2>
+            <h2 className="text-3xl font-semibold">2. API / Lambda Handler</h2>
           </div>
           
           <div className="bg-white/80 dark:bg-gray-800 shadow-lg rounded-lg p-6 transition-colors duration-300">
-            <p className="text-gray-700 mb-4">Clone the repository and install the requirements:</p>
+            <p className="text-gray-700 mb-4">Clone the repository and install dependencies with Poetry:</p>
             
             <CodeBlock 
               code={`git clone https://github.com/zMynx/aws-lambda-calculator.git
-python -m pip install --requirements requirements.txt`}
+cd aws-lambda-calculator
+python -m poetry install`}
               language="bash"
               className="mb-4"
             />
             
-            <p className="text-gray-700 mb-2">Then run the main.py file with the required arguments:</p>
-            
-            <CodeBlock 
-              code="python ./main.py --key=value...."
-              language="bash"
-            />
+            <div className="border-t pt-4 mt-4">
+              <h4 className="font-semibold mb-2 text-gray-900 dark:text-gray-100">Lambda Handler Usage:</h4>
+              <p className="text-gray-700 mb-2">Test the Lambda handler locally:</p>
+              
+              <CodeBlock 
+                code={`# Create a test event file
+echo '{
+  "region": "us-east-1",
+  "architecture": "x86",
+  "number_of_requests": 1000000,
+  "request_unit": "per month",
+  "duration_of_each_request_in_ms": 1500,
+  "memory": 128,
+  "memory_unit": "MB",
+  "ephemeral_storage": 512,
+  "storage_unit": "MB",
+  "include_free_tier": true
+}' > test_event.json
+
+# Invoke the Lambda handler wrapper
+python -m poetry run python src/aws_lambda.py < test_event.json
+
+# Or pass the event as an argument
+python -m poetry run python -c "import sys; sys.path.insert(0, 'src'); from aws_lambda import handler; import json; print(json.dumps(handler(json.load(open('test_event.json')), None), indent=2))"`}
+                language="bash"
+              />
+              
+            </div>
           </div>
         </section>
 
@@ -118,29 +178,68 @@ python -m pip install --requirements requirements.txt`}
           </div>
           
           <div className="bg-white/80 dark:bg-gray-800 shadow-lg rounded-lg p-6 transition-colors duration-300">
-            <p className="text-gray-700 mb-4">Use the setup script to install the binary:</p>
+            <p className="text-gray-700 mb-4">Clone the repository and install dependencies with Poetry:</p>
             
             <CodeBlock 
-              code="curl --remote-name https://github.com/zMynx/aws-lambda-calculator/blob/main/run.sh | bash -s -- --install"
+              code={`git clone https://github.com/zMynx/aws-lambda-calculator.git
+cd aws-lambda-calculator
+python -m poetry install`}
               language="bash"
               className="mb-4"
             />
             
-            <p className="text-gray-700 mb-2">Then run the binary with the required arguments:</p>
+            <p className="text-gray-700 mb-2">Then run the CLI wrapper with Poetry:</p>
             
             <CodeBlock 
-              code="aws-lambda-calculator --key=value...."
+              code={`# Using short flags
+python -m poetry run python src/cli.py -r us-east-1 -a x86 -n 1000000 -nu 'per month' \\
+  -d 1500 -m 128 -mu MB -es 512 -esu MB --free-tier true -v
+
+# Using long flags for better readability
+python -m poetry run python src/cli.py \\
+  --region us-east-1 \\
+  --architecture x86 \\
+  --number-of-requests 1000000 \\
+  --request-unit 'per month' \\
+  --duration-of-each-request-in-ms 1500 \\
+  --memory 128 \\
+  --memory-unit MB \\
+  --ephemeral-storage 512 \\
+  --storage-unit MB \\
+  --free-tier true \\
+  --verbose`}
               language="bash"
               className="mb-4"
             />
+            
+            <div className="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg mb-4">
+              <h4 className="font-semibold mb-2 text-gray-900 dark:text-gray-100">Flag Explanation:</h4>
+              <ul className="text-sm space-y-1 text-gray-700 dark:text-gray-300">
+                <li><code className="bg-gray-200 dark:bg-gray-600 px-1 rounded">-r, --region</code>: AWS region (e.g., us-east-1, eu-west-1)</li>
+                <li><code className="bg-gray-200 dark:bg-gray-600 px-1 rounded">-a, --architecture</code>: Architecture (x86 or arm64)</li>
+                <li><code className="bg-gray-200 dark:bg-gray-600 px-1 rounded">-n, --number-of-requests</code>: Number of requests</li>
+                <li><code className="bg-gray-200 dark:bg-gray-600 px-1 rounded">-nu, --request-unit</code>: Request unit (per second/minute/hour/day/month)</li>
+                <li><code className="bg-gray-200 dark:bg-gray-600 px-1 rounded">-d, --duration-of-each-request-in-ms</code>: Duration per request in milliseconds</li>
+                <li><code className="bg-gray-200 dark:bg-gray-600 px-1 rounded">-m, --memory</code>: Memory allocation</li>
+                <li><code className="bg-gray-200 dark:bg-gray-600 px-1 rounded">-mu, --memory-unit</code>: Memory unit (MB or GB)</li>
+                <li><code className="bg-gray-200 dark:bg-gray-600 px-1 rounded">-es, --ephemeral-storage</code>: Ephemeral storage size</li>
+                <li><code className="bg-gray-200 dark:bg-gray-600 px-1 rounded">-esu, --storage-unit</code>: Storage unit (MB or GB)</li>
+                <li><code className="bg-gray-200 dark:bg-gray-600 px-1 rounded">--free-tier</code>: Include free tier (true/false, default: true)</li>
+                <li><code className="bg-gray-200 dark:bg-gray-600 px-1 rounded">-v, --verbose</code>: Verbose output</li>
+                <li><code className="bg-gray-200 dark:bg-gray-600 px-1 rounded">-V, --version</code>: Show version</li>
+              </ul>
+            </div>
             
             <div className="bg-blue-50 border-l-4 border-blue-500 p-4">
               <p className="text-blue-700 mb-3">
-                <strong>Tip:</strong> Optionally, use the alias <code className="bg-blue-100 px-1 rounded">alc</code> for the binary:
+                <strong>Tip:</strong> Create a shell alias for convenience:
               </p>
               <CodeBlock 
-                code={`alias alc=aws-lambda-calculator
-alc --key=value....`}
+                code={`# Add this to your ~/.bashrc or ~/.zshrc
+alias alc="cd /path/to/aws-lambda-calculator && python -m poetry run python src/cli.py"
+
+# Then use it from anywhere
+alc -r us-east-1 -a x86 -n 1000 -nu 'per second' -d 100 -m 512 -mu MB -es 512 -esu MB --free-tier false -v`}
                 language="bash"
               />
             </div>
@@ -186,10 +285,92 @@ alc --key=value....`}
     --interactive \\
     --tty \\
     --rm \\
-    --pull \\
-    --args key=value...`}
+    ghcr.io/zmynx/aws-lambda-calculator:latest \\
+    --region us-east-1 \\
+    --architecture x86 \\
+    --number-of-requests 1000000 \\
+    --request-unit 'per month' \\
+    --duration-of-each-request-in-ms 1500 \\
+    --memory 128 \\
+    --memory-unit MB \\
+    --ephemeral-storage 512 \\
+    --storage-unit MB \\
+    --free-tier true \\
+    --verbose`}
               language="bash"
+              className="mb-6"
             />
+            
+            <div className="border-t pt-6">
+              <h3 className="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">📦 Docker Compose Example</h3>
+              <p className="text-gray-700 dark:text-gray-300 mb-4">
+                For more complex deployments or when you need to run the calculator as part of a service stack, 
+                use Docker Compose:
+              </p>
+              
+              <p className="text-gray-700 dark:text-gray-300 mb-2">Create a <code className="bg-gray-200 dark:bg-gray-600 px-1 rounded">compose.yaml</code> file:</p>
+              
+              <CodeBlock 
+                code={`services:
+  calculator-cli:
+    image: ghcr.io/zmynx/aws-lambda-calculator:latest
+    container_name: aws-lambda-calc
+    platform: linux/amd64
+    entrypoint: ["/usr/local/bin/python"]
+    command: 
+      - "cli.py"
+      - "--region"
+      - "us-east-1"
+      - "--architecture"
+      - "x86"
+      - "--number-of-requests"
+      - "1000000"
+      - "--request-unit"
+      - "per month"
+      - "--duration-of-each-request-in-ms"
+      - "1500"
+      - "--memory"
+      - "128"
+      - "--memory-unit"
+      - "MB"
+      - "--ephemeral-storage"
+      - "512"
+      - "--storage-unit"
+      - "MB"
+      - "--free-tier"
+      - "true"
+      - "--verbose"
+
+  # Or as a Lambda runtime for local testing
+  calculator-lambda:
+    image: ghcr.io/zmynx/aws-lambda-calculator:latest-lambda
+    container_name: aws-lambda-calc-runtime
+    platform: linux/amd64
+    ports:
+      - "9000:8080"
+    environment:
+      - AWS_LAMBDA_FUNCTION_TIMEOUT=30
+      - AWS_LAMBDA_FUNCTION_MEMORY_SIZE=128`}
+                language="yaml"
+                className="mb-4"
+              />
+              
+              <p className="text-gray-700 dark:text-gray-300 mb-2">Then run with:</p>
+              
+              <CodeBlock 
+                code={`# Run the CLI version
+docker compose run --rm calculator-cli
+
+# Or start the Lambda runtime for testing
+docker compose up calculator-lambda
+
+# Test the Lambda runtime
+curl -X POST "http://localhost:9000/2015-03-31/functions/function/invocations" \\
+  -H "Content-Type: application/json" \\
+  -d '{"region":"us-east-1","architecture":"x86","number_of_requests":1000,"request_unit":"per day","duration_of_each_request_in_ms":100,"memory":512,"memory_unit":"MB","ephemeral_storage":512,"storage_unit":"MB","include_free_tier":true}'`}
+                language="bash"
+              />
+            </div>
           </div>
         </section>
 
@@ -204,11 +385,12 @@ alc --key=value....`}
             <p className="text-gray-700 mb-4">
               The serverless API solution is based on a Lambda function, and can be used by invoking the endpoint, 
               while providing a payload of the configurations to use.
+              *The ednpoint my differ based on the deployment version, use the latest deployment endpoint that is published here.
             </p>
             
             <div className="bg-purple-50 border-l-4 border-purple-500 p-4 mb-4">
               <p className="text-purple-700">
-                <strong>Endpoint:</strong> <code className="bg-purple-100 px-2 py-1 rounded">https://zmynx.aws-lambda-calculator.com</code>
+                <strong>Endpoint:</strong> <code className="bg-purple-100 px-2 py-1 rounded">https://kdhtgb2u9d.execute-api.us-east-1.amazonaws.com/prod/</code>
               </p>
             </div>
             
@@ -216,8 +398,10 @@ alc --key=value....`}
             
             <CodeBlock 
               code={`curl \\
-    --data '{"payload":{"key":"value"}}' \\
-    https://zmynx.aws-lambda-calculator.com`}
+    --header "Content-Type: application/json" \\
+    --request POST \\
+    --data '{"region":"us-east-1","free_tier":"false","architecture":"x86","number_of_requests":1000,"request_unit":"per month","duration_of_each_request_in_ms":100,"memory":1024,"memory_unit":"MB","ephemeral_storage":512,"storage_unit":"MB","verbose":true}' \\
+    https://kdhtgb2u9d.execute-api.us-east-1.amazonaws.com/prod/`}
               language="bash"
             />
           </div>

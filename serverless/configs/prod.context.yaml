@@ -1,2 +1,2 @@
 imageUri: ghcr.io/zmynx/aws-lambda-calculator
-imageTag: latest-lambda
+imageTag: "2.1.1"

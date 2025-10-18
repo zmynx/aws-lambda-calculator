@@ -8,7 +8,7 @@ from aws_lambda_calculator.calculator import (
     unit_conversion_ephemeral_storage,
     calculate_tiered_cost,
 )
-from aws_lambda_calculator.models import CalculationRequest, CalculationResult
+from aws_lambda_calculator.models import CalculationResult
 from pydantic import ValidationError
 
 
@@ -128,7 +128,7 @@ class TestCalculatorFunctionCoverage:
             memory=1,
             memory_unit="GB",
             ephemeral_storage=1,
-            storage_unit="GB"
+            storage_unit="GB",
         )
         assert isinstance(result, CalculationResult)
         assert result.total_cost > 0
@@ -145,7 +145,7 @@ class TestCalculatorFunctionCoverage:
             memory=512,
             memory_unit="MB",
             ephemeral_storage=512,
-            storage_unit="MB"
+            storage_unit="MB",
         )
         assert isinstance(result, CalculationResult)
         assert result.total_cost > 0
@@ -162,5 +162,5 @@ class TestCalculatorFunctionCoverage:
                 memory=512,
                 memory_unit="MB",
                 ephemeral_storage=512,
-                storage_unit="MB"
+                storage_unit="MB",
             )

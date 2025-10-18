@@ -17,7 +17,7 @@ class TestCalculationRequest:
             memory=512,
             memory_unit="MB",
             ephemeral_storage=1024,
-            storage_unit="MB"
+            storage_unit="MB",
         )
         assert request.region == "us-east-1"
         assert request.architecture == "x86"
@@ -136,69 +136,95 @@ class TestCalculationRequest:
         """Test ephemeral storage validation - MB too low."""
         with pytest.raises(ValidationError) as exc_info:
             CalculationRequest(ephemeral_storage=400, storage_unit="MB")
-        assert "Ephemeral storage must be between 512 MB and 10,240 MB" in str(exc_info.value)
+        assert "Ephemeral storage must be between 512 MB and 10,240 MB" in str(
+            exc_info.value
+        )
 
     def test_ephemeral_storage_validation_mb_too_high(self):
         """Test ephemeral storage validation - MB too high."""
         with pytest.raises(ValidationError) as exc_info:
             CalculationRequest(ephemeral_storage=15000, storage_unit="MB")
-        assert "Ephemeral storage must be between 512 MB and 10,240 MB" in str(exc_info.value)
+        assert "Ephemeral storage must be between 512 MB and 10,240 MB" in str(
+            exc_info.value
+        )
 
     def test_ephemeral_storage_validation_gb_too_low(self):
         """Test ephemeral storage validation - GB too low."""
         with pytest.raises(ValidationError) as exc_info:
             CalculationRequest(ephemeral_storage=0.4, storage_unit="GB")
-        assert "Ephemeral storage must be between 0.5 GB and 10.24 GB" in str(exc_info.value)
+        assert "Ephemeral storage must be between 0.5 GB and 10.24 GB" in str(
+            exc_info.value
+        )
 
     def test_ephemeral_storage_validation_gb_too_high(self):
         """Test ephemeral storage validation - GB too high."""
         with pytest.raises(ValidationError) as exc_info:
             CalculationRequest(ephemeral_storage=15, storage_unit="GB")
-        assert "Ephemeral storage must be between 0.5 GB and 10.24 GB" in str(exc_info.value)
+        assert "Ephemeral storage must be between 0.5 GB and 10.24 GB" in str(
+            exc_info.value
+        )
 
     def test_valid_memory_mb_boundary(self):
         """Test valid memory at MB boundaries."""
         # Lower boundary
-        request = CalculationRequest(memory=128, memory_unit="MB", ephemeral_storage=512, storage_unit="MB")
+        request = CalculationRequest(
+            memory=128, memory_unit="MB", ephemeral_storage=512, storage_unit="MB"
+        )
         assert request.memory == 128
-        
+
         # Upper boundary
-        request = CalculationRequest(memory=10240, memory_unit="MB", ephemeral_storage=512, storage_unit="MB")
+        request = CalculationRequest(
+            memory=10240, memory_unit="MB", ephemeral_storage=512, storage_unit="MB"
+        )
         assert request.memory == 10240
 
     def test_valid_memory_gb_boundary(self):
         """Test valid memory at GB boundaries."""
         # Lower boundary
-        request = CalculationRequest(memory=0.125, memory_unit="GB", ephemeral_storage=0.5, storage_unit="GB")
+        request = CalculationRequest(
+            memory=0.125, memory_unit="GB", ephemeral_storage=0.5, storage_unit="GB"
+        )
         assert request.memory == 0.125
-        
+
         # Upper boundary
-        request = CalculationRequest(memory=10.24, memory_unit="GB", ephemeral_storage=0.5, storage_unit="GB")
+        request = CalculationRequest(
+            memory=10.24, memory_unit="GB", ephemeral_storage=0.5, storage_unit="GB"
+        )
         assert request.memory == 10.24
 
     def test_valid_ephemeral_storage_mb_boundary(self):
         """Test valid ephemeral storage at MB boundaries."""
         # Lower boundary
-        request = CalculationRequest(memory=512, memory_unit="MB", ephemeral_storage=512, storage_unit="MB")
+        request = CalculationRequest(
+            memory=512, memory_unit="MB", ephemeral_storage=512, storage_unit="MB"
+        )
         assert request.ephemeral_storage == 512
-        
+
         # Upper boundary
-        request = CalculationRequest(memory=512, memory_unit="MB", ephemeral_storage=10240, storage_unit="MB")
+        request = CalculationRequest(
+            memory=512, memory_unit="MB", ephemeral_storage=10240, storage_unit="MB"
+        )
         assert request.ephemeral_storage == 10240
 
     def test_valid_ephemeral_storage_gb_boundary(self):
         """Test valid ephemeral storage at GB boundaries."""
         # Lower boundary
-        request = CalculationRequest(memory=0.5, memory_unit="GB", ephemeral_storage=0.5, storage_unit="GB")
+        request = CalculationRequest(
+            memory=0.5, memory_unit="GB", ephemeral_storage=0.5, storage_unit="GB"
+        )
         assert request.ephemeral_storage == 0.5
-        
+
         # Upper boundary
-        request = CalculationRequest(memory=0.5, memory_unit="GB", ephemeral_storage=10.24, storage_unit="GB")
+        request = CalculationRequest(
+            memory=0.5, memory_unit="GB", ephemeral_storage=10.24, storage_unit="GB"
+        )
         assert request.ephemeral_storage == 10.24
 
     def test_arm64_architecture(self):
         """Test ARM64 architecture is valid."""
-        request = CalculationRequest(architecture="arm64", ephemeral_storage=512, storage_unit="MB")
+        request = CalculationRequest(
+            architecture="arm64", ephemeral_storage=512, storage_unit="MB"
+        )
         assert request.architecture == "arm64"
 
 
@@ -208,8 +234,7 @@ class TestCalculationResult:
     def test_valid_calculation_result(self):
         """Test valid calculation result."""
         result = CalculationResult(
-            total_cost=10.50,
-            calculation_steps=["Step 1", "Step 2", "Step 3"]
+            total_cost=10.50, calculation_steps=["Step 1", "Step 2", "Step 3"]
         )
         assert result.total_cost == 10.50
         assert len(result.calculation_steps) == 3
@@ -217,18 +242,14 @@ class TestCalculationResult:
 
     def test_calculation_result_empty_steps(self):
         """Test calculation result with empty steps."""
-        result = CalculationResult(
-            total_cost=0.0,
-            calculation_steps=[]
-        )
+        result = CalculationResult(total_cost=0.0, calculation_steps=[])
         assert result.total_cost == 0.0
         assert len(result.calculation_steps) == 0
 
     def test_calculation_result_negative_cost(self):
         """Test calculation result can have negative cost (edge case)."""
         result = CalculationResult(
-            total_cost=-5.0,
-            calculation_steps=["Error occurred"]
+            total_cost=-5.0, calculation_steps=["Error occurred"]
         )
         assert result.total_cost == -5.0
 
@@ -236,6 +257,6 @@ class TestCalculationResult:
         """Test calculation result with missing required fields."""
         with pytest.raises(ValidationError):
             CalculationResult(total_cost=10.0)  # Missing calculation_steps
-        
+
         with pytest.raises(ValidationError):
             CalculationResult(calculation_steps=["Step 1"])  # Missing total_cost

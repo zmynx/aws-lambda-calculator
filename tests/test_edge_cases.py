@@ -1,9 +1,8 @@
-import pytest
 import json
 from test_cli import run_cli
 from aws_lambda import handler
 from aws_lambda_calculator import calculate
-from aws_lambda_calculator.models import CalculationRequest, CalculationResult
+from aws_lambda_calculator.models import CalculationResult
 
 
 class TestEdgeCases:
@@ -12,17 +11,26 @@ class TestEdgeCases:
     def test_minimal_requests_per_month(self):
         """Test with minimal number of requests."""
         stdout, stderr, exit_code = run_cli(
-            "--region", "us-east-1",
-            "--architecture", "x86",
-            "--number-of-requests", "1",
-            "--request-unit", "per month",
-            "--duration-of-each-request-in-ms", "1",
-            "--memory", "128",  # Minimum memory
-            "--memory-unit", "MB",
-            "--ephemeral-storage", "512",  # Minimum ephemeral storage
-            "--storage-unit", "MB"
+            "--region",
+            "us-east-1",
+            "--architecture",
+            "x86",
+            "--number-of-requests",
+            "1",
+            "--request-unit",
+            "per month",
+            "--duration-of-each-request-in-ms",
+            "1",
+            "--memory",
+            "128",  # Minimum memory
+            "--memory-unit",
+            "MB",
+            "--ephemeral-storage",
+            "512",  # Minimum ephemeral storage
+            "--storage-unit",
+            "MB",
         )
-        
+
         assert exit_code == 0
         assert "Total cost:" in stdout
 
@@ -37,9 +45,9 @@ class TestEdgeCases:
             memory=10240,  # Maximum MB
             memory_unit="MB",
             ephemeral_storage=10240,  # Maximum MB
-            storage_unit="MB"
+            storage_unit="MB",
         )
-        
+
         assert isinstance(result, CalculationResult)
         assert result.total_cost > 0
 
@@ -54,9 +62,9 @@ class TestEdgeCases:
             memory=10.24,  # Maximum GB
             memory_unit="GB",
             ephemeral_storage=10.24,  # Maximum GB
-            storage_unit="GB"
+            storage_unit="GB",
         )
-        
+
         assert isinstance(result, CalculationResult)
         assert result.total_cost > 0
 
@@ -71,9 +79,9 @@ class TestEdgeCases:
             memory=128,
             memory_unit="MB",
             ephemeral_storage=512,
-            storage_unit="MB"
+            storage_unit="MB",
         )
-        
+
         assert isinstance(result, CalculationResult)
         assert result.total_cost > 0
 
@@ -88,16 +96,23 @@ class TestEdgeCases:
             memory=128,
             memory_unit="MB",
             ephemeral_storage=512,
-            storage_unit="MB"
+            storage_unit="MB",
         )
-        
+
         assert isinstance(result, CalculationResult)
         assert result.total_cost > 0
 
     def test_all_time_units(self):
         """Test all different time units work correctly."""
-        time_units = ["per second", "per minute", "per hour", "per day", "per month", "million per month"]
-        
+        time_units = [
+            "per second",
+            "per minute",
+            "per hour",
+            "per day",
+            "per month",
+            "million per month",
+        ]
+
         for unit in time_units:
             result = calculate(
                 region="us-east-1",
@@ -108,9 +123,9 @@ class TestEdgeCases:
                 memory=512,
                 memory_unit="MB",
                 ephemeral_storage=512,
-                storage_unit="MB"
+                storage_unit="MB",
             )
-            
+
             assert isinstance(result, CalculationResult)
             assert result.total_cost >= 0
             assert len(result.calculation_steps) > 0
@@ -118,7 +133,7 @@ class TestEdgeCases:
     def test_different_regions(self):
         """Test with different AWS regions."""
         regions = ["us-east-1", "us-west-2", "eu-west-1", "ap-southeast-1"]
-        
+
         for region in regions:
             result = calculate(
                 region=region,
@@ -129,9 +144,9 @@ class TestEdgeCases:
                 memory=512,
                 memory_unit="MB",
                 ephemeral_storage=512,
-                storage_unit="MB"
+                storage_unit="MB",
             )
-            
+
             assert isinstance(result, CalculationResult)
             assert result.total_cost >= 0
 
@@ -147,9 +162,9 @@ class TestEdgeCases:
             memory=512,
             memory_unit="MB",
             ephemeral_storage=512,
-            storage_unit="MB"
+            storage_unit="MB",
         )
-        
+
         # Test ARM64
         result_arm64 = calculate(
             region="us-east-1",
@@ -160,9 +175,9 @@ class TestEdgeCases:
             memory=512,
             memory_unit="MB",
             ephemeral_storage=512,
-            storage_unit="MB"
+            storage_unit="MB",
         )
-        
+
         assert isinstance(result_x86, CalculationResult)
         assert isinstance(result_arm64, CalculationResult)
         # ARM64 is typically cheaper, but costs may vary by region
@@ -181,11 +196,11 @@ class TestEdgeCases:
             "memory_unit": "MB",
             "ephemeral_storage": 10240,  # Maximum ephemeral storage
             "storage_unit": "MB",
-            "verbose": True
+            "verbose": True,
         }
         event = {"body": json.dumps(payload)}
         response = handler(event, None)
-        
+
         assert response["statusCode"] == 200
         body = json.loads(response["body"])
         assert body["status"] == "success"
@@ -204,13 +219,13 @@ class TestEdgeCases:
             memory=1024,
             memory_unit="MB",
             ephemeral_storage=1024,
-            storage_unit="MB"
+            storage_unit="MB",
         )
-        
+
         assert isinstance(result, CalculationResult)
         steps = result.calculation_steps
         assert len(steps) > 0
-        
+
         # Check that steps contain expected calculation information
         step_text = " ".join(steps)
         assert "per month" in step_text.lower()
@@ -228,25 +243,20 @@ class TestEdgeCases:
             memory=512,
             memory_unit="MB",
             ephemeral_storage=0.5,  # Minimum GB
-            storage_unit="GB"
+            storage_unit="GB",
         )
-        
+
         assert isinstance(result, CalculationResult)
         assert result.total_cost >= 0
 
     def test_mixed_units_combinations(self):
         """Test various combinations of memory and storage units."""
-        combinations = [
-            ("MB", "MB"),
-            ("MB", "GB"),
-            ("GB", "MB"),
-            ("GB", "GB")
-        ]
-        
+        combinations = [("MB", "MB"), ("MB", "GB"), ("GB", "MB"), ("GB", "GB")]
+
         for memory_unit, storage_unit in combinations:
             memory = 1 if memory_unit == "GB" else 1024
             storage = 1 if storage_unit == "GB" else 1024
-            
+
             result = calculate(
                 region="us-east-1",
                 architecture="x86",
@@ -256,25 +266,34 @@ class TestEdgeCases:
                 memory=memory,
                 memory_unit=memory_unit,
                 ephemeral_storage=storage,
-                storage_unit=storage_unit
+                storage_unit=storage_unit,
             )
-            
+
             assert isinstance(result, CalculationResult)
             assert result.total_cost >= 0
 
     def test_cli_with_float_memory_values(self):
         """Test CLI with float memory values."""
         stdout, stderr, exit_code = run_cli(
-            "--region", "us-east-1",
-            "--architecture", "x86",
-            "--number-of-requests", "1000",
-            "--request-unit", "per hour",
-            "--duration-of-each-request-in-ms", "100",
-            "--memory", "1.5",  # Float value
-            "--memory-unit", "GB",
-            "--ephemeral-storage", "2.5",  # Float value
-            "--storage-unit", "GB"
+            "--region",
+            "us-east-1",
+            "--architecture",
+            "x86",
+            "--number-of-requests",
+            "1000",
+            "--request-unit",
+            "per hour",
+            "--duration-of-each-request-in-ms",
+            "100",
+            "--memory",
+            "1.5",  # Float value
+            "--memory-unit",
+            "GB",
+            "--ephemeral-storage",
+            "2.5",  # Float value
+            "--storage-unit",
+            "GB",
         )
-        
+
         assert exit_code == 0
         assert "Total cost:" in stdout

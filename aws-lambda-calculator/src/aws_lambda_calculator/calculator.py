@@ -293,7 +293,14 @@ def calculate(
     region: str = "us-east-1",
     architecture: Literal["x86", "arm64"] = "x86",
     number_of_requests: int = 1000000,
-    request_unit: Literal["per second", "per minute", "per hour", "per day", "per month", "million per month"] = "per day",
+    request_unit: Literal[
+        "per second",
+        "per minute",
+        "per hour",
+        "per day",
+        "per month",
+        "million per month",
+    ] = "per day",
     duration_of_each_request_in_ms: int = 1500,
     memory: float = 128,
     memory_unit: Literal["MB", "GB"] = "MB",
@@ -301,9 +308,9 @@ def calculate(
     storage_unit: Literal["MB", "GB"] = "MB",
 ) -> CalculationResult:
     """Calculate the total cost of execution."""
-    
+
     # Validate inputs using pydantic
-    request = CalculationRequest(
+    CalculationRequest(
         region=region,
         architecture=architecture,
         number_of_requests=number_of_requests,
@@ -381,10 +388,5 @@ def calculate(
     )
     logger.debug(f"Lambda cost (monthly): {total} USD")
     steps.append(f"Lambda cost (monthly): {total} USD")
-    
-    return CalculationResult(
-        total_cost=total,
-        calculation_steps=steps
-    )
 
-
+    return CalculationResult(total_cost=total, calculation_steps=steps)

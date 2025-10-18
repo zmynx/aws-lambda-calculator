@@ -1,9 +1,7 @@
-import pytest
 import json
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 from aws_lambda import handler
 from test_cli import run_cli
-from pydantic import ValidationError
 
 
 class TestLambdaErrorHandling:
@@ -13,7 +11,7 @@ class TestLambdaErrorHandling:
         """Test Lambda handler with invalid JSON in body."""
         event = {"body": "invalid json {"}
         response = handler(event, None)
-        
+
         assert response["statusCode"] == 500
         body = json.loads(response["body"])
         assert body["status"] == "error"
@@ -23,7 +21,7 @@ class TestLambdaErrorHandling:
         """Test Lambda handler with empty body."""
         event = {}  # No body key
         response = handler(event, None)
-        
+
         assert response["statusCode"] == 400  # Missing required field is client error
         body = json.loads(response["body"])
         assert body["status"] == "error"
@@ -43,7 +41,7 @@ class TestLambdaErrorHandling:
         }
         event = {"body": json.dumps(payload)}
         response = handler(event, None)
-        
+
         assert response["statusCode"] == 500
         body = json.loads(response["body"])
         assert body["status"] == "error"
@@ -64,7 +62,7 @@ class TestLambdaErrorHandling:
         }
         event = {"body": json.dumps(payload)}
         response = handler(event, None)
-        
+
         assert response["statusCode"] == 400
         body = json.loads(response["body"])
         assert body["status"] == "error"
@@ -85,7 +83,7 @@ class TestLambdaErrorHandling:
         }
         event = {"body": json.dumps(payload)}
         response = handler(event, None)
-        
+
         assert response["statusCode"] == 400
         body = json.loads(response["body"])
         assert body["status"] == "error"
@@ -106,7 +104,7 @@ class TestLambdaErrorHandling:
         }
         event = {"body": json.dumps(payload)}
         response = handler(event, None)
-        
+
         assert response["statusCode"] == 400
         body = json.loads(response["body"])
         assert body["status"] == "error"
@@ -126,12 +124,12 @@ class TestLambdaErrorHandling:
             "storage_unit": "MB",
         }
         event = {"body": json.dumps(payload)}
-        
+
         # Mock the calculate function to raise an exception
-        with patch('aws_lambda.calculate') as mock_calculate:
+        with patch("aws_lambda.calculate") as mock_calculate:
             mock_calculate.side_effect = Exception("Calculation error")
             response = handler(event, None)
-        
+
         assert response["statusCode"] == 500
         body = json.loads(response["body"])
         assert body["status"] == "error"
@@ -153,7 +151,7 @@ class TestLambdaErrorHandling:
         }
         event = {"body": json.dumps(payload)}
         response = handler(event, None)
-        
+
         assert response["statusCode"] == 200
         body = json.loads(response["body"])
         assert body["status"] == "success"
@@ -174,7 +172,7 @@ class TestLambdaErrorHandling:
         }
         event = {"body": json.dumps(payload)}
         response = handler(event, None)
-        
+
         headers = response["headers"]
         assert headers["Access-Control-Allow-Origin"] == "*"
         assert headers["Access-Control-Allow-Headers"] == "*"
@@ -188,118 +186,181 @@ class TestCLIErrorHandling:
         """Test CLI handles pydantic validation errors properly."""
         # Test with invalid memory value that will trigger pydantic validation
         stdout, stderr, exit_code = run_cli(
-            "--region", "us-east-1",
-            "--architecture", "x86",
-            "--number-of-requests", "1000",
-            "--request-unit", "per hour",
-            "--duration-of-each-request-in-ms", "100",
-            "--memory", "50",  # Too low, will trigger validation error
-            "--memory-unit", "MB",
-            "--ephemeral-storage", "512",
-            "--storage-unit", "MB"
+            "--region",
+            "us-east-1",
+            "--architecture",
+            "x86",
+            "--number-of-requests",
+            "1000",
+            "--request-unit",
+            "per hour",
+            "--duration-of-each-request-in-ms",
+            "100",
+            "--memory",
+            "50",  # Too low, will trigger validation error
+            "--memory-unit",
+            "MB",
+            "--ephemeral-storage",
+            "512",
+            "--storage-unit",
+            "MB",
         )
-        
+
         assert exit_code == 1
         assert "validation error" in stderr.lower()
 
     def test_cli_invalid_memory_range(self):
         """Test CLI with memory outside valid range."""
         stdout, stderr, exit_code = run_cli(
-            "--region", "us-east-1",
-            "--architecture", "x86",
-            "--number-of-requests", "1000",
-            "--request-unit", "per hour",
-            "--duration-of-each-request-in-ms", "100",
-            "--memory", "15000",  # Too high for MB
-            "--memory-unit", "MB",
-            "--ephemeral-storage", "512",
-            "--storage-unit", "MB"
+            "--region",
+            "us-east-1",
+            "--architecture",
+            "x86",
+            "--number-of-requests",
+            "1000",
+            "--request-unit",
+            "per hour",
+            "--duration-of-each-request-in-ms",
+            "100",
+            "--memory",
+            "15000",  # Too high for MB
+            "--memory-unit",
+            "MB",
+            "--ephemeral-storage",
+            "512",
+            "--storage-unit",
+            "MB",
         )
-        
+
         assert exit_code == 1
         assert "validation error" in stderr.lower()
 
     def test_cli_invalid_ephemeral_storage_range(self):
         """Test CLI with ephemeral storage outside valid range."""
         stdout, stderr, exit_code = run_cli(
-            "--region", "us-east-1",
-            "--architecture", "x86",
-            "--number-of-requests", "1000",
-            "--request-unit", "per hour",
-            "--duration-of-each-request-in-ms", "100",
-            "--memory", "512",
-            "--memory-unit", "MB",
-            "--ephemeral-storage", "400",  # Too low for MB
-            "--storage-unit", "MB"
+            "--region",
+            "us-east-1",
+            "--architecture",
+            "x86",
+            "--number-of-requests",
+            "1000",
+            "--request-unit",
+            "per hour",
+            "--duration-of-each-request-in-ms",
+            "100",
+            "--memory",
+            "512",
+            "--memory-unit",
+            "MB",
+            "--ephemeral-storage",
+            "400",  # Too low for MB
+            "--storage-unit",
+            "MB",
         )
-        
+
         assert exit_code == 1
         assert "validation error" in stderr.lower()
 
     def test_cli_zero_requests(self):
         """Test CLI with zero requests."""
         stdout, stderr, exit_code = run_cli(
-            "--region", "us-east-1",
-            "--architecture", "x86",
-            "--number-of-requests", "0",  # Invalid
-            "--request-unit", "per hour",
-            "--duration-of-each-request-in-ms", "100",
-            "--memory", "512",
-            "--memory-unit", "MB",
-            "--ephemeral-storage", "512",
-            "--storage-unit", "MB"
+            "--region",
+            "us-east-1",
+            "--architecture",
+            "x86",
+            "--number-of-requests",
+            "0",  # Invalid
+            "--request-unit",
+            "per hour",
+            "--duration-of-each-request-in-ms",
+            "100",
+            "--memory",
+            "512",
+            "--memory-unit",
+            "MB",
+            "--ephemeral-storage",
+            "512",
+            "--storage-unit",
+            "MB",
         )
-        
+
         assert exit_code == 1
         assert "validation error" in stderr.lower()
 
     def test_cli_zero_duration(self):
         """Test CLI with zero duration."""
         stdout, stderr, exit_code = run_cli(
-            "--region", "us-east-1",
-            "--architecture", "x86",
-            "--number-of-requests", "1000",
-            "--request-unit", "per hour",
-            "--duration-of-each-request-in-ms", "0",  # Invalid
-            "--memory", "512",
-            "--memory-unit", "MB",
-            "--ephemeral-storage", "512",
-            "--storage-unit", "MB"
+            "--region",
+            "us-east-1",
+            "--architecture",
+            "x86",
+            "--number-of-requests",
+            "1000",
+            "--request-unit",
+            "per hour",
+            "--duration-of-each-request-in-ms",
+            "0",  # Invalid
+            "--memory",
+            "512",
+            "--memory-unit",
+            "MB",
+            "--ephemeral-storage",
+            "512",
+            "--storage-unit",
+            "MB",
         )
-        
+
         assert exit_code == 1
         assert "validation error" in stderr.lower()
 
     def test_cli_with_gb_units(self):
         """Test CLI with valid GB units."""
         stdout, stderr, exit_code = run_cli(
-            "--region", "us-east-1",
-            "--architecture", "arm64",
-            "--number-of-requests", "1000",
-            "--request-unit", "per second",
-            "--duration-of-each-request-in-ms", "100",
-            "--memory", "1",
-            "--memory-unit", "GB",
-            "--ephemeral-storage", "2",
-            "--storage-unit", "GB"
+            "--region",
+            "us-east-1",
+            "--architecture",
+            "arm64",
+            "--number-of-requests",
+            "1000",
+            "--request-unit",
+            "per second",
+            "--duration-of-each-request-in-ms",
+            "100",
+            "--memory",
+            "1",
+            "--memory-unit",
+            "GB",
+            "--ephemeral-storage",
+            "2",
+            "--storage-unit",
+            "GB",
         )
-        
+
         assert exit_code == 0
         assert "Total cost:" in stdout
 
     def test_cli_with_million_requests(self):
         """Test CLI with million requests unit."""
         stdout, stderr, exit_code = run_cli(
-            "--region", "us-east-1",
-            "--architecture", "x86",
-            "--number-of-requests", "5",
-            "--request-unit", "million per month",
-            "--duration-of-each-request-in-ms", "100",
-            "--memory", "512",
-            "--memory-unit", "MB",
-            "--ephemeral-storage", "512",
-            "--storage-unit", "MB"
+            "--region",
+            "us-east-1",
+            "--architecture",
+            "x86",
+            "--number-of-requests",
+            "5",
+            "--request-unit",
+            "million per month",
+            "--duration-of-each-request-in-ms",
+            "100",
+            "--memory",
+            "512",
+            "--memory-unit",
+            "MB",
+            "--ephemeral-storage",
+            "512",
+            "--storage-unit",
+            "MB",
         )
-        
+
         assert exit_code == 0
         assert "Total cost:" in stdout

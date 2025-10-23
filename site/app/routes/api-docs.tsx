@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import type { Route } from "./+types/api-docs";
+import FallingLambdas from "../components/FallingLambdas";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -60,8 +61,9 @@ export default function ApiDocs() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <div className="container mx-auto px-4 py-8">
+    <div className="min-h-screen relative">
+      <FallingLambdas />
+      <div className="container mx-auto px-4 py-8 relative z-10">
         <div className="mb-8">
           <h1 className="text-4xl font-bold mb-4 text-gray-900 dark:text-gray-100">
             API Documentation
@@ -77,13 +79,13 @@ export default function ApiDocs() {
         </div>
 
         {/* Swagger UI Container */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg">
+        <div className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-md rounded-xl shadow-2xl border border-slate-200/50 dark:border-slate-600">
           <div id="swagger-ui" className="swagger-container"></div>
         </div>
 
         {/* Additional Info Section */}
         <div className="mt-8 grid md:grid-cols-2 gap-6">
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+          <div className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-md rounded-xl shadow-2xl border border-slate-200/50 dark:border-slate-600 p-8">
             <h2 className="text-xl font-semibold mb-3 text-gray-900 dark:text-gray-100">
               🔑 Authentication
             </h2>
@@ -91,7 +93,7 @@ export default function ApiDocs() {
               The API is currently public and does not require authentication. Rate limiting is applied to prevent abuse.
             </p>
           </div>
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+          <div className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-md rounded-xl shadow-2xl border border-slate-200/50 dark:border-slate-600 p-8">
             <h2 className="text-xl font-semibold mb-3 text-gray-900 dark:text-gray-100">
               📦 Response Format
             </h2>

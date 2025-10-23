@@ -1,5 +1,6 @@
 import type { Route } from "./+types/comparison";
 import { Link } from "react-router";
+import FallingLambdas from "../components/FallingLambdas";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -10,7 +11,9 @@ export function meta({}: Route.MetaArgs) {
 
 export default function Comparison() {
   return (
-    <div className="container mx-auto p-8">
+    <div className="min-h-screen relative">
+      <FallingLambdas />
+      <div className="container mx-auto p-8 relative z-10">
       <h1 className="text-4xl font-bold mb-6 text-slate-900 dark:text-slate-100 tracking-tight">
         AWS Lambda Calculator vs Official AWS Tools
       </h1>
@@ -28,7 +31,7 @@ export default function Comparison() {
         <h2 className="text-3xl font-semibold mb-6 text-slate-900 dark:text-slate-100">📊 Feature Comparison</h2>
         
         <div className="overflow-x-auto">
-          <table className="min-w-full bg-white dark:bg-slate-800 shadow-xl rounded-xl border border-slate-200 dark:border-slate-700">
+          <table className="min-w-full bg-white/95 dark:bg-slate-800/95 backdrop-blur-md shadow-2xl rounded-xl border border-slate-200/50 dark:border-slate-600">
             <thead>
               <tr className="bg-slate-100 dark:bg-slate-700">
                 <th className="px-6 py-4 text-left text-sm font-semibold text-slate-900 dark:text-slate-100">Feature</th>
@@ -585,6 +588,7 @@ export default function Comparison() {
           </a>
         </div>
       </div>
+    </div>
     </div>
   );
 }

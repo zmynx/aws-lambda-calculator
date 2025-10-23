@@ -1,5 +1,6 @@
 import type { Route } from "./+types/configuration";
 import { useState } from "react";
+import FallingLambdas from "../components/FallingLambdas";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -12,7 +13,9 @@ export default function Configuration() {
   const [isPrettyPrint, setIsPrettyPrint] = useState(true);
   const [isResponsePrettyPrint, setIsResponsePrettyPrint] = useState(true);
   return (
-    <div className="container mx-auto p-8">
+    <div className="min-h-screen relative">
+      <FallingLambdas />
+      <div className="container mx-auto p-8 relative z-10">
       <h1 className="text-4xl font-bold mb-6 text-slate-900 dark:text-slate-100 tracking-tight">Configuration</h1>
       
       <div className="prose max-w-none">
@@ -28,7 +31,7 @@ export default function Configuration() {
           <h2 className="text-3xl font-semibold mb-6 text-slate-900 dark:text-slate-100">🔧 Lambda Configuration Parameters</h2>
           
           <div className="grid md:grid-cols-2 gap-8">
-            <div className="bg-white dark:bg-slate-800 shadow-xl rounded-xl p-6 border border-slate-200 dark:border-slate-700 transition-colors duration-300">
+            <div className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-md shadow-2xl rounded-xl p-8 border border-slate-200/50 dark:border-slate-600 transition-colors duration-300">
               <h3 className="text-xl font-semibold mb-4 text-blue-800 dark:text-blue-300">Memory Allocation</h3>
               <div className="space-y-3">
                 <div className="bg-blue-50 dark:bg-blue-950/40 p-4 rounded-lg transition-colors duration-300 border border-blue-100 dark:border-blue-900/30">
@@ -44,7 +47,7 @@ export default function Configuration() {
               </div>
             </div>
 
-            <div className="bg-white dark:bg-slate-800 shadow-xl rounded-xl p-6 border border-slate-200 dark:border-slate-700 transition-colors duration-300">
+            <div className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-md shadow-2xl rounded-xl p-8 border border-slate-200/50 dark:border-slate-600 transition-colors duration-300">
               <h3 className="text-xl font-semibold mb-4 text-emerald-800 dark:text-emerald-300">Execution Duration</h3>
               <div className="space-y-3">
                 <div className="bg-emerald-50 dark:bg-emerald-950/40 p-4 rounded-lg transition-colors duration-300 border border-emerald-100 dark:border-emerald-900/30">
@@ -60,7 +63,7 @@ export default function Configuration() {
               </div>
             </div>
 
-            <div className="bg-white dark:bg-slate-800 shadow-xl rounded-xl p-6 border border-slate-200 dark:border-slate-700 transition-colors duration-300">
+            <div className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-md shadow-2xl rounded-xl p-8 border border-slate-200/50 dark:border-slate-600 transition-colors duration-300">
               <h3 className="text-xl font-semibold mb-4 text-purple-800 dark:text-purple-300">Request Volume</h3>
               <div className="space-y-3">
                 <div className="bg-purple-50 dark:bg-purple-950/40 p-4 rounded-lg transition-colors duration-300 border border-purple-100 dark:border-purple-900/30">
@@ -76,7 +79,7 @@ export default function Configuration() {
               </div>
             </div>
 
-            <div className="bg-white dark:bg-slate-800 shadow-xl rounded-xl p-6 border border-slate-200 dark:border-slate-700 transition-colors duration-300">
+            <div className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-md shadow-2xl rounded-xl p-8 border border-slate-200/50 dark:border-slate-600 transition-colors duration-300">
               <h3 className="text-xl font-semibold mb-4 text-orange-800 dark:text-orange-300">Architecture Support</h3>
               <div className="space-y-3">
                 <div className="bg-orange-50 dark:bg-orange-950/40 p-4 rounded-lg transition-colors duration-300 border border-orange-100 dark:border-orange-900/30">
@@ -98,7 +101,7 @@ export default function Configuration() {
         <section className="mb-12">
           <h2 className="text-3xl font-semibold mb-6 text-slate-900 dark:text-slate-100">🚀 API Configuration</h2>
           
-          <div className="bg-white dark:bg-slate-800 shadow-xl rounded-xl p-6 border border-slate-200 dark:border-slate-700 transition-colors duration-300">
+          <div className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-md shadow-2xl rounded-xl p-8 border border-slate-200/50 dark:border-slate-600 transition-colors duration-300">
             <h3 className="text-xl font-semibold mb-4 text-slate-900 dark:text-slate-100">Request Format</h3>
             
             <div className="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-lg mb-4 border border-slate-200 dark:border-slate-700">
@@ -304,6 +307,7 @@ export default function Configuration() {
           </a>
         </div>
       </div>
+    </div>
     </div>
   );
 }

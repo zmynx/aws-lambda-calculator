@@ -1,5 +1,6 @@
 import type { Route } from "./+types/install-usage";
 import CodeBlock from "../components/CodeBlock";
+import FallingLambdas from "../components/FallingLambdas";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -10,7 +11,9 @@ export function meta({}: Route.MetaArgs) {
 
 export default function InstallUsage() {
   return (
-    <div className="container mx-auto p-8">
+    <div className="min-h-screen relative">
+      <FallingLambdas />
+      <div className="container mx-auto p-8 relative z-10">
       <h1 className="text-4xl font-bold mb-6 text-slate-900 dark:text-slate-100 tracking-tight">Getting Started</h1>
       
       <div className="prose max-w-none">
@@ -78,7 +81,7 @@ export default function InstallUsage() {
             <h2 className="text-3xl font-semibold">1. Python Package</h2>
           </div>
           
-          <div className="bg-white/80 dark:bg-gray-800 shadow-lg rounded-lg p-6 transition-colors duration-300 mb-4">
+          <div className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-md shadow-2xl rounded-xl p-8 border border-slate-200/50 dark:border-slate-600 transition-colors duration-300 mb-4">
             <div className="mb-4">
               <a
                 href="https://github.com/zmynx/aws-lambda-calculator/releases"
@@ -153,7 +156,7 @@ print(f"\nTotal monthly cost: \${result.total_cost:.2f}")`}
             <h2 className="text-3xl font-semibold">2. API / Lambda Handler</h2>
           </div>
           
-          <div className="bg-white/80 dark:bg-gray-800 shadow-lg rounded-lg p-6 transition-colors duration-300">
+          <div className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-md shadow-2xl rounded-xl p-8 border border-slate-200/50 dark:border-slate-600 transition-colors duration-300">
             <p className="text-gray-700 mb-4">Clone the repository and install dependencies with Poetry:</p>
             
             <CodeBlock 
@@ -202,7 +205,7 @@ python -m poetry run python -c "import sys; sys.path.insert(0, 'src'); from aws_
             <h2 className="text-3xl font-semibold">3. CLI</h2>
           </div>
           
-          <div className="bg-white/80 dark:bg-gray-800 shadow-lg rounded-lg p-6 transition-colors duration-300">
+          <div className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-md shadow-2xl rounded-xl p-8 border border-slate-200/50 dark:border-slate-600 transition-colors duration-300">
             <p className="text-gray-700 mb-4">Clone the repository and install dependencies with Poetry:</p>
             
             <CodeBlock 
@@ -278,7 +281,7 @@ alc -r us-east-1 -a x86 -n 1000 -nu 'per second' -d 100 -m 512 -mu MB -es 512 -e
             <h2 className="text-3xl font-semibold">4. Docker Image</h2>
           </div>
           
-          <div className="bg-white/80 dark:bg-gray-800 shadow-lg rounded-lg p-6 transition-colors duration-300">
+          <div className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-md shadow-2xl rounded-xl p-8 border border-slate-200/50 dark:border-slate-600 transition-colors duration-300">
             <div className="mb-4">
               <a
                 href="https://github.com/zmynx/aws-lambda-calculator/packages"
@@ -406,7 +409,7 @@ curl -X POST "http://localhost:9000/2015-03-31/functions/function/invocations" \
             <h2 className="text-3xl font-semibold">5. Serverless API</h2>
           </div>
           
-          <div className="bg-white/80 dark:bg-gray-800 shadow-lg rounded-lg p-6 transition-colors duration-300">
+          <div className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-md shadow-2xl rounded-xl p-8 border border-slate-200/50 dark:border-slate-600 transition-colors duration-300">
             <p className="text-gray-700 mb-4">
               The serverless API solution is based on a Lambda function, and can be used by invoking the endpoint, 
               while providing a payload of the configurations to use.
@@ -439,7 +442,7 @@ curl -X POST "http://localhost:9000/2015-03-31/functions/function/invocations" \
             <h2 className="text-3xl font-semibold">6. Web Based Solution</h2>
           </div>
           
-          <div className="bg-white/80 dark:bg-gray-800 shadow-lg rounded-lg p-6 transition-colors duration-300">
+          <div className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-md shadow-2xl rounded-xl p-8 border border-slate-200/50 dark:border-slate-600 transition-colors duration-300">
             <p className="text-gray-700 mb-4">
               Use our web-based calculator directly in your browser - no installation required!
             </p>
@@ -533,6 +536,7 @@ curl -X POST "http://localhost:9000/2015-03-31/functions/function/invocations" \
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import type { Route } from "./+types/home";
 import { Link, useNavigate } from "react-router";
 import { useCallback } from "react";
+import FallingLambdas from "../components/FallingLambdas";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -20,8 +21,9 @@ export default function Home() {
   }, [navigate]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-800">
-      <div className="container mx-auto px-4 py-12 lg:px-8">
+    <div className="min-h-screen relative">
+      <FallingLambdas />
+      <div className="container mx-auto px-4 py-12 lg:px-8 relative z-10">
         {/* Hero Section */}
         <div className="text-center mb-16">
           {/* GitHub Buttons */}
@@ -100,7 +102,7 @@ export default function Home() {
         </div>
 
         {/* Table of Contents */}
-        <div className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm shadow-2xl rounded-2xl p-8 mb-12 border border-slate-200 dark:border-slate-700 transition-colors duration-300">
+        <div className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-md shadow-2xl rounded-2xl p-8 mb-12 border border-slate-200/50 dark:border-slate-600 transition-colors duration-300">
           <h2 className="text-3xl font-bold mb-6 flex items-center text-slate-900 dark:text-slate-100">
             📑 Table of Contents
           </h2>
@@ -171,7 +173,7 @@ export default function Home() {
           </p>
         </div>
 
-          <div className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm shadow-2xl rounded-2xl p-8 border border-slate-200 dark:border-slate-700 transition-all duration-300 hover:shadow-3xl hover:-translate-y-1">
+          <div className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-md shadow-2xl rounded-2xl p-8 border border-slate-200/50 dark:border-slate-600 transition-all duration-300 hover:shadow-3xl hover:-translate-y-1">
             <h3 className="text-2xl font-bold mb-4 text-slate-900 dark:text-slate-100">🤝 CONTRIBUTING</h3>
             <p className="text-slate-700 dark:text-slate-300 mb-4 leading-relaxed text-base">
               Shout out to:<br />

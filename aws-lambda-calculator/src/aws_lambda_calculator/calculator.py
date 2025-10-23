@@ -191,7 +191,7 @@ def calc_monthly_compute_charges(
     tier_cost_factor: dict[str, float],
     include_free_tier: bool,
     steps: list[str],
-) -> tuple[float, float]:
+) -> tuple[float, float, float]:
     """
     @brief Calculate the monthly compute charges based on requests per month, duration of each request in ms, and memory in GB.
     @param requests_per_month: The number of requests per month.
@@ -392,13 +392,15 @@ def calculate(
     # Step 5
     logger.debug("Pricing calculations:")
     steps.append("\nPricing calculations:")
-    total_compute_gb_sec, monthly_compute_charges, total_compute_sec = calc_monthly_compute_charges(
-        requests_per_month,
-        duration_of_each_request_in_ms,
-        memory_in_gb,
-        tier_cost_factor,
-        include_free_tier,
-        steps,
+    total_compute_gb_sec, monthly_compute_charges, total_compute_sec = (
+        calc_monthly_compute_charges(
+            requests_per_month,
+            duration_of_each_request_in_ms,
+            memory_in_gb,
+            tier_cost_factor,
+            include_free_tier,
+            steps,
+        )
     )
     logger.debug(f"Monthly compute charges: {monthly_compute_charges} USD")
     steps.append(f"Monthly compute charges: {monthly_compute_charges} USD\n")

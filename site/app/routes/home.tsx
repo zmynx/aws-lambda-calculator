@@ -1,4 +1,6 @@
 import type { Route } from "./+types/home";
+import { Link, useNavigate } from "react-router";
+import { useCallback } from "react";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -8,6 +10,20 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Home() {
+  const navigate = useNavigate();
+  
+  const handleContributingClick = useCallback((e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    navigate('/about');
+    // Delay scrolling to allow page to load
+    setTimeout(() => {
+      const element = document.getElementById('contributing');
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 100);
+  }, [navigate]);
+
   return (
     <div className="container mx-auto p-8">
       {/* GitHub Buttons */}
@@ -89,26 +105,26 @@ export default function Home() {
         <div className="grid md:grid-cols-2 gap-4">
           <ul className="space-y-2">
             <li>
-              <a href="/introduction" className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">
+              <Link to="/introduction" className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">
                 📘 Introduction
-              </a>
+              </Link>
               <ul className="ml-4 mt-1 space-y-1 text-sm">
                 <li>
-                  <a href="/introduction#back-story" className="text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors duration-200">
+                  <Link to="/introduction#back-story" className="text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors duration-200">
                     Back story
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="/introduction#the-short-version" className="text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors duration-200">
+                  <Link to="/introduction#the-short-version" className="text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors duration-200">
                     The short version...
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </li>
             <li>
-              <a href="/install-usage" className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">
+              <Link to="/install-usage" className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">
                 🚀 Installation & Usage
-              </a>
+              </Link>
               <ul className="ml-4 mt-1 space-y-1 text-sm">
                 <li className="text-slate-600 dark:text-slate-400">Python Package</li>
                 <li className="text-slate-600 dark:text-slate-400">API</li>
@@ -121,9 +137,9 @@ export default function Home() {
           </ul>
           <ul className="space-y-2">
             <li>
-              <a href="/demo" className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">
+              <Link to="/demo" className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">
                 🧮 Try the Calculator
-              </a>
+              </Link>
             </li>
             <li>
               <a href="https://github.com/zmynx/aws-lambda-calculator/issues" 
@@ -132,7 +148,7 @@ export default function Home() {
               </a>
             </li>
             <li>
-              <a href="/about" className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">
+              <a href="#" onClick={handleContributingClick} className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">
                 📄 License & Contributing
               </a>
             </li>
@@ -149,7 +165,7 @@ export default function Home() {
             Provided AS IS, no warranty given, no liability taken - USE AT YOUR OWN RISK.
           </p>
           <p className="text-sm text-slate-600 dark:text-slate-400">
-            More info can be found in our <a href="/about" className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium transition-colors duration-200">LICENSE file</a>.
+            More info can be found in our <a href="https://github.com/zmynx/aws-lambda-calculator/blob/main/LICENSE.md" className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium transition-colors duration-200" target="_blank" rel="noopener noreferrer">LICENSE file</a>.
           </p>
         </div>
 
@@ -161,7 +177,7 @@ export default function Home() {
           </p>
           <p className="text-slate-700 dark:text-slate-300 leading-relaxed">
             Wanna contribute?<br />
-            Follow our <a href="/about" className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium transition-colors duration-200">CONTRIBUTING guide</a> on our docs section.
+            Follow our <a href="#" onClick={handleContributingClick} className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium transition-colors duration-200">CONTRIBUTING guide</a> on our docs section.
           </p>
         </div>
       </div>

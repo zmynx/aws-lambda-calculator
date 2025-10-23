@@ -248,7 +248,7 @@ export default function About() {
         </section>
 
         {/* License & Contributing */}
-        <section className="mb-8">
+        <section className="mb-8" id="contributing">
           <h2 className="text-3xl font-semibold mb-8 text-slate-900 dark:text-slate-100">🤝 Contributing & License</h2>
           
           <div className="bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-950/20 dark:to-blue-950/20 p-8 rounded-xl border border-green-200 dark:border-green-800">

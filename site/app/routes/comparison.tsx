@@ -340,7 +340,7 @@ export default function Comparison() {
             </div>
             <div className="p-6">
               <div className="text-center mb-4">
-                <div className="text-3xl font-bold text-green-600 dark:text-green-400">$101.46</div>
+                <div className="text-3xl font-bold text-green-600 dark:text-green-400">$101.36</div>
                 <div className="text-sm text-slate-600 dark:text-slate-400">per month</div>
               </div>
               
@@ -355,7 +355,7 @@ export default function Comparison() {
                 </div>
                 <div className="flex justify-between">
                   <span>Storage Cost:</span>
-                  <span className="font-medium">$0.12</span>
+                  <span className="font-medium">$0.03</span>
                 </div>
                 <div className="flex justify-between border-t pt-2 text-green-600 dark:text-green-400">
                   <span>Free Tier Savings:</span>
@@ -363,7 +363,7 @@ export default function Comparison() {
                 </div>
                 <div className="flex justify-between border-t pt-2 font-semibold">
                   <span>Total Monthly Cost:</span>
-                  <span className="text-green-600 dark:text-green-400">$101.46</span>
+                  <span className="text-green-600 dark:text-green-400">$101.36</span>
                 </div>
               </div>
 

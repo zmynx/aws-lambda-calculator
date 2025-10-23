@@ -1,4 +1,5 @@
 import type { Route } from "./+types/comparison";
+import { Link } from "react-router";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -572,12 +573,12 @@ export default function Comparison() {
           Stop wrestling with complex calculators. Get instant, accurate Lambda cost estimates.
         </p>
         <div className="flex flex-wrap justify-center gap-4">
-          <a href="/demo" className="bg-white text-purple-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors shadow-md">
+          <Link to="/demo" className="bg-white text-purple-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors shadow-md">
             🧮 Try the Calculator
-          </a>
-          <a href="/getting-started" className="bg-purple-700 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-800 transition-colors shadow-md">
+          </Link>
+          <Link to="/getting-started" className="bg-purple-700 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-800 transition-colors shadow-md">
             📖 Get Started
-          </a>
+          </Link>
           <a href="https://github.com/zmynx/aws-lambda-calculator" target="_blank" rel="noopener noreferrer"
              className="bg-slate-800 text-white px-6 py-3 rounded-lg font-semibold hover:bg-slate-700 transition-colors shadow-md">
             ⭐ Star on GitHub

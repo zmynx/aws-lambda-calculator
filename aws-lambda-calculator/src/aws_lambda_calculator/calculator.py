@@ -135,32 +135,28 @@ def calculate_tiered_cost(
         if usage_in_tier > 0:
             total_cost += usage_in_tier * rate
             prev_threshold += usage_in_tier
-        logger.debug(
-            f"{usage_in_tier} GB-s x {rate:.8f} USD = {usage_in_tier * rate} USD"
-        )
-        steps.append(
-            f"{usage_in_tier} GB-s x {rate:.8f} USD = {usage_in_tier * rate} USD"
-        )
+        msg = f"{usage_in_tier} GB-s x {rate:.8f} USD = {usage_in_tier * rate} USD"
+        logger.debug(msg)
+        steps.append(msg)
 
         # once we've billed all the usage, early exit
         if total_compute_gb_sec <= threshold:
-            logger.debug(f"Total tier cost: {total_cost} USD (Monthly compute charges)")
-            steps.append(f"Total tier cost: {total_cost} USD (Monthly compute charges)")
+            msg = f"Total tier cost: {total_cost} USD (Monthly compute charges)"
+            logger.debug(msg)
+            steps.append(msg)
             return total_cost
 
     # 3) bill any remaining usage above the highest threshold
     remaining = total_compute_gb_sec - prev_threshold
     if remaining > 0:
-        logger.debug(
-            f"{remaining} GB-s x {overflow_rate:.8f} USD = {remaining * overflow_rate} USD"
-        )
-        steps.append(
-            f"{remaining} GB-s x {overflow_rate:.8f} USD = {remaining * overflow_rate} USD"
-        )
+        msg = f"{remaining} GB-s x {overflow_rate:.8f} USD = {remaining * overflow_rate} USD"
+        logger.debug(msg)
+        steps.append(msg)
         total_cost += remaining * overflow_rate
 
-    logger.debug(f"Total tier cost: {total_cost} USD (Monthly compute charges)")
-    steps.append(f"Total tier cost: {total_cost} USD (Monthly compute charges)")
+    msg = f"Total tier cost: {total_cost} USD (Monthly compute charges)"
+    logger.debug(msg)
+    steps.append(msg)
     return total_cost
 
 
@@ -180,12 +176,9 @@ def calc_monthly_compute_charges(
     @return: The monthly compute charges.
     """
     total_compute_sec = requests_per_month * (duration_of_each_request_in_ms * 0.001)
-    logger.debug(
-        f"{requests_per_month} requests x {duration_of_each_request_in_ms} ms x 0.001 ms to sec conversion factor = {total_compute_sec} total compute (seconds)"
-    )
-    steps.append(
-        f"{requests_per_month} requests x {duration_of_each_request_in_ms} ms x 0.001 ms to sec conversion factor = {total_compute_sec} total compute (seconds)"
-    )
+    msg = f"{requests_per_month} requests x {duration_of_each_request_in_ms} ms x 0.001 ms to sec conversion factor = {total_compute_sec} total compute (seconds)"
+    logger.debug(msg)
+    steps.append(msg)
 
     total_compute_gb_sec = memory_in_gb * total_compute_sec
     msg = f"{memory_in_gb} GB x {total_compute_sec:,} seconds = {total_compute_gb_sec:,.2f} total compute (GB-s)"
@@ -224,21 +217,15 @@ def calc_monthly_request_charges(
     if include_free_tier:
         free_requests = 1_000_000  # 1 million free requests per month
         billable_requests = max(0, requests_per_month - free_requests)
-        steps.append(
-            f"{requests_per_month} requests - {free_requests} free tier requests = {billable_requests} monthly billable requests"
-        )
-        logger.debug(
-            f"{requests_per_month} requests - {free_requests} free tier requests = {billable_requests} monthly billable requests"
-        )
+        msg = f"{requests_per_month} requests - {free_requests} free tier requests = {billable_requests} monthly billable requests"
+        steps.append(msg)
+        logger.debug(msg)
 
     res = float(billable_requests) * float(requests_cost_factor)
     if res > 0.0:
-        logger.debug(
-            f"{billable_requests} requests x {requests_cost_factor:.8f} USD = {res} USD (monthly request charges)"
-        )
-        steps.append(
-            f"{billable_requests} requests x {requests_cost_factor:.8f} USD = {res} USD (monthly request charges)"
-        )
+        msg = f"{billable_requests} requests x {requests_cost_factor:.8f} USD = {res} USD (monthly request charges)"
+        logger.debug(msg)
+        steps.append(msg)
     return res
 
 
@@ -251,25 +238,16 @@ def calc_monthly_ephemeral_storage_charges(
     billable_storage = max(0.0, float(storage_in_gb) - 0.5)
     gb_s = billable_storage * total_compute_sec
     res = billable_storage * float(ephemeral_storage_cost_factor) * total_compute_sec
-    logger.debug(
-        f"{storage_in_gb} GB - 0.5 GB (no additional charges) = {billable_storage} GB (billable ephemeral storage)"
-    )
-    steps.append(
-        f"{storage_in_gb} GB - 0.5 GB (no additional charges) = {billable_storage} GB (billable ephemeral storage)"
-    )
+    msg = f"{storage_in_gb} GB - 0.5 GB (no additional charges) = {billable_storage} GB (billable ephemeral storage)"
+    logger.debug(msg)
+    steps.append(msg)
     if billable_storage > 0.0:
-        logger.debug(
-            f"{billable_storage} GB x{total_compute_sec} seconds = {gb_s} total storage (GB-s)"
-        )
-        logger.debug(
-            f"{gb_s} GB x {ephemeral_storage_cost_factor:.8f} USD = {res} USD (monthly ephemeral storage charges)"
-        )
-        steps.append(
-            f"{billable_storage} GB x{total_compute_sec} seconds = {gb_s} total storage (GB-s)"
-        )
-        steps.append(
-            f"{gb_s} GB x {ephemeral_storage_cost_factor:.8f} USD = {res} USD (monthly ephemeral storage charges)"
-        )
+        msg = f"{billable_storage} GB x{total_compute_sec} seconds = {gb_s} total storage (GB-s)"
+        logger.debug(msg)
+        steps.append(msg)
+        msg = f"{gb_s} GB x {ephemeral_storage_cost_factor:.8f} USD = {res} USD (monthly ephemeral storage charges)"
+        logger.debug(msg)
+        steps.append(msg)
     return res
 
 

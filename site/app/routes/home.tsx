@@ -14,14 +14,7 @@ export default function Home() {
   
   const handleContributingClick = useCallback((e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    navigate('/about');
-    // Delay scrolling to allow page to load
-    setTimeout(() => {
-      const element = document.getElementById('contributing');
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
-      }
-    }, 100);
+    navigate('/about', { state: { scrollTo: 'contributing' } });
   }, [navigate]);
 
   return (

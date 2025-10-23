@@ -1,4 +1,6 @@
 import type { Route } from "./+types/about";
+import { useLocation } from "react-router";
+import { useEffect } from "react";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -8,6 +10,17 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function About() {
+  const location = useLocation();
+
+  useEffect(() => {
+    const scrollTo = location.state?.scrollTo;
+    if (scrollTo) {
+      const element = document.getElementById(scrollTo);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  }, [location.state]);
   return (
     <div className="container mx-auto p-8">
       <h1 className="text-4xl font-bold mb-6 text-slate-900 dark:text-slate-100 tracking-tight">About AWS Lambda Calculator</h1>

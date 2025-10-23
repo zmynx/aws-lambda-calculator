@@ -242,7 +242,7 @@ def calc_monthly_ephemeral_storage_charges(
     logger.debug(msg)
     steps.append(msg)
     if billable_storage > 0.0:
-        msg = f"{billable_storage} GB x{total_compute_sec} seconds = {gb_s} total storage (GB-s)"
+        msg = f"{billable_storage} GB x {total_compute_sec} seconds = {gb_s} total storage (GB-s)"
         logger.debug(msg)
         steps.append(msg)
         msg = f"{gb_s} GB x {ephemeral_storage_cost_factor:.8f} USD = {res} USD (monthly ephemeral storage charges)"

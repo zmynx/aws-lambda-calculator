@@ -14,6 +14,8 @@ export default function Home() {
   
   const handleContributingClick = useCallback((e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
+    // Note: Using default navigation behavior (adds history entry) so users can 
+    // use back button to return to Home page after viewing contributing section
     navigate('/about', { state: { scrollTo: 'contributing' } });
   }, [navigate]);
 

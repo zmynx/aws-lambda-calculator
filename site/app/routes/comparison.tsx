@@ -573,14 +573,14 @@ export default function Comparison() {
           Stop wrestling with complex calculators. Get instant, accurate Lambda cost estimates.
         </p>
         <div className="flex flex-wrap justify-center gap-4">
-          <Link to="/demo" className="bg-white text-purple-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors shadow-md">
+          <Link to="/demo" className="bg-white text-purple-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors shadow-md">
             🧮 Try the Calculator
           </Link>
-          <Link to="/getting-started" className="bg-purple-700 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-800 transition-colors shadow-md">
+          <Link to="/getting-started" className="bg-purple-700 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors shadow-md">
             📖 Get Started
           </Link>
           <a href="https://github.com/zmynx/aws-lambda-calculator" target="_blank" rel="noopener noreferrer"
-             className="bg-slate-800 text-white px-6 py-3 rounded-lg font-semibold hover:bg-slate-700 transition-colors shadow-md">
+             className="bg-slate-800 text-white px-6 py-3 rounded-lg font-semibold hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 transition-colors shadow-md">
             ⭐ Star on GitHub
           </a>
         </div>

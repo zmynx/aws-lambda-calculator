@@ -5,9 +5,8 @@ import { createHashRouter, RouterProvider, Outlet } from 'react-router-dom';
 // Import your route components
 import Home from "./routes/home";
 import Introduction from "./routes/introduction";
-import InstallUsage from "./routes/install-usage";
-import Configuration from "./routes/configuration";
 import GettingStarted from "./routes/getting-started";
+import Configuration from "./routes/configuration";
 import ApiDocs from "./routes/api-docs";
 import Comparison from "./routes/comparison";
 import Demo from "./routes/demo";
@@ -50,16 +49,12 @@ const router = createHashRouter([
         element: <Introduction />,
       },
       {
-        path: "install-usage", 
-        element: <InstallUsage />,
+        path: "getting-started",
+        element: <GettingStarted />,
       },
       {
         path: "configuration",
         element: <Configuration />,
-      },
-      {
-        path: "getting-started",
-        element: <GettingStarted />,
       },
       {
         path: "api-docs",

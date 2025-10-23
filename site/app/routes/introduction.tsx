@@ -105,25 +105,6 @@ export default function Introduction() {
           </div>
         </section>
 
-        {/* Call to Action */}
-        <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg p-6 text-center">
-          <h3 className="text-2xl font-bold mb-3">Ready to get started?</h3>
-          <p className="mb-4">Try our calculator or learn how to install and use it in your projects.</p>
-          <div className="flex justify-center gap-4">
-            <a 
-              href="/demo" 
-              className="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
-            >
-              🧮 Try Calculator
-            </a>
-            <a 
-              href="/install-usage" 
-              className="bg-transparent border-2 border-white text-white px-6 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors"
-            >
-              📚 Installation Guide
-            </a>
-          </div>
-        </div>
       </div>
     </div>
   );

@@ -112,18 +112,6 @@ export default function ApiDocs() {
           </ul>
         </div>
 
-        <div className="mt-6 p-6 bg-green-50 dark:bg-green-900/20 rounded-lg">
-          <h2 className="text-xl font-semibold mb-3 text-green-800 dark:text-green-200">
-            🚀 Quick Start
-          </h2>
-          <p className="text-green-700 dark:text-green-300 mb-3">
-            Try the API directly from this documentation page using the "Try it out" button in any endpoint.
-          </p>
-          <p className="text-green-700 dark:text-green-300">
-            Example regions: us-east-1, eu-west-1, ap-southeast-1<br/>
-            Architectures: x86, arm64
-          </p>
-        </div>
       </div>
       
       {/* Custom styles for Swagger UI dark mode compatibility */}

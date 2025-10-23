@@ -34,7 +34,7 @@ interface ApiResponse {
 export default function Demo() {
   const [formData, setFormData] = useState<CalculationForm>({
     region: 'us-east-1',
-    include_free_tier: true,
+    include_free_tier: 'true',
     architecture: 'x86',
     number_of_requests: '1000',
     request_unit: 'per month',

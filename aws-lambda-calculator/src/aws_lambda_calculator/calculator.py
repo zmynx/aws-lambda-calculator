@@ -236,7 +236,7 @@ def calc_monthly_compute_charges(
     monthly_compute_charges = calculate_tiered_cost(
         billable_compute_gb_sec, tier_cost_factor, overflow_rate, steps
     )
-    return total_compute_gb_sec, monthly_compute_charges
+    return total_compute_gb_sec, monthly_compute_charges, total_compute_sec
 
 
 def calc_monthly_request_charges(
@@ -270,12 +270,12 @@ def calc_monthly_request_charges(
 def calc_monthly_ephemeral_storage_charges(
     storage_in_gb: float,
     ephemeral_storage_cost_factor: float,
-    total_compute_gb_sec: float,
+    total_compute_sec: float,
     steps: list[str],
 ) -> float:
     billable_storage = max(0.0, float(storage_in_gb) - 0.5)
-    gb_s = billable_storage * total_compute_gb_sec
-    res = billable_storage * float(ephemeral_storage_cost_factor) * total_compute_gb_sec
+    gb_s = billable_storage * total_compute_sec
+    res = billable_storage * float(ephemeral_storage_cost_factor) * total_compute_sec
     logger.debug(
         f"{storage_in_gb} GB - 0.5 GB (no additional charges) = {billable_storage} GB (billable ephemeral storage)"
     )
@@ -284,13 +284,13 @@ def calc_monthly_ephemeral_storage_charges(
     )
     if billable_storage > 0.0:
         logger.debug(
-            f"{billable_storage} GB x{total_compute_gb_sec} seconds = {gb_s} total storage (GB-s)"
+            f"{billable_storage} GB x{total_compute_sec} seconds = {gb_s} total storage (GB-s)"
         )
         logger.debug(
             f"{gb_s} GB x {ephemeral_storage_cost_factor:.8f} USD = {res} USD (monthly ephemeral storage charges)"
         )
         steps.append(
-            f"{billable_storage} GB x{total_compute_gb_sec} seconds = {gb_s} total storage (GB-s)"
+            f"{billable_storage} GB x{total_compute_sec} seconds = {gb_s} total storage (GB-s)"
         )
         steps.append(
             f"{gb_s} GB x {ephemeral_storage_cost_factor:.8f} USD = {res} USD (monthly ephemeral storage charges)"
@@ -392,7 +392,7 @@ def calculate(
     # Step 5
     logger.debug("Pricing calculations:")
     steps.append("\nPricing calculations:")
-    total_compute_gb_sec, monthly_compute_charges = calc_monthly_compute_charges(
+    total_compute_gb_sec, monthly_compute_charges, total_compute_sec = calc_monthly_compute_charges(
         requests_per_month,
         duration_of_each_request_in_ms,
         memory_in_gb,
@@ -408,7 +408,7 @@ def calculate(
     logger.debug(f"Monthly request charges: {monthly_request_charges} USD")
     steps.append(f"Monthly request charges: {monthly_request_charges} USD\n")
     monthly_ephemeral_storage_charges = calc_monthly_ephemeral_storage_charges(
-        storage_in_gb, ephemeral_storage_cost_factor, total_compute_gb_sec, steps
+        storage_in_gb, ephemeral_storage_cost_factor, total_compute_sec, steps
     )
     logger.debug(
         f"Monthly ephemeral storage charges: {monthly_ephemeral_storage_charges} USD"

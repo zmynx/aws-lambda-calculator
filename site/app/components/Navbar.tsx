@@ -4,7 +4,7 @@ import ThemeToggle from './ThemeToggle';
 
 const Navbar: React.FC = () => {
   return (
-    <nav className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 p-4 shadow-xl border-b border-slate-200 dark:border-slate-700/50 transition-colors duration-300 backdrop-blur-sm">
+    <nav className="sticky top-0 z-50 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 p-4 shadow-xl border-b border-slate-200 dark:border-slate-700/50 transition-colors duration-300 backdrop-blur-sm">
       <div className="container mx-auto">
         <div className="flex flex-wrap items-center justify-between">
           <div className="flex items-center space-x-2">

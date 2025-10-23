@@ -7,6 +7,7 @@ export default [
   route("configuration", "routes/configuration.tsx"),
   route("getting-started", "routes/getting-started.tsx"),
   route("api-docs", "routes/api-docs.tsx"),
+  route("comparison", "routes/comparison.tsx"),
   route("demo", "routes/demo.tsx"),
   route("about", "routes/about.tsx"),
 ] satisfies RouteConfig;

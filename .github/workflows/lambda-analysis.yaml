@@ -32,9 +32,9 @@ jobs:
           role-duration-seconds: 1800
 
       - name: Run Lambda Power Tuning Script
-        uses: ./.github/actions/lambda-calc
+        uses: ./.github/actions/aws-lambda-power-tuning
         env:
-          CONFIG_JSON_DIRECTORY: ${{ github.workspace}}/${{ github.event.inputs.config_json_directory }}
+          CONFIG_JSON_DIRECTORY: ${{ github.workspace }}/${{ github.event.inputs.config_json_directory }}
         with:
           config_json_directory: ${{ env.CONFIG_JSON_DIRECTORY }}
           config_json_name: ${{ github.event.inputs.config_json_name }}

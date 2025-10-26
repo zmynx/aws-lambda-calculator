@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # config
 
 set -euox pipefail
@@ -9,7 +9,7 @@ if [[ $# -gt 1 ]]; then
 fi
 
 STACK_NAME=powerTuning
-INPUT=$(cat "${1:-sample-execution-input.json}") # or use a static string
+INPUT=$(cat "${1:-simple-execution-input.json}") # or use a static string
 
 PROFILE="zMynx"
 REGION="us-east-1"

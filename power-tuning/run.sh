@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 
 PROFILE="zMynx"
 REGION="us-east-1"

@@ -8,7 +8,7 @@ if [[ $# -gt 1 ]]; then
   exit 1
 fi
 
-STACK_NAME=AwsLambdaPowerTuning
+STACK_NAME=powerTuning
 INPUT=$(cat "${1:-sample-execution-input.json}") # or use a static string
 
 PROFILE="zMynx"

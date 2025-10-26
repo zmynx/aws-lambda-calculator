@@ -1,7 +1,7 @@
 #!/bin/bash
 # config
 
-set -euo pipefail
+set -euox pipefail
 
 if [[ $# -gt 1 ]]; then
   echo "Incorrect Usage: $0 [input json file path]"
@@ -11,18 +11,36 @@ fi
 STACK_NAME=powerTuning
 INPUT=$(cat "${1:-sample-execution-input.json}") # or use a static string
 
+PROFILE="default"
+REGION="us-east-1"
+
 # retrieve state machine ARN
-STATE_MACHINE_ARN=$(aws stepfunctions list-state-machines --query "stateMachines[?contains(name,\`${STACK_NAME}\`)]|[0].stateMachineArn" --output text | cat)
+STATE_MACHINE_ARN=$(aws stepfunctions list-state-machines \
+  --query "stateMachines[?contains(name,\`${STACK_NAME}\`)]|[0].stateMachineArn" \
+  --output text \
+  --profile $PROFILE \
+  --region $REGION |
+  cat)
 
 # start execution
-EXECUTION_ARN=$(aws stepfunctions start-execution --state-machine-arn $STATE_MACHINE_ARN --input "$INPUT" --query 'executionArn' --output text)
+EXECUTION_ARN=$(aws stepfunctions start-execution \
+  --state-machine-arn $STATE_MACHINE_ARN \
+  --input "$INPUT" \
+  --query 'executionArn' \
+  --output text --profile $PROFILE \
+  --region $REGION)
 
 echo -n "Execution started..."
 
 # poll execution status until completed
 while true; do
   # retrieve execution status
-  STATUS=$(aws stepfunctions describe-execution --execution-arn $EXECUTION_ARN --query 'status' --output text)
+  STATUS=$(aws stepfunctions describe-execution \
+    --execution-arn $EXECUTION_ARN \
+    --query 'status' \
+    --output text \
+    --profile $PROFILE \
+    --region $REGION)
 
   if test "$STATUS" == "RUNNING"; then
     # keep looping and wait if still running
@@ -37,7 +55,13 @@ while true; do
     echo $STATUS
     echo "Execution output: "
     # retrieve output
-    aws stepfunctions describe-execution --execution-arn $EXECUTION_ARN --query 'output' --output text | jq
+    aws stepfunctions describe-execution \
+      --execution-arn $EXECUTION_ARN \
+      --query 'output' \
+      --output text \
+      --profile $PROFILE \
+      --region $REGION |
+      cat
     break
   fi
 done

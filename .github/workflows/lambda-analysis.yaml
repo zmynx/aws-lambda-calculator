@@ -1,0 +1,40 @@
+# .github/workflows/lambda-analysis.yaml
+---
+name: Lambda Analysis
+on:
+  workflow_dispatch:
+    inputs:
+      config_json_directory:
+        description: Directory where the config JSON file is located.
+        required: true
+      config_json_name:
+        description: Name of the config JSON file.
+        required: true
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: us-east-1
+          role-session-name: GitHubActions-LambdaAnalysis
+          role-duration-seconds: 1800
+
+      - name: Run Lambda Power Tuning Script
+        uses: ./.github/actions/aws-lambda-power-tuning
+        env:
+          CONFIG_JSON_DIRECTORY: ${{ github.workspace }}/${{ github.event.inputs.config_json_directory }}
+        with:
+          config_json_directory: ${{ env.CONFIG_JSON_DIRECTORY }}
+          config_json_name: ${{ github.event.inputs.config_json_name }}

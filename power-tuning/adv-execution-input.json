@@ -7,7 +7,7 @@
         { "payload": {"region":"us-east-1","architecture":"arm64","number_of_requests":1000000,"request_unit":"per month","duration_of_each_request_in_ms":1500,"memory":128,"memory_unit":"MB","ephemeral_storage":512,"storage_unit":"MB","include_free_tier":true,"verbose":true}, "weight": 10 },
         { "payload": {"region":"us-west-2","architecture":"x86_64","number_of_requests":100000,"request_unit":"per day","duration_of_each_request_in_ms":3000,"memory":1024,"memory_unit":"MB","ephemeral_storage":2,"storage_unit":"GB","include_free_tier":false,"verbose":true}, "weight": 10 },
         { "payload": {"region":"us-west-2","architecture":"arm64","number_of_requests":100000,"request_unit":"per day","duration_of_each_request_in_ms":3000,"memory":1024,"memory_unit":"MB","ephemeral_storage":2,"storage_unit":"GB","include_free_tier":false,"verbose":true}, "weight": 10 },
-        { "payload": {"region":"eu-central-1","architecture":"x86_64","number_of_requests":10000,"request_unit":"per minute","duration_of_each_request_in_ms":400,"memory":2,"memory_unit":"GB","ephemeral_storage":1,"storage_unit":"GB","include_free_tier":true,"verbose":true}, "weight": 10 },
+        { "payload": {"region":"eu-central-1","architecture":"x86_64","number_of_requests":10000,"request_unit":"per minute","duration_of_each_request_in_ms":400,"memory":2,"memory_unit":"GB","ephemeral_storage":1,"storage_unit":"GB","include_free_tier":true,"verbose":true}, "weight": 10 }
     ],
     "payloadS3": "",
     "parallelInvocation": true,

@@ -52,7 +52,7 @@ runs:
           echo ''
           echo '**🔍 Output Details:**'
           echo '```json'
-          jq output.log
+          cat output.log | jq
           echo '```'
           echo ''
           echo '**📊 Visualization:** [🔗 Click here to view the visualization]('$VISUALIZATION_URL')'

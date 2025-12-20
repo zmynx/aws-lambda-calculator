@@ -32,7 +32,7 @@ export class AwsLambdaCalculatorStack extends cdk.Stack {
       code: lambda.DockerImageCode.fromEcr(dockerAsset.repository, {
         tagOrDigest: dockerAsset.assetHash,
       }),
-      memorySize: 1024,
+      memorySize: 512,
       timeout: cdk.Duration.seconds(45), // Prevent long-running requests
     });
 

@@ -24,7 +24,7 @@ colorama = "^0.4.6"
 types-colorama = "^0.4.15.20250801"
 aws-lambda-calculator = { path = "./aws-lambda-calculator", develop = true }
 # aws-lambda-calculator = {git = "https://github.com/zMynx/aws-lambda-calculator.git", rev = "feat/package", subdirectory = "aws-lambda-calculator"}
-pydantic = "^2.12.3"
+pydantic = "^2.12.4"
 
 [tool.poetry.scripts]
 # Full command name

@@ -67,7 +67,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export default function App() {
   return (
     <ThemeProvider>
-      <div className="min-h-screen transition-colors duration-300 bg-slate-50 dark:bg-slate-950">
+      <div className="min-h-screen transition-colors duration-300 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-800">
         <Navbar />
         <Outlet />
       </div>
@@ -93,8 +93,9 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
 
   return (
     <ThemeProvider>
-      <div className="min-h-screen transition-colors duration-300 bg-slate-50 dark:bg-slate-950">
-        <main className="pt-16 p-4 container mx-auto">
+      <div className="min-h-screen transition-colors duration-300 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-800 relative overflow-hidden">
+        <FallingLambdas />
+        <main className="pt-16 p-4 container mx-auto relative z-10">
           <h1>{message}</h1>
           <p>{details}</p>
           {stack && (

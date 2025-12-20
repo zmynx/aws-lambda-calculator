@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { Route } from "./+types/demo";
 import axios from 'axios';
+import FallingLambdas from "../components/FallingLambdas";
 
 export function meta({ }: Route.MetaArgs) {
   return [
@@ -34,7 +35,7 @@ interface ApiResponse {
 export default function Demo() {
   const [formData, setFormData] = useState<CalculationForm>({
     region: 'us-east-1',
-    include_free_tier: true,
+    include_free_tier: 'true',
     architecture: 'x86',
     number_of_requests: '1000',
     request_unit: 'per month',
@@ -193,7 +194,9 @@ export default function Demo() {
   };
 
   return (
-    <div className="container mx-auto p-8">
+    <div className="min-h-screen relative">
+      <FallingLambdas />
+      <div className="container mx-auto p-8 relative z-10">
       <h1 className="text-4xl font-bold mb-6 text-slate-900 dark:text-slate-100 tracking-tight">Try It Yourself</h1>
       <p className="text-slate-600 dark:text-slate-400 mb-8 text-lg leading-relaxed">
         Use this calculator to estimate your AWS Lambda costs based on your function parameters.
@@ -221,7 +224,7 @@ export default function Demo() {
       )}
 
       <div className="grid md:grid-cols-2 gap-8">
-        <div className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 transition-colors duration-300">
+        <div className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-md p-6 rounded-xl shadow-2xl border border-slate-200/50 dark:border-slate-600 transition-colors duration-300">
           <h2 className="text-2xl font-semibold mb-6 text-slate-900 dark:text-slate-100">Lambda Configuration</h2>
 
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -564,6 +567,7 @@ export default function Demo() {
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 }

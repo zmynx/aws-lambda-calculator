@@ -1,4 +1,7 @@
 import type { Route } from "./+types/about";
+import { useLocation } from "react-router";
+import { useEffect } from "react";
+import FallingLambdas from "../components/FallingLambdas";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -8,8 +11,21 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function About() {
+  const location = useLocation();
+
+  useEffect(() => {
+    const scrollTo = location.state?.scrollTo;
+    if (scrollTo) {
+      const element = document.getElementById(scrollTo);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  }, [location.state]);
   return (
-    <div className="container mx-auto p-8">
+    <div className="min-h-screen relative">
+      <FallingLambdas />
+      <div className="container mx-auto p-8 relative z-10">
       <h1 className="text-4xl font-bold mb-6 text-slate-900 dark:text-slate-100 tracking-tight">About AWS Lambda Calculator</h1>
       
       <div className="prose max-w-none">
@@ -40,7 +56,7 @@ export default function About() {
         <section className="mb-12">
           <h2 className="text-3xl font-semibold mb-8 text-slate-900 dark:text-slate-100">🚀 Key Features</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div className="bg-white dark:bg-slate-800 shadow-xl rounded-xl p-6 border border-slate-200 dark:border-slate-700 transition-colors duration-300">
+            <div className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-md shadow-2xl rounded-xl p-6 border border-slate-200/50 dark:border-slate-600 transition-colors duration-300">
               <div className="text-3xl mb-4">💰</div>
               <h3 className="text-xl font-semibold mb-3 text-slate-900 dark:text-slate-100">Precise Cost Calculation</h3>
               <ul className="space-y-2 text-slate-700 dark:text-slate-300 text-sm">
@@ -51,7 +67,7 @@ export default function About() {
               </ul>
             </div>
 
-            <div className="bg-white dark:bg-slate-800 shadow-xl rounded-xl p-6 border border-slate-200 dark:border-slate-700 transition-colors duration-300">
+            <div className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-md shadow-2xl rounded-xl p-6 border border-slate-200/50 dark:border-slate-600 transition-colors duration-300">
               <div className="text-3xl mb-4">🌍</div>
               <h3 className="text-xl font-semibold mb-3 text-slate-900 dark:text-slate-100">Global Coverage</h3>
               <ul className="space-y-2 text-slate-700 dark:text-slate-300 text-sm">
@@ -62,7 +78,7 @@ export default function About() {
               </ul>
             </div>
 
-            <div className="bg-white dark:bg-slate-800 shadow-xl rounded-xl p-6 border border-slate-200 dark:border-slate-700 transition-colors duration-300">
+            <div className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-md shadow-2xl rounded-xl p-6 border border-slate-200/50 dark:border-slate-600 transition-colors duration-300">
               <div className="text-3xl mb-4">⚡</div>
               <h3 className="text-xl font-semibold mb-3 text-slate-900 dark:text-slate-100">Architecture Support</h3>
               <ul className="space-y-2 text-slate-700 dark:text-slate-300 text-sm">
@@ -73,7 +89,7 @@ export default function About() {
               </ul>
             </div>
 
-            <div className="bg-white dark:bg-slate-800 shadow-xl rounded-xl p-6 border border-slate-200 dark:border-slate-700 transition-colors duration-300">
+            <div className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-md shadow-2xl rounded-xl p-6 border border-slate-200/50 dark:border-slate-600 transition-colors duration-300">
               <div className="text-3xl mb-4">🔧</div>
               <h3 className="text-xl font-semibold mb-3 text-slate-900 dark:text-slate-100">Multiple Interfaces</h3>
               <ul className="space-y-2 text-slate-700 dark:text-slate-300 text-sm">
@@ -84,7 +100,7 @@ export default function About() {
               </ul>
             </div>
 
-            <div className="bg-white dark:bg-slate-800 shadow-xl rounded-xl p-6 border border-slate-200 dark:border-slate-700 transition-colors duration-300">
+            <div className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-md shadow-2xl rounded-xl p-6 border border-slate-200/50 dark:border-slate-600 transition-colors duration-300">
               <div className="text-3xl mb-4">📊</div>
               <h3 className="text-xl font-semibold mb-3 text-slate-900 dark:text-slate-100">Detailed Breakdown</h3>
               <ul className="space-y-2 text-slate-700 dark:text-slate-300 text-sm">
@@ -95,7 +111,7 @@ export default function About() {
               </ul>
             </div>
 
-            <div className="bg-white dark:bg-slate-800 shadow-xl rounded-xl p-6 border border-slate-200 dark:border-slate-700 transition-colors duration-300">
+            <div className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-md shadow-2xl rounded-xl p-6 border border-slate-200/50 dark:border-slate-600 transition-colors duration-300">
               <div className="text-3xl mb-4">🎯</div>
               <h3 className="text-xl font-semibold mb-3 text-slate-900 dark:text-slate-100">Flexible Units</h3>
               <ul className="space-y-2 text-slate-700 dark:text-slate-300 text-sm">
@@ -164,25 +180,25 @@ export default function About() {
           <h2 className="text-3xl font-semibold mb-8 text-slate-900 dark:text-slate-100">📈 Project Statistics</h2>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 text-center">
+            <div className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-md p-6 rounded-xl shadow-2xl border border-slate-200/50 dark:border-slate-600 text-center">
               <div className="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2">36</div>
               <div className="text-slate-700 dark:text-slate-300 font-medium">AWS Regions</div>
               <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">Supported worldwide</div>
             </div>
             
-            <div className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 text-center">
+            <div className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-md p-6 rounded-xl shadow-2xl border border-slate-200/50 dark:border-slate-600 text-center">
               <div className="text-3xl font-bold text-green-600 dark:text-green-400 mb-2">2</div>
               <div className="text-slate-700 dark:text-slate-300 font-medium">Architectures</div>
               <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">x86_64 & ARM64</div>
             </div>
             
-            <div className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 text-center">
+            <div className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-md p-6 rounded-xl shadow-2xl border border-slate-200/50 dark:border-slate-600 text-center">
               <div className="text-3xl font-bold text-purple-600 dark:text-purple-400 mb-2">4</div>
               <div className="text-slate-700 dark:text-slate-300 font-medium">Access Methods</div>
               <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">Python, API, CLI, Web</div>
             </div>
             
-            <div className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 text-center">
+            <div className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-md p-6 rounded-xl shadow-2xl border border-slate-200/50 dark:border-slate-600 text-center">
               <div className="text-3xl font-bold text-orange-600 dark:text-orange-400 mb-2">100%</div>
               <div className="text-slate-700 dark:text-slate-300 font-medium">Open Source</div>
               <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">Apache 2.0 License</div>
@@ -248,7 +264,7 @@ export default function About() {
         </section>
 
         {/* License & Contributing */}
-        <section className="mb-8">
+        <section className="mb-8" id="contributing">
           <h2 className="text-3xl font-semibold mb-8 text-slate-900 dark:text-slate-100">🤝 Contributing & License</h2>
           
           <div className="bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-950/20 dark:to-blue-950/20 p-8 rounded-xl border border-green-200 dark:border-green-800">
@@ -281,6 +297,7 @@ export default function About() {
           </div>
         </section>
       </div>
+    </div>
     </div>
   );
 }

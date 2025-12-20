@@ -32,9 +32,8 @@ export class AwsLambdaCalculatorStack extends cdk.Stack {
       code: lambda.DockerImageCode.fromEcr(dockerAsset.repository, {
         tagOrDigest: dockerAsset.assetHash,
       }),
-      // Set memory and timeout limits for cost control
-      memorySize: 512, // Adjust based on your needs
-      timeout: cdk.Duration.seconds(30), // Prevent long-running requests
+      memorySize: 1024,
+      timeout: cdk.Duration.seconds(45), // Prevent long-running requests
     });
 
     const logGroup = new logs.LogGroup(this, "AwsLambdaCalculatorApiGatewayAccessLogs", {

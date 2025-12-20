@@ -26,7 +26,8 @@ jobs:
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
-        with:
+        with:        
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
           aws-region: us-east-1
           role-session-name: GitHubActions-LambdaAnalysis
           role-duration-seconds: 1800

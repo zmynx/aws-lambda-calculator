@@ -68,6 +68,9 @@ def unit_conversion_requests(
         case _:
             raise ValueError(f"Unknown request unit: {request_unit}")
 
+    # Fallback return to satisfy static analysis; this line should be unreachable.
+    return 0
+
 
 def unit_conversion_memory(memory: float, memory_unit: str, steps: list[str]) -> float:
     """

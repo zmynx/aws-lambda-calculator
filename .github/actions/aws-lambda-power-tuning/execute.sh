@@ -10,15 +10,12 @@ fi
 
 STACK_NAME=powerTuning
 INPUT=$(cat "${1:-sample-execution-input.json}") # or use a static string
-
-PROFILE="default"
 REGION="us-east-1"
 
 # retrieve state machine ARN
 STATE_MACHINE_ARN=$(aws stepfunctions list-state-machines \
   --query "stateMachines[?contains(name,\`${STACK_NAME}\`)]|[0].stateMachineArn" \
   --output text \
-  --profile $PROFILE \
   --region $REGION |
   cat)
 
@@ -39,7 +36,6 @@ while true; do
     --execution-arn $EXECUTION_ARN \
     --query 'status' \
     --output text \
-    --profile $PROFILE \
     --region $REGION)
 
   if test "$STATUS" == "RUNNING"; then
@@ -59,7 +55,6 @@ while true; do
       --execution-arn $EXECUTION_ARN \
       --query 'output' \
       --output text \
-      --profile $PROFILE \
       --region $REGION |
       cat
     break

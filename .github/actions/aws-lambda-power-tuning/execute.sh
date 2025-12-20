@@ -24,7 +24,7 @@ EXECUTION_ARN=$(aws stepfunctions start-execution \
   --state-machine-arn $STATE_MACHINE_ARN \
   --input "$INPUT" \
   --query 'executionArn' \
-  --output text --profile $PROFILE \
+  --output text \
   --region $REGION)
 
 echo -n "Execution started..."

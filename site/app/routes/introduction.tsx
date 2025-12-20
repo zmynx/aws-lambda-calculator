@@ -1,4 +1,5 @@
 import type { Route } from "./+types/introduction";
+import FallingLambdas from "../components/FallingLambdas";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -9,7 +10,9 @@ export function meta({}: Route.MetaArgs) {
 
 export default function Introduction() {
   return (
-    <div className="container mx-auto p-8">
+    <div className="min-h-screen relative">
+      <FallingLambdas />
+      <div className="container mx-auto p-8 relative z-10">
       <h1 className="text-4xl font-bold mb-6 text-gray-900 dark:text-gray-100">Introduction</h1>
       
       <div className="prose max-w-none">
@@ -39,7 +42,7 @@ export default function Introduction() {
             </blockquote>
           </div>
 
-          <div className="bg-white/80 dark:bg-gray-800 shadow-lg rounded-lg p-6 transition-colors duration-300">
+          <div className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-md shadow-2xl rounded-xl p-8 border border-slate-200/50 dark:border-slate-600 transition-colors duration-300">
             <p className="text-gray-700 dark:text-gray-300 mb-4 leading-relaxed">
               Born as a result of a need to have a near accurate cost estimation for Lambda functions on the AWS cloud. 
               While doing some research I've discovered the following:
@@ -105,26 +108,8 @@ export default function Introduction() {
           </div>
         </section>
 
-        {/* Call to Action */}
-        <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg p-6 text-center">
-          <h3 className="text-2xl font-bold mb-3">Ready to get started?</h3>
-          <p className="mb-4">Try our calculator or learn how to install and use it in your projects.</p>
-          <div className="flex justify-center gap-4">
-            <a 
-              href="/demo" 
-              className="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
-            >
-              🧮 Try Calculator
-            </a>
-            <a 
-              href="/install-usage" 
-              className="bg-transparent border-2 border-white text-white px-6 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors"
-            >
-              📚 Installation Guide
-            </a>
-          </div>
-        </div>
       </div>
+    </div>
     </div>
   );
 }

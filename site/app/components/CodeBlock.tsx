@@ -22,18 +22,18 @@ const CodeBlock = ({ code, language = 'bash', className = '' }: CodeBlockProps) 
   };
 
   return (
-    <div className={`relative rounded-lg overflow-hidden transition-colors duration-300 ${
+    <div className={`relative rounded-lg overflow-hidden transition-colors duration-300 border ${
       isDark 
-        ? 'bg-gray-800 text-green-400' 
-        : 'bg-gray-900 text-green-400'
+        ? 'bg-slate-900/95 text-green-400 border-slate-700' 
+        : 'bg-gray-900 text-green-400 border-gray-700'
     } ${className}`}>
       <div className={`flex justify-between items-center px-4 py-2 border-b transition-colors duration-300 ${
         isDark 
-          ? 'bg-gray-700 border-gray-600' 
+          ? 'bg-slate-800/90 border-slate-600' 
           : 'bg-gray-800 border-gray-700'
       }`}>
         <span className={`text-xs font-mono transition-colors duration-300 ${
-          isDark ? 'text-gray-300' : 'text-gray-400'
+          isDark ? 'text-slate-300' : 'text-gray-400'
         }`}>
           {language}
         </span>
@@ -41,7 +41,7 @@ const CodeBlock = ({ code, language = 'bash', className = '' }: CodeBlockProps) 
           onClick={copyToClipboard}
           className={`flex items-center space-x-1 text-xs px-2 py-1 rounded transition-all duration-200 ${
             isDark 
-              ? 'text-gray-300 hover:text-white hover:bg-gray-600' 
+              ? 'text-slate-300 hover:text-white hover:bg-slate-600' 
               : 'text-gray-400 hover:text-white hover:bg-gray-700'
           }`}
         >

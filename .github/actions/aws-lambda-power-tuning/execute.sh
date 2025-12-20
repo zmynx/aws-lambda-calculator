@@ -56,7 +56,7 @@ while true; do
       --query 'output' \
       --output text \
       --region $REGION |
-      cat
+      tee output.log
     break
   fi
 done

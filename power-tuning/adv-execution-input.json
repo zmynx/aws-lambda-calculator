@@ -1,7 +1,7 @@
 {
     "lambdaARN": "arn:aws:lambda:us-east-1:747477446688:function:prod-AwsLambdaCalculatorS-AwsLambdaCalculatorLambd-1k47ZCQqMsV3",
     "num": 50,
-    "powerValues": ["ALL"],
+    "powerValues": [128, 256, 512, 1024, 2048, 3008],
     "payload": [
         { "payload": {"region":"us-east-1","architecture":"x86_64","number_of_requests":1000000,"request_unit":"per month","duration_of_each_request_in_ms":1500,"memory":128,"memory_unit":"MB","ephemeral_storage":512,"storage_unit":"MB","include_free_tier":true,"verbose":true}, "weight": 10 },
         { "payload": {"region":"us-east-1","architecture":"arm64","number_of_requests":1000000,"request_unit":"per month","duration_of_each_request_in_ms":1500,"memory":128,"memory_unit":"MB","ephemeral_storage":512,"storage_unit":"MB","include_free_tier":true,"verbose":true}, "weight": 10 },

@@ -1,18 +1,14 @@
-name: Dependabot auto-merge
-on:
-  pull_request:
-    types: [opened, synchronize, reopened]
-    branches: [main]
+name: Dependabot auto-approve
+on: pull_request
+
+permissions:
+  contents: write
+  pull-requests: write
 
 jobs:
   dependabot:
     runs-on: ubuntu-latest
     if: github.event.pull_request.user.login == 'dependabot[bot]' && github.repository == 'zmynx/aws-lambda-calculator'
-    permissions:
-      contents: write
-      pull-requests: write
-      issues: write
-      repository-projects: write
     steps:
       - name: Generate GitHub App Token
         id: app-token
@@ -23,19 +19,12 @@ jobs:
 
       - name: Dependabot metadata
         id: metadata
-        uses: dependabot/fetch-metadata@08eff52bf64351f401fb50d4972fa95b9f2c2d1b # v2.4.0
+        uses: dependabot/fetch-metadata@d7267f607e9d3fb96fc2fbe83e0af444713e90b7
         with:
           github-token: ${{ steps.app-token.outputs.token }}
 
       - name: Approve a PR
         run: gh pr review --approve "$PR_URL"
-        env:
-          PR_URL: ${{ github.event.pull_request.html_url }}
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
-
-      - name: Enable auto-merge for Dependabot PRs
-        if: ${{ steps.dependabot-metadata.outputs.update-type != 'version-update:semver-major' }}
-        run: gh pr merge --admin --squash "$PR_URL"
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
           GH_TOKEN: ${{ steps.app-token.outputs.token }}

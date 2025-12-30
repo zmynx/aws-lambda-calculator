@@ -29,41 +29,10 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
+          role-to-assume: ${{ secrets.LAMBDA_POWERTUNING_AWS_ROLE_TO_ASSUME }}
           aws-region: us-east-1
-          role-duration-seconds: 1800
-
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v5.0.0
-        with:
-          aws-region: ${{ vars.AWS_REGION }}
-          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          audience: sts.amazonaws.com
-          mask-aws-account-id: true
-          role-duration-seconds: 900
-          # role-external-id: ${{ secrets.AWS_ROLE_EXTERNAL_ID }}
           role-session-name: GitHubActions-LambdaAnalysis
-          inline-session-policy: >-
-            {
-              "Version": "2012-10-17",
-              "Statement": [
-                {
-                  "Effect": "AllowLambdaPowerTuning",
-                  "Action": "",
-                  "Resource": [
-                    "arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/cdk-hnb659fds-deploy-role-${{ secrets.AWS_ACCOUNT_ID }}-${{ vars.AWS_REGION }}",
-                  ]
-                }
-              ]
-            }
-          output-credentials: false
-          output-env-credentials: true
-          unset-current-credentials: true
-          disable-retry: false
-          retry-max-attempts: 3
-          use-existing-credentials: false
-          allowed-account-ids: ${{ secrets.AWS_ACCOUNT_ID }}
-          force-skip-oidc: false
-          # action-timeout-s: 60
+          role-duration-seconds: 1800
 
       - name: Run Lambda Power Tuning Script
         uses: ./.github/actions/aws-lambda-power-tuning

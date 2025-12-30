@@ -62,7 +62,7 @@ jobs:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
         with:
-          git_tag_only: false
+          create_git_tag_only: false
           commit_message: Nightly JSON pricing generator
           branch: main
           repository: .

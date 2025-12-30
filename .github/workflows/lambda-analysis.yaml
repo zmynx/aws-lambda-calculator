@@ -20,8 +20,6 @@ jobs:
     defaults:
       run:
         shell: bash
-    environment:
-      name: prod
     steps:
       - name: Checkout
         uses: actions/checkout@v4

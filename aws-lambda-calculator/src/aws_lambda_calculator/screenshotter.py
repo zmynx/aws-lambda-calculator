@@ -115,14 +115,22 @@ def scrape_memory_prices(region_code: str, region_name: str) -> dict:
             # Try force click if regular click fails
             x86_tab.click(force=True)
 
-        page.wait_for_load_state("networkidle")
-        page.wait_for_timeout(2000)  # Additional wait for dynamic content
+        # Use domcontentloaded instead of networkidle to avoid timeout on persistent connections
+        try:
+            page.wait_for_load_state("networkidle", timeout=10000)
+        except Exception:
+            # Fallback to domcontentloaded if networkidle times out
+            page.wait_for_load_state("domcontentloaded")
+        page.wait_for_timeout(3000)  # Additional wait for dynamic content
         page.get_by_label("x86 Price").get_by_role(
             "button", name="US East (Ohio)"
         ).click()
         page.get_by_role("option", name=target).click()
-        page.wait_for_load_state("networkidle")
-        page.wait_for_timeout(2000)  # Wait for price data to load
+        try:
+            page.wait_for_load_state("networkidle", timeout=10000)
+        except Exception:
+            page.wait_for_load_state("domcontentloaded")
+        page.wait_for_timeout(3000)  # Wait for price data to load
         # path = screenshots_dir + region_code + '_x86.png'
         # page.screenshot(path=path, full_page=True)
         page_text = page.inner_text("body")
@@ -147,14 +155,21 @@ def scrape_memory_prices(region_code: str, region_name: str) -> dict:
             # Try force click if regular click fails
             arm_tab.click(force=True)
 
-        page.wait_for_load_state("networkidle")
-        page.wait_for_timeout(2000)  # Additional wait for dynamic content
+        # Use domcontentloaded instead of networkidle to avoid timeout on persistent connections
+        try:
+            page.wait_for_load_state("networkidle", timeout=10000)
+        except Exception:
+            page.wait_for_load_state("domcontentloaded")
+        page.wait_for_timeout(3000)  # Additional wait for dynamic content
         page.get_by_label("ARM Price").get_by_role(
             "button", name="US East (Ohio)"
         ).click()
         page.get_by_role("option", name=target).click()
-        page.wait_for_load_state("networkidle")
-        page.wait_for_timeout(2000)  # Wait for price data to load
+        try:
+            page.wait_for_load_state("networkidle", timeout=10000)
+        except Exception:
+            page.wait_for_load_state("domcontentloaded")
+        page.wait_for_timeout(3000)  # Wait for price data to load
         # path = screenshots_dir + region_code + '_arm.png'
         # page.screenshot(path=path, full_page=True)
         page_text = page.inner_text("body")

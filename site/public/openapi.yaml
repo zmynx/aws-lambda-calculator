@@ -89,6 +89,7 @@ paths:
         type: aws_proxy
     options:
       summary: CORS preflight
+      operationId: options
       description: Handle CORS preflight requests
       responses:
         "200":

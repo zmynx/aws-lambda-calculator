@@ -21,7 +21,7 @@ jobs:
         with:
           github-token: ${{ github.token }}
 
-       Here the PR gets approved.
+      # Here the PR gets approved.
       - name: Approve a PR
         if: ${{ steps.dependabot-metadata.outputs.update-type != 'version-update:semver-major' }}
         run: gh pr review --approve "$PR_URL"

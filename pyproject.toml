@@ -57,7 +57,7 @@ relative_files = true
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.14.5"
-pytest = "^9.0.1"
+pytest = "^9.0.2"
 pytest-cov = "^7.0.0"
 mypy = "^1.19.1"
 types-requests = "^2.32.4.20250913"

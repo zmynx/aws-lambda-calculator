@@ -171,5 +171,5 @@ jobs:
           else
             git commit -m "Nightly JSON pricing generator"
             git remote set-url origin "https://x-access-token:${{ steps.app-token.outputs.token }}@github.com/${{ github.repository }}.git"
-            git push origin main
+            git push origin HEAD:${{ github.ref_name }}
           fi

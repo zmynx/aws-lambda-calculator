@@ -164,14 +164,11 @@ jobs:
 
       - name: Commit and push changes
         uses: zmynx/git-auto-commit-action@master
-        env:
-          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
         with:
           create_git_tag_only: false
           commit_message: Nightly JSON pricing generator
           branch: main
           repository: .
-          commit_user_name: github-actions[bot]
-          commit_user_email: github-actions[bot]@users.noreply.github.com
-          commit_author: Author <actions@github.com>
+          commit_user_name: org-auth-write[bot]
+          commit_user_email: org-auth-write[bot]@users.noreply.github.com
+          commit_author: org-auth-write[bot] <org-auth-write[bot]@users.noreply.github.com>

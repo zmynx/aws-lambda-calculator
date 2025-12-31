@@ -131,8 +131,7 @@ jobs:
     needs: generate-json
     if: always()
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
+    permissions: write-all
     steps:
       - name: Generate GitHub App Token
         id: app-token

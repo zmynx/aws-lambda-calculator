@@ -14,7 +14,6 @@ def _log(msg: str) -> None:
 def scrape_memory_prices(
     region_code: str, region_name: str, max_retries: int = MAX_RETRIES
 ) -> dict:
-    from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeout
 
     _log(f"[DEBUG] Starting scrape for {region_code} - {region_name}")
     target = region_name + " " + region_code
@@ -85,8 +84,7 @@ def _do_scrape(
     arm_tab_selectors: list,
 ) -> dict:
     """Internal function to perform a single scrape attempt."""
-    import re
-    from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeout
+    from playwright.sync_api import sync_playwright
 
     region_pricing = {"x86": {}, "arm64": {}}
 
@@ -128,9 +126,9 @@ def _do_scrape(
             _dismiss_overlays(page)
 
             # Find tabs
-            _log(f"[DEBUG] Looking for x86 tab")
+            _log("[DEBUG] Looking for x86 tab")
             x86_tab = _find_element(page, tab_selectors)
-            _log(f"[DEBUG] Looking for ARM tab")
+            _log("[DEBUG] Looking for ARM tab")
             arm_tab = _find_element(page, arm_tab_selectors)
 
             if not x86_tab:
@@ -215,10 +213,10 @@ def _scrape_arch_prices(page, tab, label: str, target: str, patterns: list) -> d
         dropdown = page.get_by_label(label).get_by_role("button").first
         if dropdown:
             dropdown.click()
-            _log(f"[DEBUG] Clicked dropdown button")
+            _log("[DEBUG] Clicked dropdown button")
         else:
             # Fallback: look for any region dropdown button
-            _log(f"[DEBUG] Dropdown not found, trying fallback")
+            _log("[DEBUG] Dropdown not found, trying fallback")
             page.get_by_label(label).get_by_role(
                 "button", name="US East (Ohio)"
             ).click()
@@ -227,7 +225,7 @@ def _scrape_arch_prices(page, tab, label: str, target: str, patterns: list) -> d
         # Try alternative approach - click any visible dropdown
         try:
             page.get_by_label(label).locator("button").first.click()
-            _log(f"[DEBUG] Used alternative dropdown click")
+            _log("[DEBUG] Used alternative dropdown click")
         except Exception as e2:
             raise RuntimeError(f"Could not open region dropdown for {label}: {e2}")
 
@@ -257,7 +255,7 @@ def _scrape_arch_prices(page, tab, label: str, target: str, patterns: list) -> d
     page.wait_for_timeout(2000)
 
     # Extract prices from page text
-    _log(f"[DEBUG] Extracting prices from page")
+    _log("[DEBUG] Extracting prices from page")
     page_text = page.inner_text("body")
     for pattern in patterns:
         matches = re.findall(pattern, page_text)

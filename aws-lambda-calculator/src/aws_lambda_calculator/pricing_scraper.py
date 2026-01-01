@@ -1,3 +1,4 @@
+import argparse
 import json
 import requests
 from os import path as os_path
@@ -151,15 +152,33 @@ def write_region_data(region_name: str, region_code: str, data: dict) -> None:
 #  2.4 Write the JSON file for that region
 #  2.5 Report success or failure
 if __name__ == "__main__":
-    print("[DEBUG] Starting pricing scraper...")
-    regions = get_aws_regions()
+    parser = argparse.ArgumentParser(description="AWS Lambda Pricing Scraper")
+    parser.add_argument(
+        "--region-code", help="Single region code to process (e.g., us-east-1)"
+    )
+    parser.add_argument(
+        "--region-name",
+        help="Single region name to process (e.g., 'US East (N. Virginia)')",
+    )
+    args = parser.parse_args()
 
-    counter, total = 1, len(regions)
-    print(f"[DEBUG] Found {total} regions.")
-
-    for region_code, region_name in regions.items():
+    if args.region_code and args.region_name:
+        # Single region mode (for matrix jobs)
         print(
-            f"[DEBUG] [{counter}/{total}] Processing region: {region_name} ({region_code})"
+            f"[DEBUG] Processing single region: {args.region_name} ({args.region_code})"
         )
-        counter += 1
-        build_region_dict(region_name, region_code)
+        build_region_dict(args.region_name, args.region_code)
+    else:
+        # Original behavior - process all regions
+        print("[DEBUG] Starting pricing scraper...")
+        regions = get_aws_regions()
+
+        counter, total = 1, len(regions)
+        print(f"[DEBUG] Found {total} regions.")
+
+        for region_code, region_name in regions.items():
+            print(
+                f"[DEBUG] [{counter}/{total}] Processing region: {region_name} ({region_code})"
+            )
+            counter += 1
+            build_region_dict(region_name, region_code)

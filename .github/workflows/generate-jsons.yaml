@@ -7,37 +7,100 @@ on:
     - cron: 0 0 * * *
 
 jobs:
-  generate-jsons:
-    timeout-minutes: 30
-    name: generate-jsons
+  generate-json:
+    timeout-minutes: 15
+    name: generate-json (${{ matrix.region_code }})
     runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
-      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - region_code: af-south-1
+            region_name: "Africa (Cape Town)"
+          - region_code: ap-east-1
+            region_name: "Asia Pacific (Hong Kong)"
+          - region_code: ap-east-2
+            region_name: "Asia Pacific (Taipei)"
+          - region_code: ap-northeast-1
+            region_name: "Asia Pacific (Tokyo)"
+          - region_code: ap-northeast-2
+            region_name: "Asia Pacific (Seoul)"
+          - region_code: ap-northeast-3
+            region_name: "Asia Pacific (Osaka)"
+          - region_code: ap-south-1
+            region_name: "Asia Pacific (Mumbai)"
+          - region_code: ap-south-2
+            region_name: "Asia Pacific (Hyderabad)"
+          - region_code: ap-southeast-1
+            region_name: "Asia Pacific (Singapore)"
+          - region_code: ap-southeast-2
+            region_name: "Asia Pacific (Sydney)"
+          - region_code: ap-southeast-3
+            region_name: "Asia Pacific (Jakarta)"
+          - region_code: ap-southeast-4
+            region_name: "Asia Pacific (Melbourne)"
+          - region_code: ap-southeast-5
+            region_name: "Asia Pacific (Malaysia)"
+          - region_code: ap-southeast-6
+            region_name: "Asia Pacific (New Zealand)"
+          - region_code: ap-southeast-7
+            region_name: "Asia Pacific (Thailand)"
+          - region_code: ca-central-1
+            region_name: "Canada (Central)"
+          - region_code: ca-west-1
+            region_name: "Canada West (Calgary)"
+          - region_code: eu-central-1
+            region_name: "EU (Frankfurt)"
+          - region_code: eu-central-2
+            region_name: "Europe (Zurich)"
+          - region_code: eu-north-1
+            region_name: "EU (Stockholm)"
+          - region_code: eu-south-1
+            region_name: "EU (Milan)"
+          - region_code: eu-south-2
+            region_name: "Europe (Spain)"
+          - region_code: eu-west-1
+            region_name: "EU (Ireland)"
+          - region_code: eu-west-2
+            region_name: "EU (London)"
+          - region_code: eu-west-3
+            region_name: "EU (Paris)"
+          - region_code: il-central-1
+            region_name: "Israel (Tel Aviv)"
+          - region_code: me-central-1
+            region_name: "Middle East (UAE)"
+          - region_code: me-south-1
+            region_name: "Middle East (Bahrain)"
+          - region_code: mx-central-1
+            region_name: "Mexico (Central)"
+          - region_code: sa-east-1
+            region_name: "South America (Sao Paulo)"
+          - region_code: us-east-1
+            region_name: "US East (N. Virginia)"
+          - region_code: us-east-2
+            region_name: "US East (Ohio)"
+          - region_code: us-gov-east-1
+            region_name: "AWS GovCloud (US-East)"
+          - region_code: us-gov-west-1
+            region_name: "AWS GovCloud (US-West)"
+          - region_code: us-west-1
+            region_name: "US West (N. California)"
+          - region_code: us-west-2
+            region_name: "US West (Oregon)"
     defaults:
       run:
         shell: bash
         working-directory: aws-lambda-calculator
     steps:
-      - name: Generate GitHub App Token
-        id: app-token
-        uses: actions/create-github-app-token@v1
-        with:
-          app-id: ${{ vars.GH_APP_W_ID }}
-          private-key: ${{ secrets.GH_APP_W_KEY }}
-
       - name: Checkout
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
-          token: ${{ steps.app-token.outputs.token }}
-          persist-credentials: false
+          ref: main
 
       - name: Setup Python
-        uses: actions/setup-python@e797f83bcb11b83ae66e0230d6156d7c80228e7c # v6.0.0
+        uses: actions/setup-python@v5
         with:
           python-version-file: pyproject.toml
-          # cache: poetry
 
       - name: Setup poetry
         run: |
@@ -48,25 +111,72 @@ jobs:
       - name: Install dependencies
         run: python -m poetry install
 
-      - name: Install playwright headless browser
-        run: python -m poetry run playwright install --with-deps
+      - name: Install playwright chromium browser
+        run: python -m poetry run playwright install chromium --with-deps
 
-      - name: Generate JSON pricing data
+      - name: Generate JSON pricing data for ${{ matrix.region_code }}
+        continue-on-error: true
         env:
           DEBUG: "pw:browser"
-        run: python -m poetry run python src/aws_lambda_calculator/pricing_scraper.py
+          PYTHONUNBUFFERED: "1"
+        run: |
+          python -m poetry run python src/aws_lambda_calculator/pricing_scraper.py \
+            --region-code "${{ matrix.region_code }}" \
+            --region-name "${{ matrix.region_name }}"
 
-      - name: Push changes to
-        uses: zmynx/git-auto-commit-action@master
-        env:
-          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+      - name: Upload JSON artifact
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
         with:
-          create_git_tag_only: false
-          commit_message: Nightly JSON pricing generator
-          branch: main
-          repository: .
-          commit_user_name: github-actions[bot]
-          commit_user_email: github-actions[bot]@zmynx.users.noreply.github.com
-          commit_author: Author <actions@github.com> # defaults to "username <username@users.noreply.github.com>", where "username" belongs to the author of the commit that triggered the run
-          push_options: --force
+          name: json-${{ matrix.region_code }}
+          path: aws-lambda-calculator/src/aws_lambda_calculator/jsons/${{ matrix.region_code }}.json
+          retention-days: 1
+          if-no-files-found: warn
+
+  commit-and-push:
+    needs: generate-json
+    if: always()
+    runs-on: ubuntu-latest
+    permissions: write-all
+    steps:
+      - name: Generate GitHub App Token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ vars.GH_APP_W_ID }}
+          private-key: ${{ secrets.GH_APP_W_KEY }}
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          ref: main
+          persist-credentials: false
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          pattern: json-*
+
+      - name: Move JSON files to correct directory
+        run: |
+          for dir in artifacts/json-*/; do
+            if [ -d "$dir" ]; then
+              cp "$dir"*.json aws-lambda-calculator/src/aws_lambda_calculator/jsons/
+            fi
+          done
+          ls -la aws-lambda-calculator/src/aws_lambda_calculator/jsons/
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "org-auth-write[bot]"
+          git config user.email "org-auth-write[bot]@users.noreply.github.com"
+          git add aws-lambda-calculator/src/aws_lambda_calculator/jsons/*.json
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Nightly JSON pricing generator"
+            git remote set-url origin "https://x-access-token:${{ steps.app-token.outputs.token }}@github.com/${{ github.repository }}.git"
+            git push origin main 
+          fi

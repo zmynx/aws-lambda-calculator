@@ -115,6 +115,7 @@ jobs:
         run: python -m poetry run playwright install --with-deps
 
       - name: Generate JSON pricing data for ${{ matrix.region_code }}
+        continue-on-error: true
         env:
           DEBUG: "pw:browser"
         run: |
@@ -123,11 +124,13 @@ jobs:
             --region-name "${{ matrix.region_name }}"
 
       - name: Upload JSON artifact
+        continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
           name: json-${{ matrix.region_code }}
           path: aws-lambda-calculator/src/aws_lambda_calculator/jsons/${{ matrix.region_code }}.json
           retention-days: 1
+          if-no-files-found: warn
 
   commit-and-push:
     needs: generate-json

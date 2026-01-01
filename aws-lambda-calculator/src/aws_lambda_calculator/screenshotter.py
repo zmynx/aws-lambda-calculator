@@ -14,7 +14,6 @@ def _log(msg: str) -> None:
 def scrape_memory_prices(
     region_code: str, region_name: str, max_retries: int = MAX_RETRIES
 ) -> dict:
-
     _log(f"[DEBUG] Starting scrape for {region_code} - {region_name}")
     target = region_name + " " + region_code
 

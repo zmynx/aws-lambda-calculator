@@ -1,18 +1,23 @@
+import sys
+
 URL = "https://aws.amazon.com/lambda/pricing/"
 
 MAX_RETRIES = 3
 
 
+def _log(msg: str) -> None:
+    """Print and flush immediately for CI visibility."""
+    print(msg, flush=True)
+    sys.stdout.flush()
+
+
 def scrape_memory_prices(
     region_code: str, region_name: str, max_retries: int = MAX_RETRIES
 ) -> dict:
-    import re
     from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeout
 
-    print(f"[DEBUG] Starting scrape for {region_code} - {region_name}")
+    _log(f"[DEBUG] Starting scrape for {region_code} - {region_name}")
     target = region_name + " " + region_code
-
-    region_pricing = {"x86": {}, "arm64": {}}
 
     # Find architecture tabs
     tab_selectors = [
@@ -36,8 +41,9 @@ def scrape_memory_prices(
         r"(\d{3,5})\s*MB\s*\$([0-9.]+)",  # "128MB $0.0000000021"
     ]
 
+    last_error = None
     for attempt in range(1, max_retries + 1):
-        print(f"[DEBUG] Attempt {attempt}/{max_retries} for {region_code}")
+        _log(f"[DEBUG] Attempt {attempt}/{max_retries} for {region_code}")
         try:
             result = _do_scrape(
                 region_code,
@@ -48,21 +54,24 @@ def scrape_memory_prices(
                 arm_tab_selectors,
             )
             if result["x86"] and result["arm64"]:
-                return result
-            print(
-                f"[WARN] Attempt {attempt}: Empty results for {region_code}, retrying..."
-            )
-        except Exception as e:
-            print(f"[ERROR] Attempt {attempt} failed for {region_code}: {e}")
-            if attempt == max_retries:
-                raise RuntimeError(
-                    f"Failed to scrape memory prices for {region_code} after {max_retries} attempts: {e}"
+                _log(
+                    f"[DEBUG] Success for {region_code}: x86={len(result['x86'])} prices, arm64={len(result['arm64'])} prices"
                 )
+                return result
+            _log(
+                f"[WARN] Attempt {attempt}: Empty results for {region_code} (x86={len(result['x86'])}, arm64={len(result['arm64'])})"
+            )
+            last_error = "Empty results"
+        except Exception as e:
+            _log(
+                f"[ERROR] Attempt {attempt} failed for {region_code}: {type(e).__name__}: {e}"
+            )
+            last_error = str(e)
 
-    # If we get here, all attempts returned empty results
+    # If we get here, all attempts failed or returned empty results
     raise RuntimeError(
-        f"Failed to scrape memory prices for {region_code}: "
-        f"No pricing data found after {max_retries} attempts. "
+        f"Failed to scrape memory prices for {region_code} after {max_retries} attempts. "
+        f"Last error: {last_error}. "
         f"The region may not be available on the AWS pricing page."
     )
 
@@ -82,9 +91,12 @@ def _do_scrape(
     region_pricing = {"x86": {}, "arm64": {}}
 
     with sync_playwright() as playwright:
-        print(f"[DEBUG] Launching browser for {region_code}")
+        _log(f"[DEBUG] Launching browser for {region_code}")
+        # Use channel="chromium" to force full Chromium instead of headless shell
+        # The headless shell has issues with JavaScript-heavy pages
         browser = playwright.chromium.launch(
             headless=True,
+            channel="chromium",
             args=[
                 "--no-sandbox",
                 "--disable-setuid-sandbox",
@@ -95,34 +107,37 @@ def _do_scrape(
                 "--disable-default-apps",
                 "--disable-extensions",
                 "--disable-audio-output",
-                "--disable-web-security",
-                "--disable-features=VizDisplayCompositor",
-                "--no-zygote",
-                "--disable-font-subpixel-positioning",
-                "--disable-lcd-text",
+                "--disable-blink-features=AutomationControlled",  # Hide automation
             ],
         )
         try:
             context = browser.new_context(
                 viewport={"width": 1920, "height": 1080},
-                user_agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                user_agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+                java_script_enabled=True,
+                locale="en-US",
             )
             page = context.new_page()
             page.set_default_timeout(30000)  # 30s timeout
+            _log(f"[DEBUG] Navigating to {URL}")
             page.goto(URL, wait_until="domcontentloaded")
             page.wait_for_timeout(2000)
+            _log(f"[DEBUG] Page loaded for {region_code}")
 
             # Try to dismiss any modal/overlay that might be present
             _dismiss_overlays(page)
 
             # Find tabs
+            _log(f"[DEBUG] Looking for x86 tab")
             x86_tab = _find_element(page, tab_selectors)
+            _log(f"[DEBUG] Looking for ARM tab")
             arm_tab = _find_element(page, arm_tab_selectors)
 
             if not x86_tab:
-                raise RuntimeError("Could not find x86 Price tab")
+                raise RuntimeError("Could not find x86 Price tab on the page")
             if not arm_tab:
-                raise RuntimeError("Could not find ARM Price tab")
+                raise RuntimeError("Could not find ARM Price tab on the page")
+            _log(f"[DEBUG] Found both tabs for {region_code}")
 
             # Scrape x86 prices
             region_pricing["x86"] = _scrape_arch_prices(
@@ -177,11 +192,14 @@ def _scrape_arch_prices(page, tab, label: str, target: str, patterns: list) -> d
     import re
 
     prices = {}
+    _log(f"[DEBUG] Scraping {label} prices for target: {target}")
 
     # Click the tab
     try:
         tab.click()
-    except Exception:
+        _log(f"[DEBUG] Clicked {label} tab")
+    except Exception as e:
+        _log(f"[DEBUG] Regular click failed for {label}, trying force click: {e}")
         tab.click(force=True)
 
     # Wait for content to load
@@ -192,36 +210,42 @@ def _scrape_arch_prices(page, tab, label: str, target: str, patterns: list) -> d
     page.wait_for_timeout(2000)
 
     # Find and click the region dropdown
-    # First, try to find the dropdown button within the tab's content area
+    _log(f"[DEBUG] Looking for region dropdown in {label}")
     try:
         dropdown = page.get_by_label(label).get_by_role("button").first
         if dropdown:
             dropdown.click()
+            _log(f"[DEBUG] Clicked dropdown button")
         else:
             # Fallback: look for any region dropdown button
+            _log(f"[DEBUG] Dropdown not found, trying fallback")
             page.get_by_label(label).get_by_role(
                 "button", name="US East (Ohio)"
             ).click()
     except Exception as e:
-        print(f"[WARN] Could not click dropdown for {label}: {e}")
+        _log(f"[WARN] Could not click dropdown for {label}: {e}")
         # Try alternative approach - click any visible dropdown
         try:
             page.get_by_label(label).locator("button").first.click()
-        except Exception:
-            raise RuntimeError(f"Could not open region dropdown for {label}")
+            _log(f"[DEBUG] Used alternative dropdown click")
+        except Exception as e2:
+            raise RuntimeError(f"Could not open region dropdown for {label}: {e2}")
 
     page.wait_for_timeout(1000)
 
     # Try to select the target region
+    _log(f"[DEBUG] Selecting region: {target}")
     try:
         option = page.get_by_role("option", name=target)
-        if option.count() == 0:
-            # Region not found in dropdown - list available options for debugging
-            print(f"[ERROR] Region '{target}' not found in dropdown")
+        count = option.count()
+        if count == 0:
+            _log(f"[ERROR] Region '{target}' not found in dropdown (count=0)")
             raise RuntimeError(
                 f"Region '{target}' not available in the pricing dropdown"
             )
+        _log(f"[DEBUG] Found {count} options matching '{target}'")
         option.click()
+        _log(f"[DEBUG] Selected region: {target}")
     except Exception as e:
         raise RuntimeError(f"Could not select region '{target}': {e}")
 
@@ -233,6 +257,7 @@ def _scrape_arch_prices(page, tab, label: str, target: str, patterns: list) -> d
     page.wait_for_timeout(2000)
 
     # Extract prices from page text
+    _log(f"[DEBUG] Extracting prices from page")
     page_text = page.inner_text("body")
     for pattern in patterns:
         matches = re.findall(pattern, page_text)
@@ -244,4 +269,5 @@ def _scrape_arch_prices(page, tab, label: str, target: str, patterns: list) -> d
             ):
                 prices[memory] = price
 
+    _log(f"[DEBUG] Extracted {len(prices)} prices for {label}")
     return prices

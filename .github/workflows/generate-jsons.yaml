@@ -111,13 +111,14 @@ jobs:
       - name: Install dependencies
         run: python -m poetry install
 
-      - name: Install playwright headless browser
-        run: python -m poetry run playwright install --with-deps
+      - name: Install playwright chromium browser
+        run: python -m poetry run playwright install chromium --with-deps
 
       - name: Generate JSON pricing data for ${{ matrix.region_code }}
         continue-on-error: true
         env:
           DEBUG: "pw:browser"
+          PYTHONUNBUFFERED: "1"
         run: |
           python -m poetry run python src/aws_lambda_calculator/pricing_scraper.py \
             --region-code "${{ matrix.region_code }}" \

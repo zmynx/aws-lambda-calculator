@@ -11,9 +11,6 @@
 
 > 📄 Extensive documentation is available via our [GitHub Pages Docs site](https://zmynx.github.io/aws-lambda-calculator/).
 
-> [!NOTE]
-> This project is a work in progress, and yet to be operational nor compelete.
-
 > [!TIP]
 > Check it out locally / remote using DevPod [![Open in DevPod!](https://devpod.sh/assets/open-in-devpod.svg)](https://devpod.sh/open#https://github.com/zmynx/aws-lambda-calculator)
 

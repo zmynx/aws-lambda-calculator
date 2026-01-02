@@ -8,6 +8,8 @@ on:
 
 jobs:
   generate-json:
+    permissions:
+      contents: read
     timeout-minutes: 15
     name: generate-json (${{ matrix.region_code }})
     runs-on: ubuntu-latest

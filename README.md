@@ -1,45 +1,86 @@
+<div align="center">
+
+# AWS Lambda Calculator
+
+<img src="./site/app/assets/IMG_0416.PNG" alt="AWS Lambda Calculator" height="300" width="300"/>
+
+### A comprehensive calculator for AWS Lambda pricing and performance analysis
+
 [![CI](https://github.com/zmynx/aws-lambda-calculator/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/zmynx/aws-lambda-calculator/actions/workflows/ci.yaml)
 [![GitGuardian scan](https://github.com/zmynx/aws-lambda-calculator/actions/workflows/gitguardian.yaml/badge.svg)](https://github.com/zmynx/aws-lambda-calculator/actions/workflows/gitguardian.yaml)
 [![CodeQL](https://github.com/zmynx/aws-lambda-calculator/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/zmynx/aws-lambda-calculator/actions/workflows/github-code-scanning/codeql)
 
-<a name="top"></a>
+</div>
 
-<p align="center">
-<img src="./site/app/assets/IMG_0416.PNG" alt="aws-lambda-calculator" height="500" width="500" border="5"/>
-</p>
-<h1 align="center"><samp> AWS Lambda Calculator</samp></h1>
+---
 
-> 📄 Extensive documentation is available via our [GitHub Pages Docs site](https://zmynx.github.io/aws-lambda-calculator/).
+## 📚 Table of Contents
 
-> [!NOTE]
-> This project is a work in progress, and yet to be operational nor compelete.
+- [Documentation](#-documentation)
+- [Quick Start](#-quick-start)
+- [License](#-license)
+- [Contributing](#-contributing)
+- [Support](#-support)
+
+---
+
+## 📖 Documentation
+
+Extensive documentation is available via our **[GitHub Pages Docs site](https://zmynx.github.io/aws-lambda-calculator/)**.
+
+---
+
+## 🚀 Quick Start
 
 > [!TIP]
-> Check it out locally / remote using DevPod [![Open in DevPod!](https://devpod.sh/assets/open-in-devpod.svg)](https://devpod.sh/open#https://github.com/zmynx/aws-lambda-calculator)
+> Check it out locally or remotely using DevPod
+>
+> [![Open in DevPod!](https://devpod.sh/assets/open-in-devpod.svg)](https://devpod.sh/open#https://github.com/zmynx/aws-lambda-calculator)
 
-<h1 align="left"><samp>Licence</samp></h1>
+---
 
-This project is under the served with the Apache License.\
-Provided AS IS, no warranty given, not liability taken - USE AT YOUR OWN RISK.\
-More info can be found in our [LICENSE file](./LICENSE).
+## 📜 License
 
-<h1 align="left"><samp>Contributing</samp></h1>
+This project is licensed under the **Apache License**.
 
-<p align="center">
+**Disclaimer:** Provided AS IS, no warranty given, no liability taken - USE AT YOUR OWN RISK.
+
+For more information, see our [LICENSE](./LICENSE) file.
+
+---
+
+## 🤝 Contributing
+
+<div align="center">
+
 <a href="https://github.com/zmynx/aws-lambda-calculator/graphs/contributors">
-<img src="https://contrib.rocks/image?repo=zmynx/aws-lambda-calculator" />
+  <img src="https://contrib.rocks/image?repo=zmynx/aws-lambda-calculator" alt="Contributors" />
 </a>
-</p>
 
-Shout out to our amazing contributors!. Wanna contribute?\
-Follow our [CONTRIBUTING](./docs/CONTRIBUTING) guide on our docs section.
+</div>
 
-<h1 align="left"><samp>Sponser</samp></h1>
-<p align="center">
-<img src="./site/app/assets/bmc_qr.png" alt="buy-me-a-coffee-qr-code" style="width:80px;height:80px;"></a>
-</p>
+Shout out to our amazing contributors! Want to contribute?
 
-Enjoy our projects? make sure to follow for more!\
-Want to keep enjoying great projects such as this? contribute to open source!
+Follow our [CONTRIBUTING](./docs/CONTRIBUTING) guide in the docs section.
 
-[:arrow_up:](#top) [Back to top](#top) [:arrow_up:](#top)
+---
+
+## 💖 Support
+
+<div align="center">
+
+<img src="./site/app/assets/bmc_qr.png" alt="Buy Me a Coffee QR Code" width="150" height="150"/>
+
+</div>
+
+Enjoy our projects? Make sure to follow for more!
+
+Want to keep enjoying great projects like this? Contribute to open source!
+
+---
+
+<div align="center">
+
+[:arrow_up: Back to top](#aws-lambda-calculator)
+
+</div>

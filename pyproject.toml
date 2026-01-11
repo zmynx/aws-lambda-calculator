@@ -56,7 +56,7 @@ branch = true
 relative_files = true
 
 [tool.poetry.group.dev.dependencies]
-ruff = "^0.14.5"
+ruff = "^0.14.11"
 pytest = "^9.0.2"
 pytest-cov = "^7.0.0"
 mypy = "^1.19.1"

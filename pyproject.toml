@@ -60,7 +60,7 @@ ruff = "^0.14.11"
 pytest = "^9.0.2"
 pytest-cov = "^7.0.0"
 mypy = "^1.19.1"
-types-requests = "^2.32.4.20250913"
+types-requests = "^2.32.4.20260107"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]

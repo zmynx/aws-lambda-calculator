@@ -2,21 +2,17 @@
 
 [Full report](https://htmlpreview.github.io/?https://github.com/zmynx/aws-lambda-calculator/blob/python-coverage-comment-action-data/htmlcov/index.html)
 
-| Name                                                              |    Stmts |     Miss |   Branch |   BrPart |   Cover |   Missing |
-|------------------------------------------------------------------ | -------: | -------: | -------: | -------: | ------: | --------: |
-| aws-lambda-calculator/src/aws\_lambda\_calculator/\_\_init\_\_.py |        2 |        0 |        0 |        0 |    100% |           |
-| aws-lambda-calculator/src/aws\_lambda\_calculator/calculator.py   |      191 |        1 |       42 |        2 |     99% |154->160, 331 |
-| aws-lambda-calculator/src/aws\_lambda\_calculator/models.py       |       31 |        4 |       16 |        6 |     79% |57, 58->63, 60, 65, 68->74, 70 |
-| src/aws\_lambda.py                                                |       44 |        0 |        8 |        0 |    100% |           |
-| src/utils/\_\_init\_\_.py                                         |        0 |        0 |        0 |        0 |    100% |           |
-| src/utils/logger.py                                               |       21 |        0 |        0 |        0 |    100% |           |
-| tests/test\_cli.py                                                |       63 |        0 |        0 |        0 |    100% |           |
-| tests/test\_coverage\_gaps.py                                     |       94 |        0 |        2 |        0 |    100% |           |
-| tests/test\_edge\_cases.py                                        |       81 |        0 |        6 |        0 |    100% |           |
-| tests/test\_error\_handling.py                                    |      105 |        0 |        0 |        0 |    100% |           |
-| tests/test\_free\_tier.py                                         |       74 |        0 |        0 |        0 |    100% |           |
-| tests/test\_lambda.py                                             |       68 |        0 |        0 |        0 |    100% |           |
-|                                                         **TOTAL** |  **774** |    **5** |   **74** |    **8** | **98%** |           |
+| Name                                                 |    Stmts |     Miss |   Branch |   BrPart |   Cover |   Missing |
+|----------------------------------------------------- | -------: | -------: | -------: | -------: | ------: | --------: |
+| src/aws\_lambda\_calculator/\_\_init\_\_.py          |        2 |        0 |        0 |        0 |    100% |           |
+| src/aws\_lambda\_calculator/calculator.py            |      191 |        1 |       42 |        5 |     97% |138->141, 154->160, 228->232, 331, 337->340 |
+| src/aws\_lambda\_calculator/models.py                |       31 |        0 |       16 |        2 |     96% |58->63, 68->74 |
+| tests/\_\_init\_\_.py                                |        0 |        0 |        0 |        0 |    100% |           |
+| tests/test\_calculator.py                            |        9 |        0 |        0 |        0 |    100% |           |
+| tests/test\_calculator\_coverage.py                  |      100 |        0 |        0 |        0 |    100% |           |
+| tests/test\_models.py                                |      141 |        0 |        0 |        0 |    100% |           |
+| tests/test\_pytest\_generate\_tests\_sample\_code.py |       10 |        0 |        2 |        1 |     92% |  70->exit |
+|                                            **TOTAL** |  **484** |    **1** |   **60** |    **8** | **98%** |           |
 
 
 ## Setup coverage badge

@@ -23,7 +23,7 @@ poetry-plugin-export = ">=1.8"
 colorama = "^0.4.6"
 types-colorama = "^0.4.15.20240311"
 python-dotenv = "^1.1.0"
-requests = "^2.32.4"
+requests = "^2.33.0"
 boto3 = "^1.39.14"
 pydantic = "^2.12.3"
 

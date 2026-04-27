@@ -4,7 +4,7 @@ colorama==0.4.6 ; (platform_system == "Windows" or sys_platform == "win32") and 
 iniconfig==2.3.0 ; python_version >= "3.13"
 mypy-extensions==1.1.0 ; python_version >= "3.13"
 mypy==1.19.1 ; python_version >= "3.13"
-pathspec==1.0.4 ; python_version >= "3.13"
+pathspec==1.1.1 ; python_version >= "3.13"
 packaging==26.2 ; python_version >= "3.13"
 pluggy==1.6.0 ; python_version >= "3.13"
 platformdirs==4.9.1 ; python_version >= "3.13"

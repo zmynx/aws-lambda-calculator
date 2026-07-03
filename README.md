@@ -1,3 +1,7 @@
+> [!NOTE]
+> This repo has been archived, as I have moved on to my next challange.
+> Thanks! 
+
 <div align="center">
 
 # AWS Lambda Calculator
